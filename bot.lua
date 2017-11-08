@@ -51,7 +51,7 @@ commands = {
 
 			-- if authorMember:hasPermission(enums.permission.manageGuild) then
 			if authorMember.id == "138685670448168960" then
-				local func, err = loadstring(line)
+				local func, err = loadstring("return " .. line)
 				if type(func) == "function" then
 					local _msg = {}
 					local ok, ret = pcall(func)
