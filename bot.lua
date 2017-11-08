@@ -39,6 +39,35 @@ local function errorChat(channel, msg)
 end
 local cmdPrefix = "^[%.!/]"
 local commands = {
+	eval = {
+		callback = function(msg, args, line)
+			local guild = msg.guild
+			local botMember = guild.members:get(client.user.id)
+			local authorMember = guild.members:get(msg.author.id)
+
+			if authorMember:hasPermission(enums.permission.manageGuild) then
+				local func = loadstring(line)
+				if isfunction(func) then
+					local _msg = {}
+					local ret = func()
+					if ret then
+						_msg.embed = {
+							title = "Result:",
+							description = "```" .. tostring(ret) .. "```",
+							color = 0x9B65BD
+						}
+					else
+						_msg.content = ":white_check_mark:"
+					end
+				else
+					errorChat(msg.channel, func)
+				end
+			else
+				errorChat(msg.channel, "No access!")
+			end
+		end,
+		help = "Runs Lua. [admin only]"
+	},
 	seecolor = {
 		callback = function(msg, args)
 			local guild = msg.guild
@@ -108,6 +137,8 @@ local commands = {
 						color = color
 					}
 				})
+			else
+				errorChat(msg.channel, "Bot doesn't have permission to change roles!")
 			end
 		end,
 		help = "Change your color! Accepts colors in Hex format (ex. #FF0000 = red)."
@@ -134,6 +165,8 @@ local commands = {
 						color = 0x7FFF40
 					}
 				})
+			else
+				errorChat(msg.channel, "Bot doesn't have permission to change roles!")
 			end
 		end,
 		help = "Reset your color."
@@ -170,11 +203,12 @@ client:on("messageCreate", function(msg)
 	if prefix then
 		local args = text:split(" ")
 		local cmd = args[1]:sub(prefix:len() + 1)
+		local line = text:sub(args[1]:len() + 1)
 		table.remove(args, 1)
 		cmdData = commands[cmd]
 
 		if cmdData then
-			cmdData.callback(msg, args)
+			cmdData.callback(msg, args, line)
 		end
 	end
 end)
