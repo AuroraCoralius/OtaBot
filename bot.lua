@@ -104,7 +104,7 @@ commands = {
 				embed = {
 					description = "This is what `" .. arg .. "` looks like.",
 					color = color,
-					file = magick and "last_user.png" or nil
+					file = magick and "seecolor.png" or nil
 				}
 			})
 		end,
