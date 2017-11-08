@@ -29,9 +29,10 @@ local hex2num = function(hex)
 	end
 end
 
-local function errorChat(channel, msg)
+local function errorChat(channel, msg, title)
 	channel:send({
 		embed = {
+			title = title,
 			description = msg,
 			color = 0xFF4040
 		}
@@ -61,7 +62,7 @@ local commands = {
 					end
 					msg.channel:send(_msg)
 				else
-					errorChat(msg.channel, err)
+					errorChat(msg.channel, err, "Lua Error:")
 				end
 			else
 				errorChat(msg.channel, "No access!")
@@ -204,7 +205,7 @@ client:on("messageCreate", function(msg)
 	if prefix then
 		local args = text:split(" ")
 		local cmd = args[1]:sub(prefix:len() + 1)
-		local line = text:sub(args[1]:len() + 1)
+		local line = text:sub(args[1]:len() + 2)
 		table.remove(args, 1)
 		cmdData = commands[cmd]
 
