@@ -62,7 +62,7 @@ commands = {
 					if ret then
 						_msg.embed = {
 							title = "Result:",
-							description = "```" .. tostring(ret) .. "```",
+							description = "```lua\n" .. tostring(ret) .. "\n```",
 							color = 0x9B65BD
 						}
 					else
