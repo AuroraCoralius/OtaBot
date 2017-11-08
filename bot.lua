@@ -49,15 +49,15 @@ local commands = {
 			if not arg then errorChat(msg.channel, "Invalid color! Hex format only.") return end
 
 			local color = arg and hex2num(arg) or nil
-			if color then
-				-- Announce success!
-				msg.channel:send({
-					embed = {
-						description = ":arrow_left: This is what `" .. arg .. "` looks like.",
-						color = color
-					}
-				})
-			end
+			if not color then errorChat(msg.channel, "Invalid color! Hex format only.") return end
+
+			-- Announce success!
+			msg.channel:send({
+				embed = {
+					description = ":arrow_left: This is what `" .. arg .. "` looks like.",
+					color = color
+				}
+			})
 		end,
 		help = "Preview a color! Accepts colors in Hex format (ex. #FF0000 = red)."
 	},
@@ -73,41 +73,41 @@ local commands = {
 				if not arg then errorChat(msg.channel, "Invalid color! Hex format only.") return end
 
 				local color = arg and hex2num(arg) or nil
-				if color then
-					-- Remove other color roles you had...
-					for role in authorMember.roles:iter() do
-						if role.name:match("^#") then
-							authorMember:removeRole(role.id)
-						end
-					end
+				if not color then errorChat(msg.channel, "Invalid color! Hex format only.") return end
 
-					-- Find role...
-					local role
-					for _role in guild.roles:iter() do
-						if _role.name:match("#" .. arg) then
-							role = _role
-							break
-						end
+				-- Remove other color roles you had...
+				for role in authorMember.roles:iter() do
+					if role.name:match("^#") then
+						authorMember:removeRole(role.id)
 					end
-					-- If it doesn't exist, make it!
-					if not role then
-						role = guild:createRole("#" .. arg)
-						-- local roleColor = Color(color) -- unnecessary
-						role:setColor(color)
-						role:moveUp() -- show above Tenno role
-					end
-
-					-- Set role.
-					authorMember:addRole(role.id)
-
-					-- Announce success!
-					msg.channel:send({
-						embed = {
-							description = authorMember.fullname .. "'s color is now `" .. arg .. "`.",
-							color = color
-						}
-					})
 				end
+
+				-- Find role...
+				local role
+				for _role in guild.roles:iter() do
+					if _role.name:match("#" .. arg) then
+						role = _role
+						break
+					end
+				end
+				-- If it doesn't exist, make it!
+				if not role then
+					role = guild:createRole("#" .. arg)
+					-- local roleColor = Color(color) -- unnecessary
+					role:setColor(color)
+					role:moveUp() -- show above Tenno role
+				end
+
+				-- Set role.
+				authorMember:addRole(role.id)
+
+				-- Announce success!
+				msg.channel:send({
+					embed = {
+						description = authorMember.fullname .. "'s color is now `" .. arg .. "`.",
+						color = color
+					}
+				})
 			end
 		end,
 		help = "Change your color! Accepts colors in Hex format (ex. #FF0000 = red)."
@@ -147,7 +147,7 @@ commands.help = {
 
 		local _msg = {
 			embed = {
-				title = "Available commands:",
+				description = "Available commands:",
 				fields = {},
 				color = 0x9B65BD
 			}
