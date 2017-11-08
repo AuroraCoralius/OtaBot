@@ -42,7 +42,7 @@ local function errorChat(channel, msg, title)
 		}
 	})
 end
-local cmdPrefix = "^[%.!/]"
+local cmdPrefix = "^[%.!/%$]"
 commands = {
 	eval = {
 		callback = function(msg, args, line)
