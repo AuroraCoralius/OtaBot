@@ -27,7 +27,7 @@ end
 hex2num = function(hex)
 	hex = hex:gsub("#", "")
 	if hex:len() == 3 then
-		return tonumber("0x" .. hex:sub(1, 3))
+		return tonumber("0x" .. hex:sub(1, 1), hex:sub(1, 1), hex:sub(2, 2), hex:sub(2, 2), hex:sub(3, 3), hex:sub(3, 3))
 	elseif hex:len() == 6 then
 		return tonumber("0x" .. hex:sub(1, 6))
 	end
