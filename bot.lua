@@ -3,16 +3,16 @@ local config = dofile("config.lua")
 dofile("libs/string_extension.lua")
 local prettyPrint = require("pretty-print")
 
-local discordia = require("discordia")
-local enums = discordia.enums
-local Color = discordia.Color
-local client = discordia.Client()
+discordia = require("discordia")
+enums = discordia.enums
+Color = discordia.Color
+client = discordia.Client()
 
 client:on("ready", function()
 	print("Logged in as ".. client.user.username)
 end)
 
-local hex2rgb = function(hex)
+hex2rgb = function(hex)
 	hex = hex:gsub("#", "")
 	if hex:len() == 3 then
 		return tonumber("0x" .. hex:sub(1, 1)) * 17, tonumber("0x" .. hex:sub(2, 2)) * 17, tonumber("0x" .. hex:sub(3, 3)) * 17
@@ -20,7 +20,7 @@ local hex2rgb = function(hex)
 		return tonumber("0x" .. hex:sub(1, 2)), tonumber("0x" .. hex:sub(3, 4)), tonumber("0x" .. hex:sub(5, 6))
 	end
 end
-local hex2num = function(hex)
+hex2num = function(hex)
 	hex = hex:gsub("#", "")
 	if hex:len() == 3 then
 		return tonumber("0x" .. hex:sub(1, 3))
@@ -39,14 +39,15 @@ local function errorChat(channel, msg, title)
 	})
 end
 local cmdPrefix = "^[%.!/]"
-local commands = {
+commands = {
 	eval = {
 		callback = function(msg, args, line)
 			local guild = msg.guild
 			local botMember = guild.members:get(client.user.id)
 			local authorMember = guild.members:get(msg.author.id)
 
-			if authorMember:hasPermission(enums.permission.manageGuild) then
+			-- if authorMember:hasPermission(enums.permission.manageGuild) then
+			if authorMember.id == "138685670448168960" then
 				local func, err = loadstring(line)
 				if type(func) == "function" then
 					local _msg = {}
