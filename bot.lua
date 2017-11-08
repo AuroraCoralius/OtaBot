@@ -1,4 +1,7 @@
 
+_G.require = require
+setfenv(1, _G)
+
 local config = dofile("config.lua")
 dofile("libs/string_extension.lua")
 local prettyPrint = require("pretty-print")
