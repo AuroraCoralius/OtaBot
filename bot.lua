@@ -137,32 +137,32 @@ local commands = {
 			end
 		end,
 		help = "Reset your color."
-	},
-	help = {
-		callback = function(msg)
-			local guild = msg.guild
-			local botMember = guild.members:get(client.user.id)
-			local authorMember = guild.members:get(msg.author.id)
+	}
+}
+commands.help = {
+	callback = function(msg)
+		local guild = msg.guild
+		local botMember = guild.members:get(client.user.id)
+		local authorMember = guild.members:get(msg.author.id)
 
-			local _msg = {
-				embed = {
-					title = "Available commands:",
-					fields = {},
-					color = 0x9B65BD
-				}
+		local _msg = {
+			embed = {
+				title = "Available commands:",
+				fields = {},
+				color = 0x9B65BD
 			}
-			for cmd, cmdData in next, commands do
-				local fields = _msg.embed.fields
-				fields[#fields + 1] = {
-					name = cmd,
-					value = cmdData.help
-				}
-			end
+		}
+		for cmd, cmdData in next, commands do
+			local fields = _msg.embed.fields
+			fields[#fields + 1] = {
+				name = cmd,
+				value = cmdData.help
+			}
+		end
 
-			msg.channel:send(_msg)
-		end,
-		help = "Displays this."
-	},
+		msg.channel:send(_msg)
+	end,
+	help = "Displays this."
 }
 client:on("messageCreate", function(msg)
 	local text = msg.content
