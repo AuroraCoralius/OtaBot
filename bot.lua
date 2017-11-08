@@ -92,9 +92,9 @@ commands = {
 			if not color then errorChat(msg.channel, "Invalid color! Hex format only.") return end
 
 			if magick then
-				os.execute(string.format('echo "%s" >> last_user', authorMember.name))
+				os.execute(string.format('echo "%s" > last_user', authorMember.name))
 				os.execute(string.format(
-						"convert -background transparent -fill '%s' -font Arial -pointsize 32 -size 150x150 -gravity center label:@last_user label.png",
+						"convert -background transparent -fill '%s' -font Arial -pointsize 32 -size 150x150 -gravity center label:@last_user seecolor.png",
 						"#" .. arg
 					)
 				)
