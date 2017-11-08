@@ -46,7 +46,7 @@ local commands = {
 			local authorMember = guild.members:get(msg.author.id)
 
 			if authorMember:hasPermission(enums.permission.manageGuild) then
-				local func = loadstring(line)
+				local func, err = loadstring(line)
 				if type(func) == "function" then
 					local _msg = {}
 					local ret = func()
@@ -59,8 +59,9 @@ local commands = {
 					else
 						_msg.content = ":white_check_mark:"
 					end
+					msg.channel:send(_msg)
 				else
-					errorChat(msg.channel, func)
+					errorChat(msg.channel, err)
 				end
 			else
 				errorChat(msg.channel, "No access!")
