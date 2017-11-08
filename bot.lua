@@ -39,7 +39,10 @@ local commands = {
 
 			-- Do we have permissions to fuck with roles?
 			if botMember:hasPermission(enums.permission.manageRoles) then
-				local color = args[1] and hex2num(args[1]) or nil
+				local arg = args[1] and args[1]:gsub("#", ""):upper() or nil
+				if not arg then return end
+
+				local color = arg and hex2num(arg) or nil
 				if color then
 					-- Remove other color roles you had...
 					for role in authorMember.roles:iter() do
@@ -51,16 +54,17 @@ local commands = {
 					-- Find role...
 					local role
 					for _role in guild.roles:iter() do
-						if _role.name:match("#" .. args[1]) then
+						if _role.name:match("#" .. arg) then
 							role = _role
 							break
 						end
 					end
 					-- If it doesn't exist, make it!
 					if not role then
-						role = guild:createRole("#" .. args[1])
+						role = guild:createRole("#" .. arg)
 						-- local roleColor = Color(color) -- unnecessary
 						role:setColor(color)
+						role:moveUp()
 					end
 
 					-- Set role.
@@ -69,7 +73,7 @@ local commands = {
 					-- Announce success!
 					msg.channel:send({
 						embed = {
-							description = authorMember.fullname .. "'s color is now `" .. args[1] .. "`.",
+							description = authorMember.fullname .. "'s color is now `" .. arg .. "`.",
 							color = color
 						}
 					})
