@@ -94,7 +94,7 @@ commands = {
 			if magick then
 				os.execute(string.format('echo "%s" > last_user', authorMember.name))
 				os.execute(string.format(
-						"convert -background transparent -fill '%s' -pointsize 24 -size 256x -gravity center caption:@last_user seecolor.png",
+						"convert -background transparent -fill '%s' -pointsize 24 -size 256x -gravity Center caption:@last_user seecolor.png",
 						"#" .. arg
 					)
 				)
