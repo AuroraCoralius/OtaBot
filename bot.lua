@@ -47,7 +47,7 @@ local commands = {
 
 			if authorMember:hasPermission(enums.permission.manageGuild) then
 				local func = loadstring(line)
-				if isfunction(func) then
+				if type(func) == "function" then
 					local _msg = {}
 					local ret = func()
 					if ret then
