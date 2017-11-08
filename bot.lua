@@ -3,6 +3,7 @@ _G.require = require
 setfenv(1, _G)
 
 local config = dofile("config.lua")
+local _, magick = pcall(require("magick"))
 dofile("libs/string_extension.lua")
 local prettyPrint = require("pretty-print")
 
@@ -90,11 +91,20 @@ commands = {
 			local color = arg and hex2num(arg) or nil
 			if not color then errorChat(msg.channel, "Invalid color! Hex format only.") return end
 
+			if magick then
+				os.execute(string.format('echo "%s" >> last_user', authorMember.name))
+				os.execute(string.format(
+						"convert -background transparent -fill '%s' -font Arial -pointsize 32 -size 150x150 -gravity center label:@last_user label.png",
+						"#" .. arg
+					)
+				)
+			end
 			-- Announce success!
 			msg.channel:send({
 				embed = {
-					description = ":arrow_left: This is what `" .. arg .. "` looks like.",
-					color = color
+					description = "This is what `" .. arg .. "` looks like.",
+					color = color,
+					file = magick and "last_user.png" or nil
 				}
 			})
 		end,
