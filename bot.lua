@@ -104,8 +104,8 @@ commands = {
 				embed = {
 					description = "This is what `" .. arg .. "` looks like.",
 					color = color,
-					file = magick and "seecolor.png" or nil
-				}
+				},
+				file = magick and "seecolor.png" or nil
 			})
 		end,
 		help = "Preview a color! Accepts colors in Hex format (ex. #FF0000 = red)."
