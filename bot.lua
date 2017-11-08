@@ -50,7 +50,11 @@ local commands = {
 				local func, err = loadstring(line)
 				if type(func) == "function" then
 					local _msg = {}
-					local ret = func()
+					local ok, ret = pcall(func)
+					if not ok then
+						errorChat(msg.channel, ret, "Lua Error:")
+						return
+					end
 					if ret then
 						_msg.embed = {
 							title = "Result:",
