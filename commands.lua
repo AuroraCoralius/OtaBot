@@ -186,7 +186,10 @@ commands = {
 			if not color then errorChat(msg.channel, "Invalid color! Hex format only.") return end
 
 			if magick then
-				os.execute(string.format('echo -n "%s" > last_user', authorMember and authorMember.name or msg.author.username))
+				local name = authorMember and authorMember.name or msg.author.username
+				name = name:gsub("\\%w", "")
+				name = name:gsub('"', '\"')
+				os.execute(string.format('echo -n "%s" > last_user', name))
 				os.execute(string.format(
 						"convert -background transparent -fill '%s' -font 'Whitney-Medium' -gravity west -size 256x64 caption:@last_user seecolor.png",
 						"#" .. arg
