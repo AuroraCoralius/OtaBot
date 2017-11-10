@@ -72,7 +72,7 @@ local function errorChat(channel, msg, title)
 		embed = {
 			title = title,
 			description = type(msg) == "string" and msg or nil,
-			fields = type(msg) == "table" and msg or nil,
+			fields = type(msg) == "table" and { msg } or nil,
 			color = 0xFF4040
 		}
 	})
