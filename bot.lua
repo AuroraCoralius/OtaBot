@@ -65,7 +65,7 @@ local function parseArgs(str) -- from mingeban2
 		end
 
 		if cont then
-			if ((arg ~= "" and grouping) or (arg == "" and not grouping)) and c:match(cmdArgGrouper) then -- do we try to group
+			if ((arg ~= "" and grouping) or (arg == "" and not grouping)) and c:match(grouper and grouper or cmdArgGrouper) then -- do we try to group
 				if not before or before and not escaping then -- are we escaping or starting a command
 					if not grouper then
 						grouper = c -- pick the current grouper
