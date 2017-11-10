@@ -123,7 +123,7 @@ local function errorChat(channel, msg, title)
 end
 
 commands = {
-	tr = {
+	[{"tr", "translate", "тр"}] = { -- could maybe do this for mingeban!
 		callback = function(msg, args, line)
 			if not config.yandex_api then errorChat("No Yandex API key provided.") return end
 
@@ -167,7 +167,7 @@ commands = {
 				end)
 			end)
 		end,
-		help = "Translate stuff. [WIP]"
+		help = "Translate stuff."
 	},
 	eval = {
 		callback = function(msg, args, line)
@@ -333,7 +333,7 @@ commands.help = {
 		for cmd, cmdData in next, commands do
 			local fields = _msg.embed.fields
 			fields[#fields + 1] = {
-				name = cmd,
+				name = type(cmd) == "table" and table.concat(cmd, ", ") or cmd,
 				value = cmdData.help
 			}
 		end
@@ -350,10 +350,17 @@ client:on("messageCreate", function(msg)
 		local cmd = args[1]:sub(prefix:len() + 1)
 		local line = text:sub(args[1]:len() + 2)
 		args = parseArgs(line)
-		cmdData = commands[cmd]
 
-		if cmdData then
-			cmdData.callback(msg, args, line)
+		for cmdName, cmdData in next, commands do
+			if type(cmdName) == "table" then
+				for _, cmdName in next, cmdName do
+					if cmdName:lower():match(cmd) then
+						return cmdData.callback(msg, args, line)
+					end
+				end
+			elseif cmdName:lower():match(cmd) then
+				return cmdData.callback(msg, args, line)
+			end
 		end
 	end
 end)
