@@ -171,12 +171,17 @@ commands = {
 	},
 	eval = {
 		callback = function(msg, args, line)
+			--[[
 			local guild = msg.guild
-			local botMember = guild.members:get(client.user.id)
-			local authorMember = guild.members:get(msg.author.id)
+			local botMember, authorMember
+			if guild then
+				botMember = guild.members:get(client.user.id)
+				authorMember = guild.members:get(msg.author.id)
+			end
 
 			-- if authorMember:hasPermission(enums.permission.manageGuild) then
-			if config.owners[authorMember.id] then
+			]]
+			if config.owners[msg.author.id] then
 				_G.self = client
 				_G.msg = msg
 				local func, err = loadstring(line)
@@ -211,8 +216,11 @@ commands = {
 	seecolor = {
 		callback = function(msg, args)
 			local guild = msg.guild
-			local botMember = guild.members:get(client.user.id)
-			local authorMember = guild.members:get(msg.author.id)
+			local botMember, authorMember
+			if guild then
+				botMember = guild.members:get(client.user.id)
+				authorMember = guild.members:get(msg.author.id)
+			end
 
 			local arg = args[1] and args[1]:gsub("#", ""):upper() or nil
 			if not arg then errorChat(msg.channel, "Invalid color! Hex format only.") return end
@@ -221,7 +229,7 @@ commands = {
 			if not color then errorChat(msg.channel, "Invalid color! Hex format only.") return end
 
 			if magick then
-				os.execute(string.format('echo -n "%s" > last_user', authorMember.name))
+				os.execute(string.format('echo -n "%s" > last_user', authorMember and authorMember.name or msg.author.username))
 				os.execute(string.format(
 						"convert -background transparent -fill '%s' -font 'Whitney-Medium' -gravity west -size 256x64 caption:@last_user seecolor.png",
 						"#" .. arg
@@ -242,6 +250,10 @@ commands = {
 	color = {
 		callback = function(msg, args)
 			local guild = msg.guild
+			if not guild then
+				errorChat(msg.channel, "Command only available on servers.")
+				return
+			end
 			local botMember = guild.members:get(client.user.id)
 			local authorMember = guild.members:get(msg.author.id)
 
@@ -295,6 +307,10 @@ commands = {
 	resetcolor = {
 		callback = function(msg)
 			local guild = msg.guild
+			if not guild then
+				errorChat(msg.channel, "Command only available on servers.")
+				return
+			end
 			local botMember = guild.members:get(client.user.id)
 			local authorMember = guild.members:get(msg.author.id)
 
@@ -323,10 +339,6 @@ commands = {
 }
 commands.help = {
 	callback = function(msg)
-		local guild = msg.guild
-		local botMember = guild.members:get(client.user.id)
-		local authorMember = guild.members:get(msg.author.id)
-
 		local _msg = {
 			embed = {
 				description = "Available commands:",
@@ -338,7 +350,7 @@ commands.help = {
 			local fields = _msg.embed.fields
 			fields[#fields + 1] = {
 				name = type(cmd) == "table" and table.concat(cmd, ", ") or cmd,
-				value = cmdData.help
+				value = cmdData.help or "No help."
 			}
 		end
 
@@ -346,6 +358,27 @@ commands.help = {
 	end,
 	help = "Displays this."
 }
+local function call(callback, msg, args, line)
+	local ok, err = xpcall(callback, function(err)
+		local traceback = debug.traceback()
+		print(err)
+		print(traceback)
+		coroutine.wrap(function()
+			msg.channel:send({
+				embed = {
+					title = "Command Error:",
+					fields = {
+						{
+							name = err,
+							value = traceback
+						}
+					},
+					color = 0xFF4040
+				}
+			})
+		end)()
+	end, msg, args, line)
+end
 client:on("messageCreate", function(msg)
 	local text = msg.content
 	local prefix = text:match(cmdPrefix)
@@ -359,11 +392,11 @@ client:on("messageCreate", function(msg)
 			if type(cmdName) == "table" then
 				for _, cmdName in next, cmdName do
 					if cmdName:lower() == cmd:lower() then
-						return cmdData.callback(msg, args, line)
+						call(cmdData.callback, msg, args, line)
 					end
 				end
 			elseif cmdName:lower() == cmd:lower() then
-				return cmdData.callback(msg, args, line)
+				call(cmdData.callback, msg, args, line)
 			end
 		end
 	end
