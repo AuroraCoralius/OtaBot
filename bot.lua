@@ -4,7 +4,7 @@ _G.require = require
 setfenv(1, _G)
 
 -- config
-local config = dofile("config.lua")
+config = dofile("config.lua")
 
 -- libs and helpers
 dofile("libs/string_extension.lua")
@@ -13,6 +13,7 @@ dofile("libs/misc_helpers.lua")
 
 -- luvit stuff and magick
 local _, magick = pcall(require, "magick")
+_G.magick = magick
 urlencode = require("querystring").stringify
 print = require("pretty-print").prettyPrint
 https = require("https")
