@@ -354,11 +354,11 @@ client:on("messageCreate", function(msg)
 		for cmdName, cmdData in next, commands do
 			if type(cmdName) == "table" then
 				for _, cmdName in next, cmdName do
-					if cmdName:lower():match(cmd) then
+					if cmdName:lower() == cmd:lower() then
 						return cmdData.callback(msg, args, line)
 					end
 				end
-			elseif cmdName:lower():match(cmd) then
+			elseif cmdName:lower() == cmd:lower() then
 				return cmdData.callback(msg, args, line)
 			end
 		end
