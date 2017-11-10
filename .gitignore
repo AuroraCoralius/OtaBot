@@ -2,3 +2,4 @@ deps
 config.lua
 gateway.json
 discordia.log
+bot.cmd
