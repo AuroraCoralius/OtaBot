@@ -1,15 +1,45 @@
 
--- https://gist.github.com/jaredallard/ddb152179831dd23b230
-function string.split(self, delimiter)
-	local result = {}
-	local from = 1
-	local delim_from, delim_to = string.find(self, delimiter, from)
-	while delim_from do
-		result[#result + 1] = string.sub(self, from, delim_from - 1)
-		from = delim_to + 1
-		delim_from, delim_to = string.find(self, delimiter, from)
+function string.totable(str)
+	local tbl = {}
+
+	for i = 1, str:len() do
+		tbl[i] = str:sub(i, i)
 	end
-	result[#result + 1] = string.sub(self, from)
-	return result
+
+	return tbl
 end
+
+function string.explode(separator, str, patterns)
+	if separator == "" then return str:totable() end
+
+	local ret = {}
+	local pos = 1
+
+	for i = 1, str:len() do
+		local startPos, endPos = str:find(separator, pos, not patterns)
+		if not startPos then break end
+		ret[i] = str:sub(pos, startPos - 1)
+		currentPos = endPos + 1
+	end
+
+	ret[#ret + 1] = str:sub(pos)
+
+	return ret
+end
+
+function string.split(str, delimiter)
+	return string.explode(delimiter, str)
+end
+
+function string.urlencode(str)
+	if str then
+    	str = str:gsub("\n", "\r\n")
+    	str = str:gsub("([^%w ])",
+    		function (c) return string.format ("%%%02X", string.byte(c)) end
+    	)
+    	str = str:gsub(" ", "+")
+	end
+	return str
+end
+
 

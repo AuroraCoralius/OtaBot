@@ -3,10 +3,11 @@ _G.require = require
 setfenv(1, _G)
 
 local config = dofile("config.lua")
-local _, magick = pcall(require("magick"))
+local _, magick = pcall(require, "magick")
 dofile("libs/string_extension.lua")
-local prettyPrint = require("pretty-print")
-
+urlencode = require("querystring").stringify
+print = require("pretty-print").prettyPrint
+http = require("http")
 discordia = require("discordia")
 enums = discordia.enums
 Color = discordia.Color
@@ -33,6 +34,72 @@ hex2num = function(hex)
 	end
 end
 
+local cmdPrefix = "^[%.!/%$]"
+local cmdArgGrouper = "[\"']"
+local cmdArgSeparators = "[%s,]"
+local cmdEscapeChar = "[\\]"
+local function parseArgs(str) -- from mingeban2
+	local chars = str:split("")
+	local grouping = false
+	local escaping = false
+	local grouper = false
+	local separator = false
+	local arg = ""
+	local ret = {}
+
+	for k, c in next, chars do
+		local cont = true
+
+		local before = chars[k - 1] -- check if there's anything behind the current char
+		local after = chars[k + 1] -- check if there's anything after the current char
+
+		if c:match(cmdEscapeChar) then
+			escaping = true
+			cont = false -- we're escaping a char, no need to continue
+		end
+
+		if cont then
+			if ((arg ~= "" and grouping) or (arg == "" and not grouping)) and c:match(cmdArgGrouper) then -- do we try to group
+				if not before or before and not escaping then -- are we escaping or starting a command
+					if not grouper then
+						grouper = c -- pick the current grouper
+					end
+					grouping = not grouping -- toggle group mode
+					if arg ~= "" then
+						ret[#ret + 1] = arg -- finish the job, add arg to list
+						arg = "" -- reset arg
+					end
+					cont = false -- we toggled grouping mode
+				elseif escaping then
+					escaping = false -- we escaped the character, disable it
+				end
+			end
+
+			if cont then
+				if c:match(separator or cmdArgSeparators) and not grouping then -- are we separating and not grouping
+					if not separator then
+						separator = c -- pick the current separator
+					end
+					if before and not before:match(grouper or cmdArgGrouper) then -- arg ~= "" then
+						ret[#ret + 1] = arg -- finish the job, add arg to list
+						arg = "" -- reset arg
+					end
+					cont = false -- let's get the next arg going
+				end
+
+				if cont then
+					arg = arg .. c -- go on with the arg
+					if not after then -- in case this is the end of the sentence, add last thing written
+						ret[#ret + 1] = arg
+					end
+				end
+
+			end
+		end
+	end
+
+	return ret -- give results!!
+end
 local function errorChat(channel, msg, title)
 	channel:send({
 		embed = {
@@ -42,8 +109,40 @@ local function errorChat(channel, msg, title)
 		}
 	})
 end
-local cmdPrefix = "^[%.!/%$]"
+
 commands = {
+	tr = {
+		callback = function(msg, args, line)
+			if not config.yandex_api then errorChat("No Yandex API key provided.") return end
+
+			local args = parseArgs(line)
+
+			local postData = urlencode({
+				key = config.yandex_api,
+				lang = args[2] or "en-ru",
+				text = args[1]
+			})
+			local options = {
+				hostname = "translate.yandex.net",
+				port = 80,
+				path = "/api/v1.5/tr.json/translate",
+				method = "POST",
+				headers = {
+					["Accept"] = "*/*",
+			    	["Content-Type"] = "application/x-www-form-urlencoded",
+					["Content-Length"] = postData:len()
+				}
+			}
+			local req = http.request(options, function(res)
+				res:on("data", function(...)
+					print(...)
+				end)
+			end)
+			req:write(postData)
+			req:done()
+		end,
+		help = "Translate stuff. [WIP]"
+	},
 	eval = {
 		callback = function(msg, args, line)
 			local guild = msg.guild
@@ -51,7 +150,7 @@ commands = {
 			local authorMember = guild.members:get(msg.author.id)
 
 			-- if authorMember:hasPermission(enums.permission.manageGuild) then
-			if authorMember.id == "138685670448168960" then
+			if config.owners[authorMember.id] then
 				local func, err = loadstring(line)
 				if type(func) == "function" then
 					local _msg = {}
@@ -77,7 +176,7 @@ commands = {
 				errorChat(msg.channel, "No access!")
 			end
 		end,
-		help = "Runs Lua. [admin only]"
+		help = "Runs Lua. [owner only]"
 	},
 	seecolor = {
 		callback = function(msg, args)
