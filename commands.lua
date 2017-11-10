@@ -194,16 +194,25 @@ commands = {
 							"#" .. arg
 						)
 					)
+					-- Announce success!
+					msg.channel:send({
+						embed = {
+							description = "This is what `" .. arg .. "` looks like.",
+							color = color,
+						},
+						file = magick and "seecolor.png" or nil
+					})
 				end)
+			else
+				-- Announce success!
+				msg.channel:send({
+					embed = {
+						description = ":arrow_left: This is what `" .. arg .. "` looks like.",
+						color = color,
+					},
+					file = magick and "seecolor.png" or nil
+				})
 			end
-			-- Announce success!
-			msg.channel:send({
-				embed = {
-					description = "This is what `" .. arg .. "` looks like.",
-					color = color,
-				},
-				file = magick and "seecolor.png" or nil
-			})
 		end,
 		help = "Preview a color! Accepts colors in Hex format (ex. #FF0000 = red)."
 	},
