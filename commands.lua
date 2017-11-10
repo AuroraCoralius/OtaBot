@@ -188,12 +188,13 @@ commands = {
 			if magick then
 				local name = authorMember and authorMember.name or msg.author.username
 				name = name:gsub("\\%w", "")
-				fs.writeFile("last_user", name)
-				os.execute(string.format(
-						"convert -background transparent -fill '%s' -font 'Whitney-Medium' -gravity west -size 256x64 caption:@last_user seecolor.png",
-						"#" .. arg
+				fs.writeFile("last_user", name, function()
+					os.execute(string.format(
+							"convert -background transparent -fill '%s' -font 'Whitney-Medium' -gravity west -size 256x64 caption:@last_user seecolor.png",
+							"#" .. arg
+						)
 					)
-				)
+				end)
 			end
 			-- Announce success!
 			msg.channel:send({
