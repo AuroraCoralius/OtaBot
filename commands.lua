@@ -323,18 +323,7 @@ local function call(callback, msg, args, line)
 		print(err)
 		print(traceback)
 		coroutine.wrap(function()
-			msg.channel:send({
-				embed = {
-					title = "Command Error:",
-					fields = {
-						{
-							name = err,
-							value = traceback
-						}
-					},
-					color = 0xFF4040
-				}
-			})
+			errorChat(msg.channel, { name = err, value = traceback }, "Command Error:")
 		end)()
 	end, msg, args, line)
 end
