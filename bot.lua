@@ -177,6 +177,8 @@ commands = {
 
 			-- if authorMember:hasPermission(enums.permission.manageGuild) then
 			if config.owners[authorMember.id] then
+				_G.self = client
+				_G.msg = msg
 				local func, err = loadstring(line)
 				if type(func) == "function" then
 					local _msg = {}
@@ -201,6 +203,8 @@ commands = {
 			else
 				errorChat(msg.channel, "No access!")
 			end
+			_G.self = nil
+			_G.msg = nil
 		end,
 		help = "Runs Lua. [owner only]"
 	},
