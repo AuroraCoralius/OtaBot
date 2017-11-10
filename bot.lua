@@ -127,7 +127,6 @@ commands = {
 		callback = function(msg, args, line)
 			if not config.yandex_api then errorChat("No Yandex API key provided.") return end
 
-			local args = parseArgs(line)
 			local _msg = {}
 
 			local lang = args[2] and args[2]:lower() or "en"
@@ -350,7 +349,7 @@ client:on("messageCreate", function(msg)
 		local args = text:split(" ")
 		local cmd = args[1]:sub(prefix:len() + 1)
 		local line = text:sub(args[1]:len() + 2)
-		table.remove(args, 1)
+		args = parseArgs(line)
 		cmdData = commands[cmd]
 
 		if cmdData then
