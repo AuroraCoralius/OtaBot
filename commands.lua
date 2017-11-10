@@ -194,14 +194,16 @@ commands = {
 							"#" .. arg
 						)
 					)
-					-- Announce success!
-					msg.channel:send({
-						embed = {
-							description = "This is what `" .. arg .. "` looks like.",
-							color = color,
-						},
-						file = magick and "seecolor.png" or nil
-					})
+					coroutine.wrap(function() -- OH YEAH BABY ITS THAT TIME AGAIN
+						-- Announce success!
+						msg.channel:send({
+							embed = {
+								description = "This is what `" .. arg .. "` looks like.",
+								color = color,
+							},
+							file = magick and "seecolor.png" or nil
+						})
+					end)()
 				end)
 			else
 				-- Announce success!
