@@ -20,6 +20,7 @@ https = require("https")
 http = require("http")
 json = require("json")
 timer = require("timer")
+fs = require("fs")
 
 -- discord stuff
 discordia = require("discordia")
