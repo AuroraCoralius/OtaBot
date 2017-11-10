@@ -1,21 +1,27 @@
 
+-- some fuckery
 _G.require = require
 setfenv(1, _G)
 
+-- config
 local config = dofile("config.lua")
-local _, magick = pcall(require, "magick")
+
+-- libs and helpers
 dofile("libs/string_extension.lua")
+dofile("libs/table_extension.lua")
+
+local _, magick = pcall(require, "magick")
 urlencode = require("querystring").stringify
 print = require("pretty-print").prettyPrint
+https = require("https")
 http = require("http")
+json = require("json")
+timer = require("timer")
+
 discordia = require("discordia")
 enums = discordia.enums
 Color = discordia.Color
 client = discordia.Client()
-
-client:on("ready", function()
-	print("Logged in as ".. client.user.username)
-end)
 
 hex2rgb = function(hex)
 	hex = hex:gsub("#", "")
@@ -100,6 +106,12 @@ local function parseArgs(str) -- from mingeban2
 
 	return ret -- give results!!
 end
+
+-- bot
+client:on("ready", function()
+	print("Logged in as ".. client.user.username)
+end)
+
 local function errorChat(channel, msg, title)
 	channel:send({
 		embed = {
@@ -116,30 +128,45 @@ commands = {
 			if not config.yandex_api then errorChat("No Yandex API key provided.") return end
 
 			local args = parseArgs(line)
+			local _msg = {}
 
-			local postData = urlencode({
+			local lang = args[2] and args[2]:lower() or "en"
+			local get = urlencode({
 				key = config.yandex_api,
-				lang = args[2] or "en-ru",
+				lang = lang,
 				text = args[1]
 			})
-			local options = {
-				hostname = "translate.yandex.net",
-				port = 80,
-				path = "/api/v1.5/tr.json/translate",
-				method = "POST",
-				headers = {
-					["Accept"] = "*/*",
-			    	["Content-Type"] = "application/x-www-form-urlencoded",
-					["Content-Length"] = postData:len()
-				}
-			}
-			local req = http.request(options, function(res)
-				res:on("data", function(...)
-					print(...)
+
+			local url = "https://translate.yandex.net/api/v1.5/tr.json/translate?" .. get
+			local req = https.get(url, function(res)
+				res:on("data", function(body)
+					local data = json.decode(body)
+					if data.code == 200 then
+						_msg.embed = {
+							title = "Translation to `" .. data.lang .. "`",
+							description = data.text[1],
+							footer = {
+								icon_url = client.user.avatarURL,
+								text = "Yandex Translate API - code " .. data.code
+							},
+							color = 0x00FFC0
+						}
+					else
+						_msg.embed = {
+							title = "Error:",
+							description = data.message,
+							footer = {
+								icon_url = client.user.avatarURL,
+								text = "Yandex Translate API - code " .. data.code .. " - lang " .. lang
+							},
+							color = 0xFF4040
+						}
+					end
+					coroutine.wrap(function()
+						msg.channel:send(_msg) -- well this is ass.
+					end)()
 				end)
 			end)
-			req:write(postData)
-			req:done()
 		end,
 		help = "Translate stuff. [WIP]"
 	},
