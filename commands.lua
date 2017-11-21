@@ -354,18 +354,20 @@ local commands = {
 						local _type = anime.type:value()
 						local score = anime.score:value()
 						local image = anime.image:value()
-						local synopsis = anime.synopsis:value() or "No synopsis"
-						synopsis = synopsis:gsub("<br%s?/>", "")
-						synopsis = xml:FromXmlString(synopsis)
-						synopsis = synopsis:gsub("&mdash;", "—")
-						if #synopsis > 512 then
-							synopsis = synopsis:sub(1, 512)
-							synopsis = synopsis .. "[...]"
-						end
-						synopsis = "**Synopsis: **\n" .. synopsis
-						local english = anime.english:value()
-						if english then
-							synopsis = "**English name:** " .. english .. "\n\n" .. synopsis
+						local synopsis = anime.synopsis:value()
+						if synopsis then
+							synopsis = synopsis:gsub("<br%s?/>", "")
+							synopsis = xml:FromXmlString(synopsis)
+							synopsis = synopsis:gsub("&mdash;", "—")
+							if #synopsis > 512 then
+								synopsis = synopsis:sub(1, 512)
+								synopsis = synopsis .. "[...]"
+							end
+							synopsis = "**Synopsis: **\n" .. synopsis
+							local english = anime.english:value()
+							if english then
+								synopsis = "**English name:** " .. english .. "\n\n" .. synopsis
+							end
 						end
 						local status = anime.status:value()
 						local episodes = anime.episodes:value()
