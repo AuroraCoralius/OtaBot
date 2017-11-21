@@ -428,7 +428,7 @@ local commands = {
 				end)()
 			end)
 		end,
-		help = "Get anime information."
+		help = "Provides condensed information about an anime."
 	}
 }
 function bot.getCommands()
@@ -460,7 +460,7 @@ commands.help = {
 		if not cmd then
 			_msg = {
 				embed = {
-					description = "Give a command name to get specific information.",
+					description = "Supply a command name to get specific information.",
 					color = 0x9B65BD,
 					fields = {
 						{
@@ -469,6 +469,7 @@ commands.help = {
 						}
 					},
 					footer = {
+						icon_url = client.user.avatarURL,
 						text = "Help"
 					}
 				}
@@ -490,6 +491,7 @@ commands.help = {
 					description = cmdData.help,
 					color = 0x9B65BD,
 					footer = {
+						icon_url = client.user.avatarURL,
 						text = "Help"
 					}
 				}
