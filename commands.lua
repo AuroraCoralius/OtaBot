@@ -87,7 +87,7 @@ end
 
 -- command callbacks
 local commands = {
-	[{"tr", "translate", "тр"}] = {
+	[{"translate", "tr", "тр"}] = {
 		callback = function(msg, args, line)
 			if not config.yandex_api then errorChat("No Yandex API key provided.") return end
 
@@ -305,7 +305,7 @@ local commands = {
 		end,
 		help = "Reset your color."
 	},
-	mal = {
+	[{"anime", "mal"}] = {
 		callback = function(msg, args)
 			if not config.mal then errorChat(msg.channel, "No MAL credentials.") return end
 			if not xml then errorChat(msg.channel, "No XML module.") return end
