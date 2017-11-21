@@ -331,7 +331,6 @@ local commands = {
 				end)
 				res:on("end", function()
 					local data = xml:ParseXmlText(body)
-					print(body)
 					if data.anime then
 						found = true
 
