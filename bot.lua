@@ -4,14 +4,14 @@ _G.require = require
 setfenv(1, _G)
 
 -- config
-config = dofile("config.lua")
+config = require("./config.lua")
 
 -- libs and helpers
-dofile("libs/math_extension.lua")
-dofile("libs/string_extension.lua")
-dofile("libs/table_extension.lua")
-dofile("libs/misc_helpers.lua")
-dofile("libs/xml.lua")
+require("./libs/math_extension.lua")
+require("./libs/string_extension.lua")
+require("./libs/table_extension.lua")
+require("./libs/misc_helpers.lua")
+require("./libs/xml.lua")
 
 -- luvit stuff and magick
 local _, magick = pcall(require, "magick")
@@ -33,11 +33,12 @@ Color = discordia.Color
 client = discordia.Client()
 
 bot = {
+	start = os.time(),
 	client = client
 }
 
 -- commands
-dofile("commands.lua")
+require("./commands.lua")
 
 client:on("ready", function()
 	print("Logged in as ".. client.user.username)
