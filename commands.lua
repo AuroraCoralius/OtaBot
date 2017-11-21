@@ -79,12 +79,10 @@ local function errorChat(channel, msg, title)
 end
 
 -- command callbacks
-commands = {
+local commands = {
 	[{"tr", "translate", "тр"}] = {
 		callback = function(msg, args, line)
 			if not config.yandex_api then errorChat("No Yandex API key provided.") return end
-
-			local _msg = {}
 
 			local lang = args[2] and args[2]:lower() or "en"
 			local get = urlencode({
@@ -93,6 +91,7 @@ commands = {
 				text = args[1]
 			})
 
+			local _msg = {}
 			local url = "https://translate.yandex.net/api/v1.5/tr.json/translate?" .. get
 			local req = https.get(url, function(res)
 				res:on("data", function(body)
@@ -306,22 +305,101 @@ commands = {
 			end
 		end,
 		help = "Reset your color."
+	},
+	mal = {
+		callback = function(msg, args)
+			if not config.mal then errorChat(msg.channel, "No MAL credentials.") return end
+			if not xml then errorChat(msg.channel, "No XML module.") return end
+
+			local query = args[1]
+			if not query then errorChat(msg.channel, "No search query provided.") return end
+
+			local get = urlencode({
+				q = query
+			})
+
+			local _msg = {}
+			local url = "https://myanimelist.net/api/anime/search.xml?" .. get
+			local options = http.parseUrl(url)
+			if not options.headers then options.headers = {} end
+			options.headers["Authorization"] = base64.decode(config.mal)
+			local req = https.get(options, function(res)
+				res:on("data", function(body)
+					print(body)
+					local data = xml:ParseXmlText(body)
+					print(data)
+
+					coroutine.wrap(function()
+						msg.channel:send(_msg) -- well this is ass.
+					end)()
+				end)
+			end)
+		end,
+		help = "Get anime information."
 	}
 }
+function bot.getCommands()
+	local tbl = {}
+	for cmd, cmdData in next, commands do
+		if type(cmd) == "table" then
+			for _, name in next, cmd do
+				cmdData.aliases = cmd
+				tbl[name] = cmdData
+			end
+		else
+			tbl[cmd] = cmdData
+		end
+	end
+	return tbl
+end
+function bot.getCommand(cmd)
+	return bot.getCommands()[cmd:lower()]
+end
 commands.help = {
-	callback = function(msg)
-		local _msg = {
-			embed = {
-				description = "Available commands:",
-				fields = {},
-				color = 0x9B65BD
+	callback = function(msg, args, line)
+		local _msg = {}
+		local cmd = args[1]
+		local cmdData
+		if cmd then
+			cmd = cmd:lower()
+			cmdData = bot.getCommand(cmd)
+		end
+		if not cmd then
+			_msg = {
+				embed = {
+					description = "Give a command name to get specific information.",
+					color = 0x9B65BD,
+					fields = {
+						{
+							name = "Available commands:",
+							value = "`",
+						}
+					},
+					footer = {
+						text = "Help"
+					}
+				}
 			}
-		}
-		for cmd, cmdData in next, commands do
-			local fields = _msg.embed.fields
-			fields[#fields + 1] = {
-				name = type(cmd) == "table" and table.concat(cmd, ", ") or cmd,
-				value = cmdData.help or "No help."
+			local i = 0
+			local count = table.count(commands)
+			for cmd, cmdData in next, commands do
+				i = i + 1
+				local desc = _msg.embed.fields[1].value
+				local name = type(cmd) == "table" and ("{" .. table.concat(cmd, ", ") .. "}") or cmd
+				desc = desc .. name .. (i == count and "" or ", ")
+				_msg.embed.fields[1].value = desc
+			end
+			_msg.embed.fields[1].value = _msg.embed.fields[1].value .. "`"
+		elseif cmdData then
+			_msg = {
+				embed = {
+					title = cmdData.aliases and table.concat(cmdData.aliases, ", ") or cmd,
+					description = cmdData.help,
+					color = 0x9B65BD,
+					footer = {
+						text = "Help"
+					}
+				}
 			}
 		end
 
@@ -329,6 +407,7 @@ commands.help = {
 	end,
 	help = "Displays this."
 }
+bot.commands = commands
 
 -- command handling
 local function call(callback, msg, args, line)
