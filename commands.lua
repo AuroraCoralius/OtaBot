@@ -317,6 +317,7 @@ local commands = {
 				q = query
 			})
 			local choice = args[2]
+			if not tonumber(choice) then choice = nil end
 
 			local url = "https://myanimelist.net/api/anime/search.xml?" .. get
 			local options = http.parseUrl(url)
