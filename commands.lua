@@ -331,6 +331,7 @@ local commands = {
 				end)
 				res:on("end", function()
 					local data = xml:ParseXmlText(body)
+					print(body)
 					if data.anime then
 						found = true
 
@@ -353,7 +354,7 @@ local commands = {
 						local _type = anime.type:value()
 						local score = anime.score:value()
 						local image = anime.image:value()
-						local synopsis = anime.synopsis:value()
+						local synopsis = anime.synopsis:value() or "No synopsis"
 						synopsis = synopsis:gsub("<br%s?/>", "")
 						synopsis = xml:FromXmlString(synopsis)
 						synopsis = synopsis:gsub("&mdash;", "—")
