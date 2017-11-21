@@ -322,7 +322,7 @@ local commands = {
 			local url = "https://myanimelist.net/api/anime/search.xml?" .. get
 			local options = http.parseUrl(url)
 			if not options.headers then options.headers = {} end
-			options.headers["Authorization"] = base64.decode(config.mal)
+			options.headers["Authorization"] = "Basic " .. config.mal -- base64.decode(config.mal)
 			local req = https.get(options, function(res)
 				res:on("data", function(body)
 					print(body)
