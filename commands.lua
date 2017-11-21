@@ -529,10 +529,12 @@ client:on("messageCreate", function(msg)
 			if type(cmdName) == "table" then
 				for _, cmdName in next, cmdName do
 					if cmdName:lower() == cmd:lower() then
+						msg.channel:broadcastTyping()
 						call(cmdData.callback, msg, args, line)
 					end
 				end
 			elseif cmdName:lower() == cmd:lower() then
+				msg.channel:broadcastTyping()
 				call(cmdData.callback, msg, args, line)
 			end
 		end
