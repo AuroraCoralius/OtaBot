@@ -67,15 +67,22 @@ function parseArgs(str) -- from mingeban2
 	return ret -- give results!!
 end
 
-local function errorChat(channel, msg, title)
-	channel:send({
+local function errorChat(channel, msg, title, footerText)
+	local _msg = {
 		embed = {
 			title = title,
 			description = type(msg) == "string" and msg or nil,
 			fields = type(msg) == "table" and { msg } or nil,
 			color = 0xFF4040
 		}
-	})
+	}
+	if footerText then
+		_msg.embed.footer = {
+			icon_url = client.user.avatarURL,
+			text = footerText
+		}
+	end
+	channel:send(_msg)
 end
 
 -- command callbacks
@@ -102,20 +109,12 @@ local commands = {
 							description = data.text[1],
 							footer = {
 								icon_url = client.user.avatarURL,
-								text = "Yandex Translate API - code " .. data.code
+								text = "Yandex Translate API"
 							},
 							color = 0x00FFC0
 						}
 					else
-						_msg.embed = {
-							title = "Error:",
-							description = data.message,
-							footer = {
-								icon_url = client.user.avatarURL,
-								text = "Yandex Translate API - code " .. data.code .. " - lang " .. lang
-							},
-							color = 0xFF4040
-						}
+						errorChat(msg.channel, data.message, "Translation Error:", "Yandex Translate API - code " .. data.code .. " - lang " .. lang)
 					end
 					coroutine.wrap(function()
 						msg.channel:send(_msg) -- well this is ass.
@@ -317,22 +316,113 @@ local commands = {
 			local get = urlencode({
 				q = query
 			})
+			local choice = args[2]
 
-			local _msg = {}
 			local url = "https://myanimelist.net/api/anime/search.xml?" .. get
 			local options = http.parseUrl(url)
 			if not options.headers then options.headers = {} end
 			options.headers["Authorization"] = "Basic " .. config.mal -- base64.decode(config.mal)
+			local found = false
+			local body = ""
 			local req = https.get(options, function(res)
-				res:on("data", function(body)
-					print(body)
-					local data = xml:ParseXmlText(body)
-					print(data)
-
-					coroutine.wrap(function()
-						msg.channel:send(_msg) -- well this is ass.
-					end)()
+				res:on("data", function(chunk)
+					body = body .. chunk
 				end)
+				res:on("end", function()
+					local data = xml:ParseXmlText(body)
+					if data.anime then
+						found = true
+
+						-- Pick anime
+						local animes = data.anime:numChildren()
+						local choice = choice and math.clamp(choice, 1, animes) or 1
+						local anime
+						if data.anime.entry[2] then
+							table.sort(data.anime.entry, function(a, b)
+								return a.score:value() > b.score:value()
+							end)
+							anime = data.anime.entry[choice]
+						else
+							anime = data.anime.entry
+						end
+
+						-- Prepare for displaying data
+						local title = anime.title:value()
+						local id = anime.id:value()
+						local _type = anime.type:value()
+						local score = anime.score:value()
+						local image = anime.image:value()
+						local synopsis = anime.synopsis:value()
+						synopsis = synopsis:gsub("<br%s?/>", "")
+						synopsis = xml:FromXmlString(synopsis)
+						synopsis = synopsis:gsub("&mdash;", "—")
+						if #synopsis > 512 then
+							synopsis = synopsis:sub(1, 512)
+							synopsis = synopsis .. "[...]"
+						end
+						synopsis = "**Synopsis: **\n" .. synopsis
+						local english = anime.english:value()
+						if english then
+							synopsis = "**English name:** " .. english .. "\n\n" .. synopsis
+						end
+						local status = anime.status:value()
+						local episodes = anime.episodes:value()
+						episodes = (status:lower():match("airing") and tonumber(episodes) == 0) and "?" or episodes
+						local startDate, endDate = anime.start_date:value(), anime.end_date:value()
+						local isAiring = endDate == "0000-00-00"
+						local airTime = isAiring and "Airing since " .. startDate or "Aired from " .. startDate .. " to " .. endDate
+
+						local _msg = {}
+						if data.anime.entry[2] and choice == 1 then
+							_msg.content = "There were multiple results, showing the first one. Specify a number to pick from them."
+						end
+						_msg.embed = {
+							title = title,
+							description = synopsis,
+							url = "http://myanimelist.net/anime/" .. id,
+							fields = {
+								{
+									name = "Episodes - Status",
+									value = episodes .. " - " .. status,
+									inline = true
+								},
+								{
+									name = "Type",
+									value = _type,
+									inline = true
+								},
+								{
+									name = "Score",
+									value = score,
+									inline = true
+								}
+							},
+							thumbnail = {
+								url = image
+							},
+							color = 0xFF7FFF,
+							footer = {
+								icon_url = client.user.avatar_url,
+								text = airTime .. " - MyAnimeList API"
+							}
+						}
+
+						coroutine.wrap(function()
+							msg.channel:send(_msg) -- well this is ass.
+						end)()
+					else
+						coroutine.wrap(function()
+							errorChat(msg.channel, body, "MAL Error:", "MyAnimeList API")
+						end)()
+					end
+				end)
+			end)
+			timer.setTimeout(5000, function()
+				if found then return end
+
+				coroutine.wrap(function()
+					errorChat(msg.channel, "No anime found.", "MAL Error:", "MyAnimeListAPI")
+				end)()
 			end)
 		end,
 		help = "Get anime information."

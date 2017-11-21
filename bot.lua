@@ -7,6 +7,7 @@ setfenv(1, _G)
 config = dofile("config.lua")
 
 -- libs and helpers
+dofile("libs/math_extension.lua")
 dofile("libs/string_extension.lua")
 dofile("libs/table_extension.lua")
 dofile("libs/misc_helpers.lua")
