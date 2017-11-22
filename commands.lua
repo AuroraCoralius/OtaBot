@@ -121,7 +121,6 @@ local function call(callback, msg, args, line)
 		end)()
 	end, msg, args, line)
 end
-print("this ran")
 client:on("messageCreate", function(msg)
 	local text = msg.content
 	local prefix = text:match(cmdPrefix)
