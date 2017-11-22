@@ -3,35 +3,41 @@
 _G.require = require
 setfenv(1, _G)
 
--- config
-config = require("./config.lua")
+-- loading
 
--- libs and helpers
+-- helpers
 require("./libs/math_extension.lua")
 require("./libs/string_extension.lua")
 require("./libs/table_extension.lua")
 require("./libs/misc_helpers.lua")
-require("./libs/xml.lua")
+os.linux = package.config:sub(1, 1) == "/"
 
--- luvit stuff and magick
-local _, magick = pcall(require, "magick")
-_G.magick = magick
-xml = xml.newParser()
-base64 = require("base64")
-urlencode = require("querystring").stringify
-print = require("pretty-print").prettyPrint
-https = require("https")
-http = require("http")
-json = require("json")
-timer = require("timer")
+print = require("pretty-print").prettyPrint -- better print
+
+timer = require("timer") -- js like timers
 fs = require("fs")
 
--- discord stuff
+http = require("http")
+https = require("https")
+urlencode = require("querystring").stringify
+
+json = require("json")
+xml = require("./libs/xml.lua").newParser()
+base64 = require("base64")
+
+local _, magick = pcall(require, "magick")
+_G.magick = magick
+
+-- discordia stuff
 discordia = require("discordia")
 enums = discordia.enums
 Color = discordia.Color
-client = discordia.Client()
 
+-- prepare bot
+
+config = require("./config.lua")
+
+client = discordia.Client()
 bot = {
 	start = os.time(),
 	client = client
@@ -40,9 +46,10 @@ bot = {
 -- commands
 require("./commands.lua")
 
+
 client:on("ready", function()
 	print("Logged in as ".. client.user.username)
-	client:setGame({ name = "you 👀", type = 3 })
+	client:setGame({ name = "you 👀", type = 3 }) -- Watching you :eyes:
 end)
 client:run("Bot " .. config.token)
 
