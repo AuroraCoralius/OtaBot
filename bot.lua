@@ -6,9 +6,6 @@ setfenv(1, _G)
 
 -- loading
 
-_print(debug.getinfo(require))
-_print(debug.getinfo(_G.require))
-
 -- helpers
 require("./libs/math_extension.lua")
 require("./libs/string_extension.lua")
@@ -17,6 +14,9 @@ require("./libs/misc_helpers.lua")
 os.linux = package.config:sub(1, 1) == "/"
 
 _print = require("pretty-print").prettyPrint -- better print
+
+_print(debug.getinfo(require))
+_print(debug.getinfo(_G.require))
 
 timer = require("timer") -- js like timers
 fs = require("fs")
