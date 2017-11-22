@@ -2,31 +2,41 @@
 local commands = bot.commands
 local errorMsg = bot.errorMsg
 
+local function doEval(msg, func)
+	local _msg = {}
+	local ret = { pcall(func) }
+	local ok = ret[1]
+	table.remove(ret, 1)
+	if not ok then
+		errorMsg(msg.channel, ret, "Lua Error:")
+		return
+	end
+	if ret[1] then
+		_msg.embed = {
+			title = "Result:",
+			description = "```lua\n" .. table.concat(ret, "\t") .. "\n```",
+			color = 0x9B65BD
+		}
+	else
+		_msg.content = ":white_check_mark:"
+	end
+	msg.channel:send(_msg)
+end
 commands.eval = {
 	callback = function(msg, args, line)
 		if config.owners[msg.author.id] then
 			_G.self = client
 			_G.msg = msg
-			local func, err = loadstring(line)
+			local func, err = loadstring("return " .. line)
 			if type(func) == "function" then
-				local _msg = {}
-				local ok, ret = pcall(func)
-				if not ok then
-					errorMsg(msg.channel, ret, "Lua Error:")
-					return
-				end
-				if ret then
-					_msg.embed = {
-						title = "Result:",
-						description = "```lua\n" .. tostring(ret) .. "\n```",
-						color = 0x9B65BD
-					}
-				else
-					_msg.content = ":white_check_mark:"
-				end
-				msg.channel:send(_msg)
+				doEval(msg, func)
 			else
-				errorMsg(msg.channel, err, "Lua Error:")
+				local func, err = loadstring(line)
+				if type(func) == "function" then
+					doEval(msg, func)
+				else
+					errorMsg(msg.channel, err, "Lua Error:")
+				end
 			end
 		else
 			errorMsg(msg.channel, "No access!")
