@@ -1,8 +1,8 @@
 
 -- some fuckery
 _G.require = require
-__G = {table.unpack(_G)}
 setfenv(1, _G)
+__G = {table.unpack(_G)}
 
 -- loading
 
