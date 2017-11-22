@@ -6,10 +6,10 @@ setfenv(1, _G)
 -- loading
 
 -- helpers
-require("./libs/math_extension.lua")
-require("./libs/string_extension.lua")
-require("./libs/table_extension.lua")
-require("./libs/misc_helpers.lua")
+dofile("libs/math_extension.lua")
+dofile("libs/string_extension.lua")
+dofile("libs/table_extension.lua")
+dofile("libs/misc_helpers.lua")
 os.linux = package.config:sub(1, 1) == "/"
 
 _print = require("pretty-print").prettyPrint -- better print
@@ -45,7 +45,7 @@ bot = {
 }
 
 -- commands
-require("./commands.lua")
+dofile("commands.lua")
 
 client:on("ready", function()
 	print("Logged in as ".. client.user.username)
