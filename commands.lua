@@ -1,4 +1,6 @@
 
+print("??????", client)
+
 -- argument parsing
 local cmdPrefix = "^[%.!/%$]"
 local cmdArgGrouper = "[\"']"
