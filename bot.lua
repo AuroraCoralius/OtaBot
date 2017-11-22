@@ -2,7 +2,6 @@
 -- some fuckery
 _G.require = require
 setfenv(1, _G)
-__G = {table.unpack(_G)}
 
 -- loading
 
@@ -47,7 +46,6 @@ bot = {
 
 -- commands
 require("./commands.lua")
-print(hex2num)
 
 client:on("ready", function()
 	print("Logged in as ".. client.user.username)

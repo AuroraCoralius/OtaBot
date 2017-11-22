@@ -56,7 +56,6 @@ commands.update = {
 			msg.channel:send(out .. "\nRestarting...")
 			client:stop()
 			client = nil
-			_G = {table.unpack(__G)}
 			dofile("bot.lua") -- this is hacks
 			-- process:exit()
 		else
