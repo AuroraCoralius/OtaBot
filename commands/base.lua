@@ -56,10 +56,7 @@ commands.update = {
 			msg.channel:send(out .. "\nRestarting...")
 			client:stop()
 			client = nil
-			local setfenv = _G.setfenv
-			local __G = {table.unpack(_G.__G)}
-			_G = nil
-			setfenv(1, __G)
+			_G = __G
 			dofile("bot.lua") -- this is hacks
 			-- process:exit()
 		else
