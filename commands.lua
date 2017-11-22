@@ -88,7 +88,7 @@ end
 bot.commands = {}
 function bot.getCommands()
 	local tbl = {}
-	for cmd, cmdData in next, commands do
+	for cmd, cmdData in next, bot.commands do
 		if type(cmd) == "table" then
 			for _, name in next, cmd do
 				cmdData.aliases = cmd
