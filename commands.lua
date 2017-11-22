@@ -88,7 +88,7 @@ end
 bot.commands = {}
 function bot.getCommands()
 	local tbl = {}
-	for cmd, cmdData in next, commands do
+	for cmd, cmdData in next, bot.commands do
 		if type(cmd) == "table" then
 			for _, name in next, cmd do
 				cmdData.aliases = cmd
@@ -113,10 +113,6 @@ end
 
 -- command handling
 local function call(callback, msg, args, line)
-	do -- need to test something
-		callback(msg, args, line)
-		return
-	end
 	local ok, err = xpcall(callback, function(err)
 		local traceback = debug.traceback()
 		print(err)
