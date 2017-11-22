@@ -6,6 +6,9 @@ setfenv(1, _G)
 
 -- loading
 
+_print(debug.getinfo(require))
+_print(debug.getinfo(_G.require))
+
 -- helpers
 require("./libs/math_extension.lua")
 require("./libs/string_extension.lua")
