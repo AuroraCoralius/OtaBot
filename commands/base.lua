@@ -41,13 +41,26 @@ commands.eval = {
 					errorMsg(msg.channel, err, "Lua Error:")
 				end
 			end
+			_G.self = nil
+			_G.msg = nil
 		else
 			errorMsg(msg.channel, "No access!")
 		end
-		_G.self = nil
-		_G.msg = nil
 	end,
 	help = "Runs Lua. [owner only]"
+}
+commands.update = {
+	callback = function(msg)
+		if config.owners[msg.author.id] then
+			local out = io.popen("git pull"):read()
+			msg.channel:send(out)
+			os.execute("luvit bot.lua")
+			os.exit()
+		else
+			errorMsg(msg.channel, "No access!")
+		end
+	end,
+	help = "Updates the bot from its git repository and restarts it."
 }
 commands.help = {
 	callback = function(msg, args, line)
