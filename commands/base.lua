@@ -54,12 +54,7 @@ commands.update = {
 		if config.owners[msg.author.id] then
 			local out = io.popen("git pull"):read("*all")
 			msg.channel:send(out .. "\nRestarting...")
-			client:stop()
-			_G = __G
-			coroutine.wrap(function()
-				dofile("bot.lua") -- ultimate hacks
-			end)()
-			-- process:exit()
+			process:exit() -- handled by shell script, I can't figure out any better way of doing this
 		else
 			errorMsg(msg.channel, "No access!")
 		end
