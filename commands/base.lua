@@ -58,7 +58,7 @@ commands.update = {
 			_G = __G
 			coroutine.wrap(function()
 				dofile("bot.lua") -- ultimate hacks
-			end)
+			end)()
 			-- process:exit()
 		else
 			errorMsg(msg.channel, "No access!")
