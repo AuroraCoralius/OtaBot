@@ -39,7 +39,6 @@ Color = discordia.Color
 -- prepare bot
 
 config = require("./config.lua")
-print(config)
 
 client = discordia.Client()
 bot = {
@@ -48,8 +47,8 @@ bot = {
 }
 
 -- commands
-require("./commands.lua")
-_print(bot)
+local a = { require("./commands.lua") }
+_print(a)
 
 client:on("ready", function()
 	print("Logged in as ".. client.user.username)
