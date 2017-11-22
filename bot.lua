@@ -1,6 +1,6 @@
 
 -- some fuckery
-__G = _G
+__G = {table.unpack(_G)}
 _G.require = require
 setfenv(1, _G)
 
