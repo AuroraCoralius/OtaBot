@@ -37,7 +37,6 @@ enums = discordia.enums
 Color = discordia.Color
 
 -- prepare bot
-
 config = require("./config.lua")
 
 client = discordia.Client()
@@ -47,8 +46,8 @@ bot = {
 }
 
 -- commands
-local a = { require("./commands.lua") }
-_print(a)
+require("./commands.lua")
+print(hex2num)
 
 client:on("ready", function()
 	print("Logged in as ".. client.user.username)
