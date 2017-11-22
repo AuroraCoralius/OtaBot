@@ -1,7 +1,10 @@
 
 -- some fuckery
-_G.require = require
-setfenv(1, _G)
+if not env_set then
+	_G.require = require
+	setfenv(1, _G)
+end
+env_set = true
 
 -- loading
 
