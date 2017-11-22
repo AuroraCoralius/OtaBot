@@ -54,8 +54,12 @@ commands.update = {
 		if config.owners[msg.author.id] then
 			local out = io.popen("git pull"):read("*all")
 			msg.channel:send(out .. "\nRestarting...")
-			childprocess.exec("luvit bot.lua")
-			process:exit()
+			client:stop()
+			if __G then
+				_G = __G
+			end
+			dofile("bot.lua") -- this is hacks
+			-- process:exit()
 		else
 			errorMsg(msg.channel, "No access!")
 		end

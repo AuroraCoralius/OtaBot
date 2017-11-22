@@ -1,5 +1,6 @@
 
 -- some fuckery
+__G = _G
 _G.require = require
 setfenv(1, _G)
 
