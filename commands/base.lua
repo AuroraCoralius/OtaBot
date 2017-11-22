@@ -57,7 +57,7 @@ commands.update = {
 			client:stop()
 			client = nil
 			_G = __G
-			require("./../bot.lua") -- this is hacks
+			dofile("bot.lua") -- this is hacks
 			-- process:exit()
 		else
 			errorMsg(msg.channel, "No access!")
