@@ -55,9 +55,10 @@ commands.update = {
 			local out = io.popen("git pull"):read("*all")
 			msg.channel:send(out .. "\nRestarting...")
 			client:stop()
-			if __G then
-				_G = __G
-			end
+			client = nil
+			local setfenv = _G.setfenv
+			_G = nil
+			setfenv(1, __G)
 			dofile("bot.lua") -- this is hacks
 			-- process:exit()
 		else
