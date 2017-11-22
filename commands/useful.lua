@@ -8,7 +8,8 @@ local emojis = {
 	stop = '\226\143\185'
 }
 local animeChoice = 1
-local page = {}
+local pages = {}
+local timeout = 60
 local function animeToEmbed(data, choice)
 	local _msg = {}
 
@@ -124,12 +125,12 @@ commands[{"anime", "mal"}] = {
 							newMsg:addReaction(emojis.backArrow)
 							newMsg:addReaction(emojis.forwardArrow)
 							newMsg:addReaction(emojis.stop)
-							page = {
+							pages[newMsg.id] = {
 								author  = msg.author,
 								data    = data,
 								animes  = data.anime:numChildren(),
 								message = newMsg,
-								endTime = os.time() + 60
+								endTime = os.time() + timeout
 							}
 						end
 					end)()
@@ -152,8 +153,9 @@ commands[{"anime", "mal"}] = {
 }
 local function onReaction(reaction, userId)
 	if userId == client.user.id then return end
+	local page = pages[reaction.message.id]
 	if page and page.endTime > os.time() then
-		if reaction.message.id ~= page.message.id then return end
+		-- if reaction.message.id ~= page.message.id then return end
 		if userId ~= page.author.id then return end
 
 		local emoji = reaction.emojiName
@@ -165,13 +167,25 @@ local function onReaction(reaction, userId)
 
 			local _msg = animeToEmbed(page.data, animeChoice)
 			page.message:setEmbed(_msg.embed)
-			page.endTime = os.time() + 10
+			page.endTime = os.time() + timeout
 		elseif emoji == emojis.stop then
 			page.message:clearReactions()
 			page.endTime = 0
+			pages[reaction.message.id] = nil
 		end
 	end
 end
+timer.setInterval(1000, function()
+	for k, v in next, pages do
+		if v.endTime < os.time() then
+			coroutine.wrap(function()
+				v.message:setContent("(:alarm_clock:)")
+				v.message:clearReactions()
+			end)()
+			pages[k] = nil
+		end
+	end
+end)
 client:on("reactionAdd", onReaction)
 client:on("reactionRemove", onReaction)
 
