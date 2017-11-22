@@ -52,10 +52,10 @@ commands.eval = {
 commands.update = {
 	callback = function(msg)
 		if config.owners[msg.author.id] then
-			local out = io.popen("git pull"):read()
-			msg.channel:send(out)
-			os.execute("luvit bot.lua")
-			os.exit()
+			local out = io.popen("git pull"):read("*all")
+			msg.channel:send(out .. "\nRestarting...")
+			childprocess.exec("luvit bot.lua")
+			process.exit()
 		else
 			errorMsg(msg.channel, "No access!")
 		end
