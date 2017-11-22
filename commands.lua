@@ -1,6 +1,4 @@
 
-print("??????", client)
-
 -- argument parsing
 local cmdPrefix = "^[%.!/%$]"
 local cmdArgGrouper = "[\"']"
@@ -108,8 +106,9 @@ end
 
 -- load commands
 for file, _type in fs.scandirSync("./commands") do
-	if _type == "directory" then return end
-	require("./commands/" .. file)
+	if _type ~= "directory" then
+		require("./commands/" .. file)
+	end
 end
 
 -- command handling
@@ -123,7 +122,9 @@ local function call(callback, msg, args, line)
 		end)()
 	end, msg, args, line)
 end
+print("WHAT THE FUCK2")
 client:on("messageCreate", function(msg)
+	print("WHAT THE FUCK")
 	local text = msg.content
 	local prefix = text:match(cmdPrefix)
 	if prefix then
