@@ -55,7 +55,10 @@ commands.update = {
 			local out = io.popen("git pull"):read("*all")
 			msg.channel:send(out .. "\nRestarting...")
 			client:stop()
-			dofile("bot.lua") -- this is hacks
+			_G = __G
+			coroutine.wrap(function()
+				dofile("bot.lua") -- ultimate hacks
+			end)
 			-- process:exit()
 		else
 			errorMsg(msg.channel, "No access!")

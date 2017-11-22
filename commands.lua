@@ -122,9 +122,7 @@ local function call(callback, msg, args, line)
 		end)()
 	end, msg, args, line)
 end
-print("WHAT THE FUCK2")
 client:on("messageCreate", function(msg)
-	print("WHAT THE FUCK")
 	local text = msg.content
 	local prefix = text:match(cmdPrefix)
 	if prefix then

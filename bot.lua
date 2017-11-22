@@ -1,18 +1,16 @@
 
 -- some fuckery
-if not env_set then
-	_G.require = require
-	setfenv(1, _G)
-end
-env_set = true
+_G.require = require
+setfenv(1, _G)
+__G = {table.unpack(_G)}
 
 -- loading
 
 -- helpers
-dofile("libs/math_extension.lua")
-dofile("libs/string_extension.lua")
-dofile("libs/table_extension.lua")
-dofile("libs/misc_helpers.lua")
+require("./libs/math_extension.lua")
+require("./libs/string_extension.lua")
+require("./libs/table_extension.lua")
+require("./libs/misc_helpers.lua")
 os.linux = package.config:sub(1, 1) == "/"
 
 _print = require("pretty-print").prettyPrint -- better print
@@ -48,7 +46,7 @@ bot = {
 }
 
 -- commands
-dofile("commands.lua")
+require("./commands.lua")
 
 client:on("ready", function()
 	print("Logged in as ".. client.user.username)
