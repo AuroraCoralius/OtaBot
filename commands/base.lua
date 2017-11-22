@@ -12,6 +12,9 @@ local function doEval(msg, func)
 		return
 	end
 	if ret[1] then
+		for k, v in next, ret do
+			ret[k] = tostring(v)
+		end
 		_msg.embed = {
 			title = "Result:",
 			description = "```lua\n" .. table.concat(ret, "\t") .. "\n```",
