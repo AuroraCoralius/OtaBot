@@ -55,7 +55,7 @@ commands.update = {
 			local out = io.popen("git pull"):read("*all")
 			msg.channel:send(out .. "\nRestarting...")
 			childprocess.exec("luvit bot.lua")
-			process.exit()
+			process:exit()
 		else
 			errorMsg(msg.channel, "No access!")
 		end
