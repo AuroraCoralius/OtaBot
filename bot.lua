@@ -25,6 +25,9 @@ json = require("json")
 xml = require("./libs/xml.lua").newParser()
 base64 = require("base64")
 
+childprocess = require("childprocess")
+process = require("process")
+
 local _, magick = pcall(require, "magick")
 _G.magick = magick
 
