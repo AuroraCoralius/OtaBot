@@ -12,7 +12,7 @@ require("./libs/table_extension.lua")
 require("./libs/misc_helpers.lua")
 os.linux = package.config:sub(1, 1) == "/"
 
-print = require("pretty-print").prettyPrint -- better print
+_print = require("pretty-print").prettyPrint -- better print
 
 timer = require("timer") -- js like timers
 fs = require("fs")

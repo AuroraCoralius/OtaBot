@@ -76,6 +76,7 @@ function bot.errorMsg(channel, msg, title, footer)
 			color = 0xFF4040
 		}
 	}
+	_print(_msg)
 	if footerText then
 		_msg.embed.footer = {
 			icon_url = client.user.avatarURL,
@@ -88,7 +89,7 @@ end
 bot.commands = {}
 function bot.getCommands()
 	local tbl = {}
-	for cmd, cmdData in next, bot.commands do
+	for cmd, cmdData in next, commands do
 		if type(cmd) == "table" then
 			for _, name in next, cmd do
 				cmdData.aliases = cmd
@@ -117,6 +118,7 @@ local function call(callback, msg, args, line)
 		print(err)
 		print(traceback)
 		coroutine.wrap(function()
+			print("happened")
 			errorMsg(msg.channel, { name = err, value = traceback }, "Command Error:")
 		end)()
 	end, msg, args, line)
