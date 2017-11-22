@@ -76,7 +76,6 @@ function bot.errorMsg(channel, msg, title, footer)
 			color = 0xFF4040
 		}
 	}
-	_print(_msg)
 	if footerText then
 		_msg.embed.footer = {
 			icon_url = client.user.avatarURL,
@@ -118,8 +117,7 @@ local function call(callback, msg, args, line)
 		print(err)
 		print(traceback)
 		coroutine.wrap(function()
-			print("happened")
-			errorMsg(msg.channel, { name = err, value = traceback }, "Command Error:")
+			bot.errorMsg(msg.channel, { name = err, value = traceback }, "Command Error:")
 		end)()
 	end, msg, args, line)
 end
