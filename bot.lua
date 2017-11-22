@@ -15,9 +15,6 @@ os.linux = package.config:sub(1, 1) == "/"
 
 _print = require("pretty-print").prettyPrint -- better print
 
-_print(debug.getinfo(require))
-_print(debug.getinfo(_G.require))
-
 timer = require("timer") -- js like timers
 fs = require("fs")
 
@@ -42,6 +39,7 @@ Color = discordia.Color
 -- prepare bot
 
 config = require("./config.lua")
+print(config)
 
 client = discordia.Client()
 bot = {
@@ -51,6 +49,7 @@ bot = {
 
 -- commands
 require("./commands.lua")
+_print(bot)
 
 client:on("ready", function()
 	print("Logged in as ".. client.user.username)
