@@ -113,6 +113,10 @@ end
 
 -- command handling
 local function call(callback, msg, args, line)
+	do -- need to test something
+		callback(msg, args, line)
+		return
+	end
 	local ok, err = xpcall(callback, function(err)
 		local traceback = debug.traceback()
 		print(err)
