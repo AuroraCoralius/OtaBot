@@ -4,6 +4,8 @@ __G = {table.unpack(_G)}
 _G.require = require
 setfenv(1, _G)
 
+print(require)
+
 -- loading
 
 -- helpers
@@ -48,7 +50,6 @@ bot = {
 
 -- commands
 require("./commands.lua")
-
 
 client:on("ready", function()
 	print("Logged in as ".. client.user.username)
