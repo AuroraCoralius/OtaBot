@@ -49,15 +49,24 @@ commands.eval = {
 	end,
 	help = "Runs Lua. [owner only]"
 }
+local function restart(msg, doUpdate)
+	if config.owners[msg.author.id] then
+		local out = doUpdate and io.popen("git pull"):read("*all") or nil
+		msg.channel:send((out and out .. "\n" or "") .. "Restarting...")
+		process:exit() -- restart handled by shell script, I can't figure out any better way of doing this
+	else
+		errorMsg(msg.channel, "No access!")
+	end
+end
+commands.restart = {
+	callback = function(msg)
+		restart(msg, false)
+	end,
+	help = "Restarts the bot."
+}
 commands.update = {
 	callback = function(msg)
-		if config.owners[msg.author.id] then
-			local out = io.popen("git pull"):read("*all")
-			msg.channel:send(out .. "\nRestarting...")
-			process:exit() -- handled by shell script, I can't figure out any better way of doing this
-		else
-			errorMsg(msg.channel, "No access!")
-		end
+		restart(msg, true)
 	end,
 	help = "Updates the bot from its git repository and restarts it."
 }
