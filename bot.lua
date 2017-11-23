@@ -42,7 +42,12 @@ config = require("./config.lua")
 client = discordia.Client()
 bot = {
 	start = os.time(),
-	client = client
+	client = client,
+	notifyOwners = function(content)
+		for id, _ in next, config.owners do
+			client:getUser(id):send(content)
+		end
+	end
 }
 
 -- commands
@@ -53,9 +58,7 @@ client:on("ready", function()
 	client:setGame({ name = "you 👀", type = 3 }) -- Watching you :eyes:
 	local exit_code = fs.readFileSync("exit_code")
 	if exit_code and exit_code ~= "0" then
-		for id, _ in next, config.owners do
-			client:getUser(id):send(":warning: Bot didn't exit cleanly, code: `" .. exit_code .. "`")
-		end
+		bot.notifyOwners(":warning: Bot didn't exit cleanly, code: `" .. exit_code .. "`")
 	end
 end)
 client:run("Bot " .. config.token)
