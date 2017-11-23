@@ -13,7 +13,7 @@ require("./libs/table_extension.lua")
 require("./libs/misc_helpers.lua")
 os.linux = package.config:sub(1, 1) == "/"
 
-_print = require("pretty-print").prettyPrint -- better print
+pprint = require("pretty-print").prettyPrint -- better print
 
 timer = require("timer") -- js like timers
 fs = require("fs")
@@ -54,7 +54,6 @@ bot = {
 require("./commands.lua")
 
 client:on("ready", function()
-	print("Logged in as ".. client.user.username)
 	client:setGame({ name = "you 👀", type = 3 }) -- Watching you :eyes:
 	local exit_code = fs.readFileSync("exit_code")
 	if exit_code and exit_code ~= "0" then
