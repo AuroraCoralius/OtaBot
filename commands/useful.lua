@@ -37,7 +37,7 @@ local function animeToEmbed(data, choice)
 		synopsis = synopsis:gsub("<br%s?/>", "")
 		synopsis = xml:FromXmlString(synopsis)
 		synopsis = synopsis:gsub("&mdash;", "—")
-		synopsis = synopsis:gsub("%[%w%](%w*)%[/%w%]", "%1") -- remove bbcode
+		synopsis = synopsis:gsub("%[%w%]([%w%s]*)%[/%w%]", "%1") -- remove bbcode
 		if #synopsis > 512 then
 			synopsis = synopsis:sub(1, 512)
 			synopsis = synopsis .. "[...]"
