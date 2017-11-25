@@ -116,16 +116,19 @@ commands.help = {
 				}
 			}
 			if type(help) == "table" then
-				_msg.embed.fields = {
-					help.usage and {
+				_msg.embed.fields = {}
+				if help.usage then
+					table.insert(_msg.embed.fields, {
 						name = "Usage",
 						value = help.usage
-					} or nil,
-					help.example and {
+					})
+				end
+				if help.example then
+					table.insert(_msg.embed.fields, {
 						name = "Example",
 						value = help.example
-					} or nil
-				}
+					})
+				end
 			end
 		end
 
