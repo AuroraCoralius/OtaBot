@@ -106,7 +106,7 @@ commands.help = {
 		elseif cmdData then
 			_msg = {
 				embed = {
-					title = "Help: " .. cmdData.aliases and table.concat(cmdData.aliases, ", ") or cmd,
+					title = "Help: " .. (cmdData.aliases and table.concat(cmdData.aliases, ", ") or cmd),
 					description = cmdData.help,
 					color = 0x9B65BD,
 				}
