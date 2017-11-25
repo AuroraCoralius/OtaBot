@@ -8,7 +8,7 @@ local function doEval(msg, func)
 	local ok = ret[1]
 	table.remove(ret, 1)
 	if not ok then
-		errorMsg(msg.channel, tostring(ret[1]), "Lua Error:")
+		errorMsg(msg.channel, bot.errorToGithub(tostring(ret[1])), "Lua Error:")
 		return
 	end
 	if ret[1] then
@@ -47,7 +47,7 @@ commands[{"eval", "l"}] = { -- l command will be used for sandboxed Lua sometime
 			if type(func) == "function" then
 				doEval(msg, func)
 			else
-				errorMsg(msg.channel, tostring(err), "Lua Error:")
+				errorMsg(msg.channel, bot.errorToGithub(tostring(err)), "Lua Error:")
 			end
 		end
 		_G.self = nil
@@ -80,6 +80,10 @@ commands.update = {
 	help = "Updates the bot from its git repository and restarts it. Owner only.",
 	ownerOnly = true
 }
+local function commandsSort(a, b)
+	if istable(a) or istable(b) then return true end
+	return a > b
+end
 commands.help = {
 	callback = function(msg, args, line)
 		local cmd = args[1]
@@ -105,11 +109,11 @@ commands.help = {
 			}
 			local i = 0
 			local count = table.count(commands)
-			for cmd, cmdData in sortedPairs(commands) do
+			for cmd, cmdData in sortedPairs(commands, commandsSort) do
 				if not cmdData.ownerOnly or cmdData.ownerOnly and config.owners[msg.author.id] then
 					i = i + 1
 					local desc = _msg.embed.fields[1].value
-					local name = type(cmd) == "table" and ("{" .. table.concat(cmd, ", ") .. "}") or cmd
+					local name = istable(cmd) and ("{" .. table.concat(cmd, ", ") .. "}") or cmd
 					desc = desc .. name .. (i == count and "" or ", ")
 					_msg.embed.fields[1].value = desc
 				else
@@ -125,10 +129,10 @@ commands.help = {
 			_msg = {
 				embed = {
 					title = "Help: " .. (cmdData.aliases and table.concat(cmdData.aliases, ", ") or cmd),
-					description = type(help) == "table" and help.text or help,
+					description = istable(help) and help.text or help,
 				}
 			}
-			if type(help) == "table" then
+			if istable(help) then
 				_msg.embed.fields = {}
 				if help.usage then
 					table.insert(_msg.embed.fields, {

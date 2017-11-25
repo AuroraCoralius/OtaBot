@@ -72,7 +72,7 @@ function bot.errorMsg(channel, msg, title, footer)
 		embed = {
 			title = title,
 			description = type(msg) == "string" and msg or nil,
-			fields = type(msg) == "table" and { msg } or nil,
+			fields = istable(msg) and { msg } or nil,
 			color = 0xFF4040
 		}
 	}
@@ -89,7 +89,7 @@ bot.commands = {}
 function bot.getCommands()
 	local tbl = {}
 	for cmd, cmdData in next, bot.commands do
-		if type(cmd) == "table" then
+		if istable(cmd) then
 			for _, name in next, cmd do
 				cmdData.aliases = cmd
 				tbl[name] = cmdData
@@ -118,7 +118,7 @@ local function call(callback, msg, args, line)
 		print(err)
 		print(traceback)
 		coroutine.wrap(function()
-			bot.errorMsg(msg.channel, { name = err, value = traceback }, "Command Error:")
+			bot.errorMsg(msg.channel, { name = err, value = bot.errorToGithub(traceback) }, "Command Error:")
 		end)()
 	end, msg, args, line)
 end
@@ -132,7 +132,7 @@ client:on("messageCreate", function(msg)
 		args = parseArgs(line)
 
 		for cmdName, cmdData in next, bot.commands do
-			if type(cmdName) == "table" then
+			if istable(cmdName) then
 				for _, cmdName in next, cmdName do
 					if cmdName:lower() == cmd:lower() then
 						msg.channel:broadcastTyping()

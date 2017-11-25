@@ -40,6 +40,7 @@ Color = discordia.Color
 config = require("./config.lua")
 
 client = discordia.Client()
+local github = "https://github.com/Re-Dream/dreambot_mk2/tree/master"
 bot = {
 	start = os.time(),
 	client = client,
@@ -47,6 +48,12 @@ bot = {
 		for id, _ in next, config.owners do
 			client:getUser(id):send(content)
 		end
+	end,
+	errorToGithub = function(str)
+		local cwd = process.cwd()
+		local url = "https"
+		str = str:gsub(cwd .. "/(.-):(%d+):?", "[%1:%2:](" .. github .. "/" .. "%1)")
+		return str
 	end
 }
 

@@ -32,3 +32,7 @@ function _G.sortedPairs(tbl, sortFn)
 	return iter
 end
 
+function _G.istable(val)
+	return type(val) == "table"
+end
+
