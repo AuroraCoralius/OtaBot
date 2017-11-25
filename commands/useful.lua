@@ -150,7 +150,7 @@ commands[{"anime", "mal"}] = {
 		end)
 	end,
 	help = {
-		text = "Provides condensed information about an anime. *Makes uses of reactions to create a page system that the caller can use to browse through multiple results!*",
+		text = "Provides condensed information about an anime.\n*Makes uses of reactions to create a page system that the caller can use to browse through multiple results!*",
 		usage = "`$anime <anime name>`",
 		example = "`$anime Charlotte`"
 	}

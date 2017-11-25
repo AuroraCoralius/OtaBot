@@ -75,19 +75,19 @@ commands.update = {
 }
 commands.help = {
 	callback = function(msg, args, line)
-		local _msg = {}
 		local cmd = args[1]
 		local cmdData
 		if cmd then
 			cmd = cmd:lower()
 			cmdData = bot.getCommand(cmd)
 		end
+
+		local _msg = {}
 		if not cmd then
 			_msg = {
 				embed = {
 					title = "Help",
 					description = "Supply a command name to get specific information.",
-					color = 0x9B65BD,
 					fields = {
 						{
 							name = "Available commands:",
@@ -112,7 +112,6 @@ commands.help = {
 				embed = {
 					title = "Help: " .. (cmdData.aliases and table.concat(cmdData.aliases, ", ") or cmd),
 					description = type(help) == "table" and help.text or help,
-					color = 0x9B65BD,
 				}
 			}
 			if type(help) == "table" then
@@ -131,6 +130,7 @@ commands.help = {
 				end
 			end
 		end
+		_msg.color = 0x50ACFF
 
 		msg.channel:send(_msg)
 	end,
