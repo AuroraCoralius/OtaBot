@@ -16,3 +16,19 @@ function _G.hex2num(hex)
 	end
 end
 
+function _G.sortedPairs(tbl, sortFn)
+	local keys = {}
+	for k, _ in next, tbl do
+		table.insert(keys, k)
+	end
+	table.sort(keys, sortFn)
+	local i = 0
+	local iter = function()
+		i = i + 1
+		if keys[i] ~= nil then
+			return keys[i], tbl[keys[i]]
+		end
+	end
+	return iter
+end
+

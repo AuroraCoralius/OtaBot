@@ -60,5 +60,8 @@ client:on("ready", function()
 		bot.notifyOwners(":warning: Bot didn't exit cleanly, code: `" .. exit_code .. "`")
 	end
 end)
+
+require("./events.lua")
+
 client:run("Bot " .. config.token)
 
