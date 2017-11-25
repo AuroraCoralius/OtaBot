@@ -33,9 +33,9 @@ commands[{"eval", "l"}] = { -- l command will be used for sandboxed Lua sometime
 			_G.msg = msg
 			_G.print = function(...)
 				local args = {...}
-				local str = #args > 1 and "`%s`" or "%s"
+				local str = #args > 1 and "```%s```" or "%s"
 				for k, v in next, args do
-					args[k] = tostring(v)
+					args[k] = tostring(v):gsub("`", "\\`")
 				end
 				str = str:format(table.concat(args, "\t"))
 				msg.channel:send(str)
@@ -67,6 +67,7 @@ local function restart(msg, doUpdate)
 	if config.owners[msg.author.id] then
 		local out = doUpdate and io.popen("git pull"):read("*all") or nil
 		msg.channel:send("```" .. (out and out .. "\n" or "") .. "Restarting..." .. "```")
+		fs.writeFileSync("restart")
 		process:exit() -- restart handled by shell script, I can't figure out any better way of doing this
 	else
 		errorMsg(msg.channel, "No access!")
