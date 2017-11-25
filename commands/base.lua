@@ -120,7 +120,9 @@ commands.help = {
 					local name = cmdData.aliases and "{" .. table.concat(cmdData.aliases, ", ") .. "}" or cmd
 					desc = desc .. name .. (i == count and "" or ", ")
 					_msg.embed.fields[1].value = desc
-					printed[cmdData.aliases] = true
+					if cmdData.aliases then
+						printed[cmdData.aliases] = true
+					end
 				else
 					count = count - 1
 				end
