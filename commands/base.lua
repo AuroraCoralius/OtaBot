@@ -28,62 +28,57 @@ end
 local print = print
 commands[{"eval", "l"}] = { -- l command will be used for sandboxed Lua sometime though
 	callback = function(msg, args, line)
-		if config.owners[msg.author.id] then
-			_G.self = client
-			_G.msg = msg
-			_G.print = function(...)
-				local args = {...}
-				local str = #args > 1 and "```%s```" or "%s"
-				for k, v in next, args do
-					args[k] = tostring(v):gsub("`", "\\`")
-				end
-				str = str:format(table.concat(args, "\t"))
-				msg.channel:send(str)
+		_G.self = client
+		_G.msg = msg
+		_G.print = function(...)
+			local args = {...}
+			local str = #args > 1 and "```%s```" or "%s"
+			for k, v in next, args do
+				args[k] = tostring(v):gsub("`", "\\`")
 			end
-			local func, err = loadstring("return " .. line)
+			str = str:format(table.concat(args, "\t"))
+			msg.channel:send(str)
+		end
+		local func, err = loadstring("return " .. line)
+		if type(func) == "function" then
+			doEval(msg, func)
+		else
+			local func, err = loadstring(line)
 			if type(func) == "function" then
 				doEval(msg, func)
 			else
-				local func, err = loadstring(line)
-				if type(func) == "function" then
-					doEval(msg, func)
-				else
-					errorMsg(msg.channel, tostring(err), "Lua Error:")
-				end
+				errorMsg(msg.channel, tostring(err), "Lua Error:")
 			end
-			_G.self = nil
-			_G.msg = nil
-			_G.print = print
-		else
-			errorMsg(msg.channel, "No access!")
 		end
+		_G.self = nil
+		_G.msg = nil
+		_G.print = print
 	end,
 	help = {
 		text = "Runs Lua in the bot's environment. Owner only.",
 		example = "`$eval function foo() return 1 end return foo()` will result into 1 being output by the bot."
-	}
+	},
+	ownerOnly = true
 }
 local function restart(msg, doUpdate)
-	if config.owners[msg.author.id] then
-		local out = doUpdate and io.popen("git pull"):read("*all") or nil
-		msg.channel:send("```" .. (out and out .. "\n" or "") .. "Restarting..." .. "```")
-		fs.writeFileSync("restart", "")
-		process:exit() -- restart handled by shell script, I can't figure out any better way of doing this
-	else
-		errorMsg(msg.channel, "No access!")
-	end
+	local out = doUpdate and io.popen("git pull"):read("*all") or nil
+	msg.channel:send("```" .. (out and out .. "\n" or "") .. "Restarting..." .. "```")
+	fs.writeFileSync("restart", "")
+	process:exit() -- restart handled by shell script, I can't figure out any better way of doing this
 end
 commands.restart = {
 	callback = function(msg)
 		restart(msg, false)
 	end,
-	help = "Restarts the bot. Owner only."
+	help = "Restarts the bot. Owner only.",
+	ownerOnly = true
 }
 commands.update = {
 	callback = function(msg)
 		restart(msg, true)
 	end,
-	help = "Updates the bot from its git repository and restarts it. Owner only."
+	help = "Updates the bot from its git repository and restarts it. Owner only.",
+	ownerOnly = true
 }
 commands.help = {
 	callback = function(msg, args, line)
@@ -111,11 +106,13 @@ commands.help = {
 			local i = 0
 			local count = table.count(commands)
 			for cmd, cmdData in next, commands do
-				i = i + 1
-				local desc = _msg.embed.fields[1].value
-				local name = type(cmd) == "table" and ("{" .. table.concat(cmd, ", ") .. "}") or cmd
-				desc = desc .. name .. (i == count and "" or ", ")
-				_msg.embed.fields[1].value = desc
+				if not cmdData.ownerOnly or cmdData.ownerOnly and config.owners[msg.author.id] then
+					i = i + 1
+					local desc = _msg.embed.fields[1].value
+					local name = type(cmd) == "table" and ("{" .. table.concat(cmd, ", ") .. "}") or cmd
+					desc = desc .. name .. (i == count and "" or ", ")
+					_msg.embed.fields[1].value = desc
+				end
 			end
 			_msg.embed.fields[1].value = _msg.embed.fields[1].value .. "`"
 		elseif cmdData then
