@@ -1,5 +1,5 @@
 
-event = {
+local event = {
 	listeners = {}
 }
 
@@ -37,4 +37,6 @@ for _, evtName in next, events do
 		event.emit(evtName, ...)
 	end)
 end
+
+return event
 

@@ -61,7 +61,7 @@ client:on("ready", function()
 	end
 end)
 
-require("./events.lua")
+event = require("./events.lua")
 
 client:run("Bot " .. config.token)
 

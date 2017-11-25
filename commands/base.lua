@@ -25,11 +25,21 @@ local function doEval(msg, func)
 	end
 	msg.channel:send(_msg)
 end
-commands.eval = {
+local print = print
+commands[{"eval", "l"}] = { -- l command will be used for sandboxed Lua sometime though
 	callback = function(msg, args, line)
 		if config.owners[msg.author.id] then
 			_G.self = client
 			_G.msg = msg
+			_G.print = function(...)
+				local args = {...}
+				local str = #args > 1 and "`%s`" or "%s"
+				for k, v in next, args do
+					args[k] = tostring(v)
+				end
+				str = str:format(table.concat(args, "\t"))
+				msg.channel:send(str)
+			end
 			local func, err = loadstring("return " .. line)
 			if type(func) == "function" then
 				doEval(msg, func)
@@ -43,12 +53,13 @@ commands.eval = {
 			end
 			_G.self = nil
 			_G.msg = nil
+			_G.print = print
 		else
 			errorMsg(msg.channel, "No access!")
 		end
 	end,
 	help = {
-		text = "Runs Lua. Owner only.",
+		text = "Runs Lua in the bot's environment. Owner only.",
 		example = "`$eval function foo() return 1 end return foo()` will result into 1 being output by the bot."
 	}
 }
