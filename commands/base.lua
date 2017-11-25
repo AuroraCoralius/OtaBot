@@ -47,7 +47,10 @@ commands.eval = {
 			errorMsg(msg.channel, "No access!")
 		end
 	end,
-	help = "Runs Lua. [owner only]"
+	help = {
+		text = "Runs Lua. Owner only.",
+		example = "`$eval function foo() return 1 end return foo()` will result into 1 being output by the bot."
+	}
 }
 local function restart(msg, doUpdate)
 	if config.owners[msg.author.id] then
@@ -62,13 +65,13 @@ commands.restart = {
 	callback = function(msg)
 		restart(msg, false)
 	end,
-	help = "Restarts the bot."
+	help = "Restarts the bot. Owner only."
 }
 commands.update = {
 	callback = function(msg)
 		restart(msg, true)
 	end,
-	help = "Updates the bot from its git repository and restarts it."
+	help = "Updates the bot from its git repository and restarts it. Owner only."
 }
 commands.help = {
 	callback = function(msg, args, line)
@@ -104,10 +107,21 @@ commands.help = {
 			end
 			_msg.embed.fields[1].value = _msg.embed.fields[1].value .. "`"
 		elseif cmdData then
+			local help = cmdData.help
 			_msg = {
 				embed = {
 					title = "Help: " .. (cmdData.aliases and table.concat(cmdData.aliases, ", ") or cmd),
-					description = cmdData.help,
+					description = type(help) == "table" and help.text or help,
+					fields = type(help) == "table" and {
+						{
+							name = "Usage",
+							value = help.usage
+						},
+						{
+							name = "Example",
+							value = help.example
+						} or nil
+					},
 					color = 0x9B65BD,
 				}
 			}
@@ -115,6 +129,10 @@ commands.help = {
 
 		msg.channel:send(_msg)
 	end,
-	help = "Displays this."
+	help = {
+		text = "Displays this.",
+		usage = "$help <command name>",
+		example = "$help help"
+	}
 }
 

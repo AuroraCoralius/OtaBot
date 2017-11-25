@@ -49,7 +49,11 @@ commands.seecolor = {
 			end)()
 		end
 	end,
-	help = "Preview a color! Accepts colors in Hex format (ex. #FF0000 = red)."
+	help = {
+		text = "Preview a color!",
+		usage = "`$seecolor <color in Hexadecimal format>`",
+		example = "`$seecolor #FF0000` or `$seecolor #FF0000` will show your name in red."
+	}
 }
 commands.color = {
 	callback = function(msg, args)
@@ -106,7 +110,12 @@ commands.color = {
 			errorMsg(msg.channel, "Bot doesn't have permission to change roles!")
 		end
 	end,
-	help = "Change your color! Accepts colors in Hex format (ex. #FF0000 = red)."
+
+	help = {
+		text = "Set your name color! Gives you a role with the supplied color.",
+		usage = "`$color <color in Hexadecimal format>`",
+		example = "`$color #FF0000` or `$color #FF0000` will set your name color to red."
+	}
 }
 commands.resetcolor = {
 	callback = function(msg)

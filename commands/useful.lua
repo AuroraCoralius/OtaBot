@@ -224,6 +224,9 @@ commands[{"translate", "tr", "тр"}] = {
 			end)
 		end)
 	end,
-	help = "Translate stuff."
+	help = {
+		text = "Translate stuff.",
+		example = '`$tr "I like apples",en-fr` will translate the sentence "I like apples" to French from English.'
+	}
 }
 
