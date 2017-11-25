@@ -3,38 +3,38 @@ local event = {
 	listeners = {}
 }
 
-function event.addListener(evtName, name, callback)
-	if not event.listeners[evtName] then event.listeners[evtName] = {} end
-	event.listeners[evtName][name] = callback
+function event.addListener(name, id, callback)
+	if not event.listeners[name] then event.listeners[name] = {} end
+	event.listeners[name][id] = callback
 end
-function event.removeListener(evtName, name, callback)
-	if not event[evtName] then return end
-	event.listeners[evtName][name] = nil
+function event.removeListener(name, id, callback)
+	if not event[name] then return end
+	event.listeners[name][id] = nil
 end
 
-function event.emit(evtName, ...)
-	if not event.listeners[evtName] then return end
-	for name, callback in sortedPairs(event.listeners[evtName]) do
+function event.emit(name, ...)
+	if not event.listeners[name] then return end
+	for id, callback in sortedPairs(event.listeners[name]) do
 		callback(...)
 	end
 end
 
 setmetatable(event, {
-	__call = function(self, evtName, name, callback, ...)
-		if not name then
-			return event.listeners[evtName]
+	__call = function(self, name, id, callback, ...)
+		if not id then
+			return event.listeners[name]
 		elseif not callback then
-			event.removeListener(evtName, name)
+			event.removeListener(name, id)
 		else
-			event.addListener(evtName, name, callback)
+			event.addListener(name, id, callback)
 		end
 	end
 })
 
 local events = require("./event_list.lua")
-for _, evtName in next, events do
-	client:on(evtName, function(...)
-		event.emit(evtName, ...)
+for _, name in next, events do
+	client:on(name, function(...)
+		event.emit(name, ...)
 	end)
 end
 
