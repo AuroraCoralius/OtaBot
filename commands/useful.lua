@@ -149,7 +149,11 @@ commands[{"anime", "mal"}] = {
 			end)()
 		end)
 	end,
-	help = "Provides condensed information about an anime."
+	help = {
+		text = "Provides condensed information about an anime. *Makes uses of reactions to create a page system that the caller can use to browse through multiple results!*",
+		usage = "$anime <anime name>",
+		example = "$anime Charlotte"
+	}
 }
 local function onReaction(reaction, userId)
 	if userId == client.user.id then return end

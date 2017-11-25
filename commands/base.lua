@@ -112,19 +112,21 @@ commands.help = {
 				embed = {
 					title = "Help: " .. (cmdData.aliases and table.concat(cmdData.aliases, ", ") or cmd),
 					description = type(help) == "table" and help.text or help,
-					fields = type(help) == "table" and {
-						{
-							name = "Usage",
-							value = help.usage
-						},
-						{
-							name = "Example",
-							value = help.example
-						} or nil
-					},
 					color = 0x9B65BD,
 				}
 			}
+			if type(help) == "table" then
+				_msg.embed.fields = {
+					help.usage and {
+						name = "Usage",
+						value = help.usage
+					} or nil,
+					help.example and {
+						name = "Example",
+						value = help.example
+					} or nil
+				}
+			end
 		end
 
 		msg.channel:send(_msg)
