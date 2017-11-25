@@ -52,7 +52,7 @@ bot = {
 	errorToGithub = function(str)
 		local cwd = process.cwd()
 		local url = "https"
-		str = str:gsub(cwd .. "/(.-):(%d+):?", "[%1:%2:](" .. github .. "/" .. "%1)")
+		str = str:gsub(cwd .. "/(.-):(%d+):?", "[%1:%2:](" .. github .. "/" .. "%1#L%2)")
 		return str
 	end
 }

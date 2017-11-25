@@ -80,10 +80,6 @@ commands.update = {
 	help = "Updates the bot from its git repository and restarts it. Owner only.",
 	ownerOnly = true
 }
-local function commandsSort(a, b)
-	if istable(a) or istable(b) then return true end
-	return a > b
-end
 commands.help = {
 	callback = function(msg, args, line)
 		local cmd = args[1]
@@ -107,13 +103,20 @@ commands.help = {
 					}
 				}
 			}
+
+			local cmdNames = {}
+			for cmd, _ in next, commands do
+				cmdNames[#cmdNames + 1] = istable(cmd) and ("{" .. table.concat(cmd, ", ") .. "}") or cmd
+			end
+			table.sort(cmdNames)
 			local i = 0
 			local count = table.count(commands)
-			for cmd, cmdData in sortedPairs(commands, commandsSort) do
+			for _, cmd in next, cmdNames do
+				local cmdData = bot.getCommand(cmd)
 				if not cmdData.ownerOnly or cmdData.ownerOnly and config.owners[msg.author.id] then
 					i = i + 1
 					local desc = _msg.embed.fields[1].value
-					local name = istable(cmd) and ("{" .. table.concat(cmd, ", ") .. "}") or cmd
+					local name = cmd
 					desc = desc .. name .. (i == count and "" or ", ")
 					_msg.embed.fields[1].value = desc
 				else
