@@ -130,7 +130,7 @@ commands.help = {
 				end
 			end
 		end
-		_msg.color = 0x50ACFF
+		_msg.embed.color = 0x50ACFF
 
 		msg.channel:send(_msg)
 	end,
