@@ -8,7 +8,7 @@ local function doEval(msg, func)
 	local ok = ret[1]
 	table.remove(ret, 1)
 	if not ok then
-		errorMsg(msg.channel, ret, "Lua Error:")
+		errorMsg(msg.channel, tostring(ret), "Lua Error:")
 		return
 	end
 	if ret[1] then
@@ -48,7 +48,7 @@ commands[{"eval", "l"}] = { -- l command will be used for sandboxed Lua sometime
 				if type(func) == "function" then
 					doEval(msg, func)
 				else
-					errorMsg(msg.channel, err, "Lua Error:")
+					errorMsg(msg.channel, tostring(err), "Lua Error:")
 				end
 			end
 			_G.self = nil
@@ -67,7 +67,7 @@ local function restart(msg, doUpdate)
 	if config.owners[msg.author.id] then
 		local out = doUpdate and io.popen("git pull"):read("*all") or nil
 		msg.channel:send("```" .. (out and out .. "\n" or "") .. "Restarting..." .. "```")
-		fs.writeFileSync("restart")
+		fs.writeFileSync("restart", "")
 		process:exit() -- restart handled by shell script, I can't figure out any better way of doing this
 	else
 		errorMsg(msg.channel, "No access!")
