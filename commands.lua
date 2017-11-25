@@ -1,6 +1,6 @@
 
 -- argument parsing
-local cmdPrefix = "^[%.!/%$]"
+local cmdPrefix = "^%$" -- "^[%.!/%$]"
 local cmdArgGrouper = "[\"']"
 local cmdArgSeparators = "[%s,]"
 local cmdEscapeChar = "[\\]"

@@ -82,6 +82,7 @@ commands.help = {
 		if not cmd then
 			_msg = {
 				embed = {
+					title = "Help",
 					description = "Supply a command name to get specific information.",
 					color = 0x9B65BD,
 					fields = {
@@ -89,10 +90,6 @@ commands.help = {
 							name = "Available commands:",
 							value = "`",
 						}
-					},
-					footer = {
-						icon_url = client.user.avatarURL,
-						text = "Help"
 					}
 				}
 			}
@@ -109,13 +106,9 @@ commands.help = {
 		elseif cmdData then
 			_msg = {
 				embed = {
-					title = cmdData.aliases and table.concat(cmdData.aliases, ", ") or cmd,
+					title = "Help: " .. cmdData.aliases and table.concat(cmdData.aliases, ", ") or cmd,
 					description = cmdData.help,
 					color = 0x9B65BD,
-					footer = {
-						icon_url = client.user.avatarURL,
-						text = "Help"
-					}
 				}
 			}
 		end
