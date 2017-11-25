@@ -6,6 +6,9 @@ while true; do
 	if [ $? != "0" ]; then
 		echo -e "\e[41;30m ERROR \e[0m Bot didn't exit cleanly, code: \e[30;46m$?\e[0m"
 	fi
+	echo
+	echo "Restarting..."
+	echo
 	touch exit_code
 	echo -n $? > exit_code
 done
