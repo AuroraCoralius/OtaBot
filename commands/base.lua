@@ -8,7 +8,7 @@ local function doEval(msg, func)
 	local ok = ret[1]
 	table.remove(ret, 1)
 	if not ok then
-		errorMsg(msg.channel, tostring(ret), "Lua Error:")
+		errorMsg(msg.channel, tostring(ret[1]), "Lua Error:")
 		return
 	end
 	if ret[1] then

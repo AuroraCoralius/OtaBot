@@ -2,16 +2,19 @@
 
 git pull
 while true; do
-	echo
-	echo -e "\e[42;30m START \e[0m"
-	echo
+	if [ ! -f "restart" ]; then
+		echo
+		echo -e "\e[42;30m START \e[0m"
+		echo
+	else
+		rm restart
+	fi
 	luvit bot.lua
 	exitcode=$?
 	if [ -f "restart" ]; then
 		echo
 		echo -e "\e[46;30m RESTART \e[0m"
 		echo
-		rm restart
 	else
 		echo
 		echo -e "\e[43;30m STOP \e[0m"
