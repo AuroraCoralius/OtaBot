@@ -51,7 +51,7 @@ commands.seecolor = {
 	end,
 	help = {
 		text = "Preview a color!",
-		usage = "`$seecolor <color in Hexadecimal format>`",
+		usage = "`$seecolor <color in Hexadecimal format>`\nYou can grab Hex color codes from [there](http://htmlcolorcodes.com/color-picker/).",
 		example = "`$seecolor #FF0000` or `$seecolor #FF0000` will show your name in red."
 	}
 }
@@ -113,7 +113,7 @@ commands.color = {
 
 	help = {
 		text = "Set your name color! Gives you a role with the supplied color.",
-		usage = "`$color <color in Hexadecimal format>`",
+		usage = "`$color <color in Hexadecimal format>`\nYou can grab Hex color codes from [there](http://htmlcolorcodes.com/color-picker/).",
 		example = "`$color #FF0000` or `$color #FF0000` will set your name color to red."
 	}
 }

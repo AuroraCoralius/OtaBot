@@ -108,6 +108,9 @@ commands.help = {
 			_msg.embed.fields[1].value = _msg.embed.fields[1].value .. "`"
 		elseif cmdData then
 			local help = cmdData.help
+			if not help then
+				help = "No information provided."
+			end
 			_msg = {
 				embed = {
 					title = "Help: " .. (cmdData.aliases and table.concat(cmdData.aliases, ", ") or cmd),
@@ -129,6 +132,9 @@ commands.help = {
 					})
 				end
 			end
+		else
+			errorMsg(msg.channel, "No such command!", "Help")
+			return
 		end
 		_msg.embed.color = 0x50ACFF
 
