@@ -39,11 +39,11 @@ commands[{"eval", "l"}] = { -- l command will be used for sandboxed Lua sometime
 			str = str:format(table.concat(args, "\t"))
 			msg.channel:send(str)
 		end
-		local func, err = loadstring("return " .. line)
+		local func, err = loadstring("return " .. line, "eval")
 		if type(func) == "function" then
 			doEval(msg, func)
 		else
-			local func, err = loadstring(line)
+			local func, err = loadstring(line, "eval")
 			if type(func) == "function" then
 				doEval(msg, func)
 			else
