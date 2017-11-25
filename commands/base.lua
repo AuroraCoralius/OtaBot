@@ -105,13 +105,15 @@ commands.help = {
 			}
 			local i = 0
 			local count = table.count(commands)
-			for cmd, cmdData in next, commands do
+			for cmd, cmdData in sortedPairs(commands) do
 				if not cmdData.ownerOnly or cmdData.ownerOnly and config.owners[msg.author.id] then
 					i = i + 1
 					local desc = _msg.embed.fields[1].value
 					local name = type(cmd) == "table" and ("{" .. table.concat(cmd, ", ") .. "}") or cmd
 					desc = desc .. name .. (i == count and "" or ", ")
 					_msg.embed.fields[1].value = desc
+				else
+					count = count - 1
 				end
 			end
 			_msg.embed.fields[1].value = _msg.embed.fields[1].value .. "`"
