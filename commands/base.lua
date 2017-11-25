@@ -55,7 +55,7 @@ commands.eval = {
 local function restart(msg, doUpdate)
 	if config.owners[msg.author.id] then
 		local out = doUpdate and io.popen("git pull"):read("*all") or nil
-		msg.channel:send((out and out .. "\n" or "") .. "Restarting...")
+		msg.channel:send("```" .. (out and out .. "\n" or "") .. "Restarting..." .. "```")
 		process:exit() -- restart handled by shell script, I can't figure out any better way of doing this
 	else
 		errorMsg(msg.channel, "No access!")
