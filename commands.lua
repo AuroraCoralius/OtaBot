@@ -115,7 +115,7 @@ bot.getCommands() -- hahaa refresh .aliases.
 -- command handling
 local function call(callback, msg, args, line)
 	local ok, err = xpcall(callback, function(err)
-		local traceback = debug.traceback()
+		local traceback = debug.traceback("", 2)
 		print(err)
 		print(traceback)
 		coroutine.wrap(function()
