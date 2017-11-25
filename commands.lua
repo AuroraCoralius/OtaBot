@@ -137,6 +137,10 @@ client:on("messageCreate", function(msg)
 				for _, cmdName in next, cmdName do
 					if cmdName:lower() == cmd:lower() then
 						msg.channel:broadcastTyping()
+						if cmdData.ownerOnly and not config.owners[msg.author.id] then
+							bot.errorMsg(msg.channel, "No access!", "Command Error:")
+							return
+						end
 						call(cmdData.callback, msg, args, line)
 					end
 				end
