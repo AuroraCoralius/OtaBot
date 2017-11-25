@@ -110,6 +110,7 @@ for file, _type in fs.scandirSync("./commands") do
 		require("./commands/" .. file)
 	end
 end
+bot.getCommands() -- hahaa refresh .aliases.
 
 -- command handling
 local function call(callback, msg, args, line)
@@ -118,7 +119,7 @@ local function call(callback, msg, args, line)
 		print(err)
 		print(traceback)
 		coroutine.wrap(function()
-			bot.errorMsg(msg.channel, { name = err, value = bot.errorToGithub(traceback) }, "Command Error:")
+			bot.errorMsg(msg.channel, { name = err:gsub(process.cwd .. "/", ""), value = bot.errorToGithub(traceback) }, "Command Error:")
 		end)()
 	end, msg, args, line)
 end

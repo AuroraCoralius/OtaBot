@@ -106,17 +106,23 @@ commands.help = {
 
 			local cmdNames = {}
 			for cmd, _ in next, commands do
-				cmdNames[#cmdNames + 1] = istable(cmd) and ("{" .. table.concat(cmd, ", ") .. "}") or cmd
+				if istable(cmd) then
+					for _, cmdName in next, cmd do
+						cmdNames[#cmdNames + 1] = cmdName
+					end
+				else
+					cmdNames[#cmdNames + 1] = cmd
+				end
 			end
 			table.sort(cmdNames)
 			local i = 0
-			local count = table.count(commands)
+			local count = table.count(bot.getCommands())
 			for _, cmd in next, cmdNames do
 				local cmdData = bot.getCommand(cmd)
 				if not cmdData.ownerOnly or cmdData.ownerOnly and config.owners[msg.author.id] then
 					i = i + 1
 					local desc = _msg.embed.fields[1].value
-					local name = cmd
+					local name = cmdData.aliases and "{" .. table.concat(cmdData.aliases, ", ") .. "}" or cmd
 					desc = desc .. name .. (i == count and "" or ", ")
 					_msg.embed.fields[1].value = desc
 				else
