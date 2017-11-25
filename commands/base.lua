@@ -104,25 +104,14 @@ commands.help = {
 				}
 			}
 
-			local cmdNames = {}
-			for cmd, cmdData in next, bot.getCommands() do
-				if not cmdData.ownerOnly or (cmdData.ownerOnly and config.owners[msg.author.id]) then
-					cmdNames[#cmdNames + 1] = cmd
-				end
-			end
-			table.sort(cmdNames)
-			local count = table.count(cmdNames)
+			local count = table.count(bot.getCommands())
 			local printed = {}
-			for i, cmd in next, cmdNames do
-				local cmdData = bot.getCommand(cmd)
-				if not printed[cmdData.aliases] then
+			for cmd, cmdData in next, sortedPairs(bot.getCommands()) do
+				if not cmdData.ownerOnly or (cmdData.ownerOnly and config.owners[msg.author.id]) then
 					local desc = _msg.embed.fields[1].value
-					local name = cmdData.aliases and "{" .. table.concat(cmdData.aliases, ", ") .. "}" or cmd
+					local name = cmd
 					desc = desc .. name .. (i == count and "" or ", ")
 					_msg.embed.fields[1].value = desc
-					if cmdData.aliases then
-						printed[cmdData.aliases] = true
-					end
 				end
 			end
 			_msg.embed.fields[1].value = _msg.embed.fields[1].value .. "`"
