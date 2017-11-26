@@ -182,7 +182,7 @@ commands.prefixes = {
 commands.ping = {
 	callback = function(msg)
 		local sent = msg.channel:send("Ping?")
-		sent:setContent("Pong! Took " .. sent.timestamp - msg.timestamp .."ms.")
+		sent:setContent("Pong! Took " .. sent.createdAt - msg.createdAt .."ms.")
 	end,
 	help = "Pings the bot."
 }
