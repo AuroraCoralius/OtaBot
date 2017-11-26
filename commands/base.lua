@@ -106,8 +106,10 @@ commands.help = {
 
 			local count = table.count(bot.getCommands())
 			local printed = {}
+			local i = 0
 			for cmd, cmdData in sortedPairs(bot.getCommands()) do
 				if not cmdData.ownerOnly or (cmdData.ownerOnly and config.owners[msg.author.id]) then
+					i = i + 1
 					local desc = _msg.embed.fields[1].value
 					local name = cmd
 					desc = desc .. name .. (i == count and "" or ", ")
