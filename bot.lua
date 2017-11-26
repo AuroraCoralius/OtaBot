@@ -11,6 +11,7 @@ require("./libs/math_extension.lua")
 require("./libs/string_extension.lua")
 require("./libs/table_extension.lua")
 require("./libs/misc_helpers.lua")
+inspect = require("./libs/inspect.lua")
 os.linux = package.config:sub(1, 1) == "/"
 
 pprint = require("pretty-print").prettyPrint -- better print

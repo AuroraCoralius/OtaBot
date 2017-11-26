@@ -13,7 +13,7 @@ local function doEval(msg, func)
 	end
 	if ret[1] then
 		for k, v in next, ret do
-			ret[k] = tostring(v)
+			ret[k] = inspect(v)
 		end
 		_msg.embed = {
 			title = "Result:",
