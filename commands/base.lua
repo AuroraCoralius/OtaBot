@@ -164,7 +164,7 @@ commands.prefixes = {
 		local _msg = {
 			embed = {
 				title = "Available prefixes:",
-				description = table.concat(bot.commandPrefixes, ","):gsub("`", "\`"),
+				description = table.concat(bot.commandPrefixes, ","):gsub("`", "\\`"),
 				color = 0x50ACFF
 			}
 		}
