@@ -56,7 +56,7 @@ commands[{"eval", "l"}] = { -- l command will be used for sandboxed Lua sometime
 	end,
 	help = {
 		text = "Runs Lua in the bot's environment. Owner only.",
-		example = "`$eval function foo() return 1 end return foo()` will result into 1 being output by the bot."
+		example = "`{prefix}eval function foo() return 1 end return foo()` will result into 1 being output by the bot."
 	},
 	ownerOnly = true
 }
@@ -117,7 +117,11 @@ commands.help = {
 			_msg.embed.fields[1].value = _msg.embed.fields[1].value .. "`"
 		elseif cmdData then
 			local help = cmdData.help
-			if not help then
+			if istable(help) then
+				help.text = help.text:gsub("{prefix}", bot.currentPrefix)
+				help.usage = help.usage:gsub("{prefix}", bot.currentPrefix)
+				help.example = help.example:gsub("{prefix}", bot.currentPrefix)
+			elseif not help then
 				help = "No information provided."
 			end
 			_msg = {
@@ -151,8 +155,23 @@ commands.help = {
 	end,
 	help = {
 		text = "Displays this.",
-		usage = "$help <command name>",
-		example = "$help help"
+		usage = "{prefix}help <command name>",
+		example = "{prefix}help help"
+	}
+}
+commands.prefixes = {
+	callback = function(msg)
+		local _msg = {
+			embed = {
+				title = "Available prefixes:",
+				description = table.concat(bot.commandPrefixes, ","):gsub("`", "\`"),
+				color = 0x50ACFF
+			}
+		}
+		msg.channel:send(_msg)
+	end,
+	help = {
+		text = "Shows all prefixes the bot is willing to accept."
 	}
 }
 

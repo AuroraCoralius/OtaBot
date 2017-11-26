@@ -151,8 +151,8 @@ commands[{"anime", "mal"}] = {
 	end,
 	help = {
 		text = "Provides condensed information about an anime.\n*Makes uses of reactions to create a page system that the caller can use to browse through multiple results!*",
-		usage = "`$anime <anime name>`",
-		example = "`$anime Charlotte`"
+		usage = "`{prefix}anime <anime name>`",
+		example = "`{prefix}anime Charlotte`"
 	}
 }
 local function onReaction(reaction, userId)
@@ -230,7 +230,7 @@ commands[{"translate", "tr", "тр"}] = {
 	end,
 	help = {
 		text = "Translate stuff.",
-		example = '`$tr "I like apples",en-fr` will translate the sentence "I like apples" to French from English.'
+		example = '`{prefix}tr "I like apples",en-fr` will translate the sentence "I like apples" to French from English.'
 	}
 }
 

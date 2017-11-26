@@ -1,6 +1,11 @@
 
 -- argument parsing
-local cmdPrefix = "^%$" -- "^[%.!/%$]"
+local cmdPrefix = config.command_prefixes
+if not config.command_prefixes or not config.command_prefixes[1] then
+	print("Command prefix not found, using default ']'")
+	cmdPrefix = { "]" }
+end
+bot.commandPrefixes = cmdPrefix
 local cmdArgGrouper = "[\"']"
 local cmdArgSeparators = "[%s,]"
 local cmdEscapeChar = "[\\]"
@@ -125,10 +130,16 @@ local function call(callback, msg, args, line)
 end
 client:on("messageCreate", function(msg)
 	local text = msg.content
-	local prefix = text:match(cmdPrefix)
-	if prefix then
+	local usedPrefix
+	for _, prefix in cmdPrefix do
+		if text:match("^" .. prefix) then
+			usedPrefix = prefix
+			break
+		end
+	end
+	if usedPrefix then
 		local args = text:split(" ")
-		local cmd = args[1]:sub(prefix:len() + 1)
+		local cmd = args[1]:sub(usedPrefix:len() + 1)
 		local line = text:sub(args[1]:len() + 2)
 		args = parseArgs(line)
 
@@ -141,6 +152,7 @@ client:on("messageCreate", function(msg)
 							bot.errorMsg(msg.channel, "No access!", "Command Error:")
 							return
 						end
+						bot.currentPrefix = usedPrefix
 						call(cmdData.callback, msg, args, line)
 					end
 				end
@@ -150,6 +162,7 @@ client:on("messageCreate", function(msg)
 					bot.errorMsg(msg.channel, "No access!", "Command Error:")
 					return
 				end
+				bot.currentPrefix = usedPrefix
 				call(cmdData.callback, msg, args, line)
 			end
 		end
