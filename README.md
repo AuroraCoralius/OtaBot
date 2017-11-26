@@ -6,7 +6,7 @@
 - To install Discordia, run `lit install SinisterRectus/discordia`.
 - Clone this repository.
 - Rename `config_example.lua` to `config.lua` and change it to your liking.
-  - Go to the **[Discord Applications](https://discordapp.com/developers/applications/me)** page and create an application in it
+  - Go to the **[Discord Applications](https://discordapp.com/developers/applications/me)** page and create an application in it.
   - Give the application a bot user, and put its token in the `token` field of the config.
   - Invite your bot to your server using this URL: <https://discordapp.com/oauth2/authorize?client_id=CLIENT_ID&scope=bot&permissions=0>
     - Replace `CLIENT_ID` by the Client ID displayed on your application's page.
