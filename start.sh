@@ -1,6 +1,7 @@
 #!/bin/bash
 
 git pull
+echo -n "0" > exit_code
 while true; do
 	if [ ! -f "restart" ]; then
 		echo
