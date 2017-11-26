@@ -133,7 +133,7 @@ client:on("messageCreate", function(msg)
 	local text = msg.content
 	local usedPrefix
 	for _, prefix in next, cmdPrefix do
-		if text:match("^" .. prefix:gsub("%$", "%$")) then
+		if text:match("^" .. prefix:gsub("%$", "%%$")) then
 			usedPrefix = prefix
 			break
 		end
