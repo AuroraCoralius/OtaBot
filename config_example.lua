@@ -7,6 +7,6 @@ return {
 	},
 	mal = "", -- My Anime List credentials encoded in Base64 - https://myanimelist.net/register.php
 	command_prefixes = { -- prefixes used for commands, can be multiple.
-		"]",
+		"d$",
 	}
 }

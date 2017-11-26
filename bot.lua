@@ -60,14 +60,11 @@ config = bot.config
 
 -- commands
 require("./commands.lua")
-
 client:on("ready", function()
-	local prefix = config.command_prefixes and config.command_prefixes[1] or "]"
-	if not prefix then
-		prefix = "]" -- empty prefix table???
-	end
+	local prefix = bot.commandPrefixes[1]
 	client:setGame({ name = prefix .. "help" , type = 2 }) -- Listening to ]help
 	-- client:setGame({ name = "you 👀", type = 3 }) -- Watching you :eyes:
+
 	local exit_code = fs.readFileSync("exit_code")
 	if exit_code and exit_code ~= "0" then
 		bot.notifyOwners(":warning: Bot didn't exit cleanly, code: `" .. exit_code .. "`")

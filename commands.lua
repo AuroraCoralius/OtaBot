@@ -2,8 +2,9 @@
 -- argument parsing
 local cmdPrefix = config.command_prefixes
 if not config.command_prefixes or not config.command_prefixes[1] then
-	print("Command prefix not found, using default ']'")
-	cmdPrefix = { "]" }
+	local default = "d$"
+	print('Command prefix not found, using default "' .. default .. '"')
+	cmdPrefix = { default }
 end
 bot.commandPrefixes = cmdPrefix
 local cmdArgGrouper = "[\"']"

@@ -118,9 +118,16 @@ commands.help = {
 		elseif cmdData then
 			local help = cmdData.help
 			if istable(help) then
-				help.text = help.text:gsub("{prefix}", bot.currentPrefix)
-				help.usage = help.usage:gsub("{prefix}", bot.currentPrefix)
-				help.example = help.example:gsub("{prefix}", bot.currentPrefix)
+				local toReplace = { -- foreshadowing
+					text = true,
+					usage = true,
+					example = true,
+				}
+				for name, text in next, help do
+					if toReplace[name] then
+						help[name] = text:gsub("{prefix}", bot.currentPrefix)
+					end
+				end
 			elseif not help then
 				help = "No information provided."
 			end
@@ -155,8 +162,8 @@ commands.help = {
 	end,
 	help = {
 		text = "Displays this.",
-		usage = "{prefix}help <command name>",
-		example = "{prefix}help help"
+		usage = "`{prefix}help <command name>`",
+		example = "`{prefix}help ping`"
 	}
 }
 commands.prefixes = {
@@ -164,14 +171,19 @@ commands.prefixes = {
 		local _msg = {
 			embed = {
 				title = "Available prefixes:",
-				description = table.concat(bot.commandPrefixes, ","):gsub("`", "\\`"),
+				description = "`" .. table.concat(bot.commandPrefixes, ","):gsub("`", "\\`") .. "`",
 				color = 0x50ACFF
 			}
 		}
 		msg.channel:send(_msg)
 	end,
-	help = {
-		text = "Shows all prefixes the bot is willing to accept."
-	}
+	help = "Shows all prefixes the bot is willing to accept."
+}
+commands.ping = {
+	callback = function(msg)
+		local sent = msg.channel.send("Ping?")
+		sent:setContent("Pong! Took " .. sent.timestamp - msg.timestamp .."ms.")
+	end,
+	help = "Pings the bot."
 }
 
