@@ -62,7 +62,7 @@ config = bot.config
 require("./commands.lua")
 client:on("ready", function()
 	local prefix = bot.commandPrefixes[1]
-	client:setGame({ name = prefix .. "help" , type = 2 }) -- Listening to ]help
+	client:setGame({ name = prefix .. "help" , type = 2 }) -- Listening to d$help
 	-- client:setGame({ name = "you 👀", type = 3 }) -- Watching you :eyes:
 
 	local exit_code = fs.readFileSync("exit_code")
