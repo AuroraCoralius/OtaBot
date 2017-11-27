@@ -2,6 +2,7 @@
 local commands = bot.commands
 local errorMsg = bot.errorMsg
 
+local print = print
 local function doEval(msg, func)
 	local _msg = {}
 	local ret = { pcall(func) }
@@ -13,11 +14,20 @@ local function doEval(msg, func)
 	end
 	if ret[1] then
 		for k, v in next, ret do
-			ret[k] = inspect(v)
+			local ok, res = pcall(inspect, v)
+			if ok then
+				ret[k] = res
+			else
+				ret[k] = tostring(v)
+			end
+		end
+		local res = "```lua\n" .. table.concat(ret, "\t") .. "```"
+		if #res >= 2000 then
+			res = res:sub(1, 1970) .. "```[...]\noutput truncated"
 		end
 		_msg.embed = {
 			title = "Result:",
-			description = "```lua\n" .. table.concat(ret, "\t") .. "\n```",
+			description = res,
 			color = 0x9B65BD
 		}
 	else
@@ -25,18 +35,20 @@ local function doEval(msg, func)
 	end
 	msg.channel:send(_msg)
 end
-local print = print
 commands[{"eval", "l"}] = { -- l command will be used for sandboxed Lua sometime though
 	callback = function(msg, args, line)
 		_G.self = client
 		_G.msg = msg
 		_G.print = function(...)
 			local args = {...}
-			local str = #args > 1 and "```%s```" or "%s"
+			local str = "```lua\n%s```"
 			for k, v in next, args do
 				args[k] = tostring(v):gsub("`", "\\`")
 			end
 			str = str:format(table.concat(args, "\t"))
+			if #str >= 2000 then
+				str = str:sub(1, 1970) .. "```[...]\noutput truncated"
+			end
 			msg.channel:send(str)
 		end
 		local func, err = loadstring("return " .. line, "eval")
