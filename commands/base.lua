@@ -117,7 +117,6 @@ commands.help = {
 			}
 
 			local count = table.count(bot.getCommands())
-			local printed = {}
 			local i = 0
 			for cmd, cmdData in sortedPairs(bot.getCommands()) do
 				if not cmdData.ownerOnly or (cmdData.ownerOnly and config.owners[msg.author.id]) then
@@ -196,7 +195,7 @@ commands.prefixes = {
 commands.ping = {
 	callback = function(msg)
 		local sent = msg.channel:send(":alarm_clock: Ping?")
-		sent:setContent(":alarm_clock: Pong! Took `" .. math.ceil((sent.createdAt - msg.createdAt) * 10000) * 0.1 .."ms`.")
+		sent:setContent(":alarm_clock: Pong! Took `" .. math.ceil((sent.createdAt - msg.createdAt) * 10000) * 0.1 .. "ms`.")
 	end,
 	help = "Pings the bot."
 }

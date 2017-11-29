@@ -7,7 +7,7 @@ function event.addListener(name, id, callback)
 	if not event.listeners[name] then event.listeners[name] = {} end
 	event.listeners[name][id] = callback
 end
-function event.removeListener(name, id, callback)
+function event.removeListener(name, id)
 	if not event[name] then return end
 	event.listeners[name][id] = nil
 end
@@ -22,11 +22,11 @@ end
 setmetatable(event, {
 	__call = function(self, name, id, callback, ...)
 		if not id then
-			return event.listeners[name]
+			return self.listeners[name]
 		elseif not callback then
-			event.removeListener(name, id)
+			self.removeListener(name, id)
 		else
-			event.addListener(name, id, callback)
+			self.addListener(name, id, callback)
 		end
 	end
 })
