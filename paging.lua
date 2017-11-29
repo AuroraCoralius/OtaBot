@@ -17,7 +17,7 @@ function paging.init(resultsMsg, queryMsg, data, handler)
 		author = queryMsg.author,
 		data = data,
 		handle = handler,
-		endTime = 0
+		endTime = os.time() + paging.timeout
 	}
 	resultsMsg:addReaction(emojis.backArrow)
 	resultsMsg:addReaction(emojis.forwardArrow)
@@ -37,7 +37,7 @@ local function onReaction(reaction, userId)
 		if emoji == emojis.backArrow or emoji == emojis.fwdArrow then
 			local fwd = emoji == fwdArrow
 			page:handle(fwd)
-			page.endTime = os.time() + timeout
+			page.endTime = os.time() + paging.timeout
 		elseif emoji == emojis.stop then
 			page.message:clearReactions()
 			page.endTime = 0
