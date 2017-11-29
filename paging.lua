@@ -1,5 +1,5 @@
 
-paging = {
+local paging = {
 	pages = {},
 	timeout = 60
 }
@@ -56,4 +56,6 @@ timer.setInterval(1000, function()
 end)
 client:on("reactionAdd", onReaction)
 client:on("reactionRemove", onReaction)
+
+return paging
 

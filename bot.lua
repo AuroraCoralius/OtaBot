@@ -43,11 +43,7 @@ bot = {
 	client = client,
 	notifyOwners = function(content)
 		for id, _ in next, config.owners do
-			local user = client:getUser(id)
-
-			print(content)
-			local msg = user:send(content)
-			print(msg)
+			client:getUser(id):send(content)
 		end
 	end,
 	github = "https://github.com/Re-Dream/dreambot_mk2/tree/master";
@@ -62,7 +58,7 @@ bot = {
 config = bot.config
 
 -- paging system
-require("./paging.lua")
+paging = require("./paging.lua")
 
 -- commands
 require("./commands.lua")
