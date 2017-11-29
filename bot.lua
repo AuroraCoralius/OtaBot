@@ -14,8 +14,6 @@ require("./libs/misc_helpers.lua")
 inspect = require("./libs/inspect.lua")
 os.linux = package.config:sub(1, 1) == "/"
 
-pprint = require("pretty-print").prettyPrint -- better print
-
 timer = require("timer") -- js like timers
 fs = require("fs")
 
@@ -45,7 +43,11 @@ bot = {
 	client = client,
 	notifyOwners = function(content)
 		for id, _ in next, config.owners do
-			client:getUser(id):send(content)
+			local user = client:getUser(id)
+
+			print(content)
+			local msg = user:send(content)
+			print(msg)
 		end
 	end,
 	github = "https://github.com/Re-Dream/dreambot_mk2/tree/master";
