@@ -35,7 +35,7 @@ local function onReaction(reaction, userId)
 
 		local emoji = reaction.emojiName
 		if emoji == emojis.backArrow or emoji == emojis.fwdArrow then
-			local fwd = emoji == fwdArrow
+			local fwd = emoji == emojis.fwdArrow
 			page:handle(fwd)
 			page.endTime = os.time() + paging.timeout
 		elseif emoji == emojis.stop then
