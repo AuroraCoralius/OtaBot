@@ -20,7 +20,7 @@ function paging.init(resultsMsg, queryMsg, data, handler)
 		endTime = os.time() + paging.timeout
 	}
 	resultsMsg:addReaction(emojis.backArrow)
-	resultsMsg:addReaction(emojis.forwardArrow)
+	resultsMsg:addReaction(emojis.fwdArrow)
 	resultsMsg:addReaction(emojis.stop)
 
 	return paging.pages[queryMsg.id]
