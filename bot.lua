@@ -59,6 +59,9 @@ bot = {
 }
 config = bot.config
 
+-- paging system
+require("./paging.lua")
+
 -- commands
 require("./commands.lua")
 client:on("ready", function()

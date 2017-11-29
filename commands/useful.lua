@@ -2,14 +2,7 @@
 local commands = bot.commands
 local errorMsg = bot.errorMsg
 
-local emojis = {
-	backArrow = '\226\172\133',
-	forwardArrow = '\226\158\161',
-	stop = '\226\143\185'
-}
 local animeChoice = 1
-local pages = {}
-local timeout = 60
 local function animeToEmbed(data, choice)
 	local _msg = {}
 
@@ -120,18 +113,16 @@ commands[{"anime", "mal"}] = {
 					local _msg, multiple = animeToEmbed(data, animeChoice)
 					found = true
 					coroutine.wrap(function()
-						local newMsg = msg.channel:send(_msg) -- well this is ass.
+						local resultsMsg = msg.channel:send(_msg) -- well this is ass.
 						if multiple then
-							newMsg:addReaction(emojis.backArrow)
-							newMsg:addReaction(emojis.forwardArrow)
-							newMsg:addReaction(emojis.stop)
-							pages[newMsg.id] = {
-								author  = msg.author,
-								data    = data,
-								animes  = data.anime:numChildren(),
-								message = newMsg,
-								endTime = os.time() + timeout
-							}
+							paging.init(resultsMsg, msg, data, function(page, fw)
+								local oldChoice = animeChoice
+								animeChoice = math.clamp(animeChoice + (fwd and 1 or -1), 1, page.data.anime:numChildren())
+								if oldChoice == animeChoice then return end
+
+								local _msg = animeToEmbed(page.data, animeChoice)
+								page.message:setEmbed(_msg.embed)
+							end)
 						end
 					end)()
 				else
@@ -155,43 +146,6 @@ commands[{"anime", "mal"}] = {
 		example = "`{prefix}anime Charlotte`"
 	}
 }
-local function onReaction(reaction, userId)
-	if userId == client.user.id then return end
-	local page = pages[reaction.message.id]
-	if page and page.endTime > os.time() then
-		-- if reaction.message.id ~= page.message.id then return end
-		if userId ~= page.author.id then return end
-
-		local emoji = reaction.emojiName
-		if emoji == emojis.backArrow or emoji == emojis.forwardArrow then
-			local back = emoji == emojis.backArrow
-			local oldChoice = animeChoice
-			animeChoice = math.clamp(animeChoice + (back and -1 or 1), 1, page.animes)
-			if oldChoice == animeChoice then return end
-
-			local _msg = animeToEmbed(page.data, animeChoice)
-			page.message:setEmbed(_msg.embed)
-			page.endTime = os.time() + timeout
-		elseif emoji == emojis.stop then
-			page.message:clearReactions()
-			page.endTime = 0
-			pages[reaction.message.id] = nil
-		end
-	end
-end
-timer.setInterval(1000, function()
-	for k, v in next, pages do
-		if v.endTime < os.time() then
-			coroutine.wrap(function()
-				v.message:setContent("(:alarm_clock:)")
-				v.message:clearReactions()
-			end)()
-			pages[k] = nil
-		end
-	end
-end)
-client:on("reactionAdd", onReaction)
-client:on("reactionRemove", onReaction)
 
 commands[{"translate", "tr", "тр"}] = {
 	callback = function(msg, args, line)
