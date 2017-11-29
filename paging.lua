@@ -1,4 +1,11 @@
 
+
+local emojis = {
+	backArrow = '\226\172\133',
+	fwdArrow = '\226\158\161',
+	stop = '\226\143\185'
+}
+
 local paging = {
 	pages = {},
 	timeout = 60
@@ -19,11 +26,6 @@ function paging.init(resultsMsg, queryMsg, data, handler)
 	return paging.pages[queryMsg.id]
 end
 
-local emojis = {
-	backArrow = '\226\172\133',
-	fwdArrow = '\226\158\161',
-	stop = '\226\143\185'
-}
 local function onReaction(reaction, userId)
 	if userId == client.user.id then return end
 	local page = paging.pages[reaction.message.id]
