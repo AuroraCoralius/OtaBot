@@ -1,22 +1,22 @@
 
 paging = {
-    pages = {},
-    timeout = 60
+	pages = {},
+	timeout = 60
 }
 function paging.init(resultsMsg, queryMsg, data, handler)
-    paging.pages[queryMsg.id] = {
-        message = resultsMsg,
-        query = queryMsg,
-        author = queryMsg.author,
-        data = data,
-        handle = handler,
-        endTime = 0
-    }
-    resultsMsg:addReaction(emojis.backArrow)
+	paging.pages[queryMsg.id] = {
+		message = resultsMsg,
+		query = queryMsg,
+		author = queryMsg.author,
+		data = data,
+		handle = handler,
+		endTime = 0
+	}
+	resultsMsg:addReaction(emojis.backArrow)
 	resultsMsg:addReaction(emojis.forwardArrow)
 	resultsMsg:addReaction(emojis.stop)
 
-    return paging.pages[queryMsg.id]
+	return paging.pages[queryMsg.id]
 end
 
 local emojis = {
@@ -31,16 +31,16 @@ local function onReaction(reaction, userId)
 		-- if reaction.message.id ~= page.message.id then return end -- redundant
 		if userId ~= page.author.id then return end
 
-        local emoji = reaction.emojiName
-        if emoji == emojis.backArrow or emoji == emojis.fwdArrow then
-            local fwd = emoji == fwdArrow
-            page:handle(fwd)
-            page.endTime = os.time() + timeout
-        elseif emoji == emojis.stop then
-            page.message:clearReactions()
-            page.endTime = 0
-            pages[reaction.message.id] = nil
-        end
+		local emoji = reaction.emojiName
+		if emoji == emojis.backArrow or emoji == emojis.fwdArrow then
+			local fwd = emoji == fwdArrow
+			page:handle(fwd)
+			page.endTime = os.time() + timeout
+		elseif emoji == emojis.stop then
+			page.message:clearReactions()
+			page.endTime = 0
+			pages[reaction.message.id] = nil
+		end
 	end
 end
 timer.setInterval(1000, function()
