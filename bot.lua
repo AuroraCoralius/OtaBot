@@ -2,7 +2,6 @@
 -- some fuckery
 _G.require = require
 setfenv(1, _G)
-__G = {table.unpack(_G)}
 
 -- loading
 
