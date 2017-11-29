@@ -118,9 +118,7 @@ commands[{"anime", "mal"}] = {
 							paging.init(resultsMsg, msg, data, function(page, fw)
 								local oldChoice = animeChoice
 								animeChoice = math.clamp(animeChoice + (fwd and 1 or -1), 1, page.data.anime:numChildren())
-								print("We did something")
 								if oldChoice == animeChoice then return end
-								print("We did more!")
 
 								local _msg = animeToEmbed(page.data, animeChoice)
 								page.message:setEmbed(_msg.embed)

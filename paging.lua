@@ -11,7 +11,7 @@ local paging = {
 	timeout = 60
 }
 function paging.init(resultsMsg, queryMsg, data, handler)
-	paging.pages[queryMsg.id] = {
+	paging.pages[resultsMsg.id] = {
 		message = resultsMsg,
 		query = queryMsg,
 		author = queryMsg.author,
