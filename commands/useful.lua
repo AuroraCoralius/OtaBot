@@ -115,7 +115,7 @@ commands[{"anime", "mal"}] = {
 					coroutine.wrap(function()
 						local resultsMsg = msg.channel:send(_msg) -- well this is ass.
 						if multiple then
-							paging.init(resultsMsg, msg, data, function(page, fw)
+							paging.init(resultsMsg, msg, data, function(page, fwd)
 								local oldChoice = animeChoice
 								animeChoice = math.clamp(animeChoice + (fwd and 1 or -1), 1, page.data.anime:numChildren())
 								if oldChoice == animeChoice then return end

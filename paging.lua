@@ -41,7 +41,7 @@ local function onReaction(reaction, userId)
 		elseif emoji == emojis.stop then
 			page.message:clearReactions()
 			page.endTime = 0
-			pages[reaction.message.id] = nil
+			paging.pages[reaction.message.id] = nil
 		end
 	end
 end
