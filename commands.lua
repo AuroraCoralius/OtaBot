@@ -111,11 +111,11 @@ function bot.getCommand(cmd)
 end
 
 -- load commands
-fs.scandir("./commands", function(file, _type)
+for file, _type in fs.scandirSync("./commands") do
 	if _type ~= "directory" then
 		require("./commands/" .. file)
 	end
-end)
+end
 bot.getCommands() -- hahaa refresh .aliases.
 
 -- command handling
