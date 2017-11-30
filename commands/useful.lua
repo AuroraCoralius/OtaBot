@@ -168,7 +168,6 @@ commands[{"translate", "tr", "тр"}] = {
 						title = "Translation to `" .. data.lang .. "`",
 						description = data.text[1],
 						footer = {
-							icon_url = client.user.avatarURL,
 							text = "Yandex Translate API"
 						},
 						color = 0x00FFC0
