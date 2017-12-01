@@ -35,4 +35,8 @@ end
 function _G.istable(val)
 	return type(val) == "table"
 end
+function _G.isstring(val)
+	return type(val) == "string"
+end
+
 

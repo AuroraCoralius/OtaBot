@@ -31,7 +31,7 @@ local function table_tostring(tbl, depth)
 	local ourI = i
 	for k, v in next, tbl do
 		local lastK = k == table.getlastkey(tbl)
-		str = str .. ("\t"):rep(ourI) .. "[" .. (type(k) == "string" and '"%s"' or "%s"):format(tostring(k)) .. "] = "
+		str = str .. ("\t"):rep(ourI) .. "[" .. (isstring(k) and '"%s"' or "%s"):format(tostring(k)) .. "] = "
 		if type(v) == "table" and ourI ~= depth then
 			str = str .. table_tostring(v, depth - ourI)
 		else

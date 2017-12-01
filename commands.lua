@@ -77,7 +77,7 @@ function bot.errorMsg(channel, msg, title, footer)
 	local _msg = {
 		embed = {
 			title = title,
-			description = type(msg) == "string" and msg or nil,
+			description = isstring(msg) and msg or nil,
 			fields = istable(msg) and { msg } or nil,
 			color = 0xFF4040
 		}
