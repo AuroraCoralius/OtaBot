@@ -14,11 +14,13 @@ local function doEval(msg, func)
 	end
 	if ret[1] then
 		for k, v in next, ret do
-			local ok, res = pcall(inspect, v)
-			if ok then
-				ret[k] = res
-			else
-				ret[k] = tostring(v)
+			if not isstring(v) then
+				local ok, res = pcall(inspect, v)
+				if ok then
+					ret[k] = res
+				else
+					ret[k] = tostring(v)
+				end
 			end
 		end
 		local res = "```lua\n" .. table.concat(ret, "\t") .. "```"
