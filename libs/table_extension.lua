@@ -25,7 +25,7 @@ local valueTypeEnclosure = {
 	["table"] = "[[%s]]",
 	["function"] = "[[%s]]",
 }
-local function table_print(tbl, depth)
+local function table_tostring(tbl, depth)
 	local str = "{\n"
 	i = i + 1
 	local ourI = i
@@ -33,18 +33,21 @@ local function table_print(tbl, depth)
 		local lastK = k == table.getlastkey(tbl)
 		str = str .. ("\t"):rep(ourI) .. "[" .. (type(k) == "string" and '"%s"' or "%s"):format(tostring(k)) .. "] = "
 		if type(v) == "table" and ourI ~= depth then
-			str = str .. table_print(v, depth - ourI)
+			str = str .. table_tostring(v, depth - ourI)
 		else
 			str = str .. (valueTypeEnclosure[type(v)] or "%s"):format(tostring(v))
 		end
-		str = str .. (lastK and "" or ",\n") 
+		str = str .. (lastK and "" or ",\n")
 	end
 	str = str .. "\n" .. ("\t"):rep(ourI - 1) .. "}"
 	return str
 end
-function table.print(tbl, depth)
+function table.tostring(tbl, depth)
 	if not depth then depth = 1 end
 	i = 0
-	print(table_print(tbl, depth))
+	return table_tostring(tbl, depth)
+end
+function table.print(tbl, depth)
+	print(table.tostring(tbl, depth))
 end
 
