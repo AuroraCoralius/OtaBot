@@ -99,10 +99,13 @@ commands.color = {
 				role = guild:createRole("#" .. hex)
 				-- local roleColor = Color(color) -- unnecessary
 				role:setColor(color)
-				local canMove = true
-				while canMove do
-					canMove = role:moveUp()
+				local highestPos = 0
+				for role in next, botMember.roles:iter() do
+					if role.position > highestPos then
+						highestPos = role.position
+					end
 				end
+				role:moveUp(highestPos - 1)
 			end
 
 			-- Set role.
