@@ -99,7 +99,10 @@ commands.color = {
 				role = guild:createRole("#" .. hex)
 				-- local roleColor = Color(color) -- unnecessary
 				role:setColor(color)
-				role:moveUp() -- TODO: move role to highest place
+				local canMove = true
+				while canMove do
+					canMove = role:moveUp()
+				end
 			end
 
 			-- Set role.
