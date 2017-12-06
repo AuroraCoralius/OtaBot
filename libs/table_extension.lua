@@ -37,7 +37,7 @@ local function table_tostring(tbl, depth, inline)
 		else
 			str = str .. (valueTypeEnclosure[type(v)] or "%s"):format(tostring(v))
 		end
-		str = str .. (lastK and "" or "," .. (inline and "" or "\n"))
+		str = str .. (lastK and "" or "," .. (inline and " " or "\n"))
 	end
 	str = str .. (inline and "" or "\n") .. ("\t"):rep(ourI - 1) .. "}"
 	return str
