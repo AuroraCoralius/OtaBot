@@ -46,7 +46,12 @@ bot = {
 			client:getUser(id):send(content)
 		end
 	end,
-	github = "https://github.com/Re-Dream/dreambot_mk2/tree/master";
+	github = "https://github.com/Re-Dream/dreambot_mk2/tree/master",
+	funcToGithub = function(func)
+		local str = debug.getinfo(func).short_src
+		local cwd = process.cwd()
+		return bot.github .. "/" .. str:gsub(cwd .. "/", "")
+	end,
 	errorToGithub = function(str)
 		local cwd = process.cwd()
 		str = str:gsub("<", "\\<")
