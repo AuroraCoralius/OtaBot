@@ -20,6 +20,7 @@ function table.getlastvalue(tbl)
 end
 
 local curDepth = 0
+local firstDepth = 0
 local valueTypeEnclosure = {
 	["string"] = '"%s"',
 	["table"] = "<%s>",
@@ -37,8 +38,8 @@ local function table_tostring(tbl, depth, inline)
 	end
 	for k, v in next, tbl do
 		local lastK = k == table.getlastkey(tbl)
-		str = str .. ("\t"):rep(inline and 0 or curDepth) .. (numOnly and "" or "[" .. (isstring(k) and '"%s"' or "%s"):format(istable(k) and table_tostring(k, 1, true) or tostring(k)) .. "] = ")
-		if type(v) == "table" and curDepth <= depth then
+		str = str .. ("\t"):rep(inline and 0 or curDepth) .. (numOnly and "" or "[" .. (isstring(k) and '"%s"' or "%s"):format(istable(k) and table_tostring(k, 0, true) or tostring(k)) .. "] = ")
+		if type(v) == "table" and curDepth <= firstDepth then
 			str = str .. table_tostring(v, depth - 1)
 		else
 			str = str .. (valueTypeEnclosure[type(v)] or "%s"):format(tostring(v))
@@ -50,8 +51,9 @@ local function table_tostring(tbl, depth, inline)
 	return str
 end
 function table.tostring(tbl, depth)
-	if not depth then depth = 1 end
+	if not depth then depth = 0 end
 	curDepth = 0
+	firstDepth = depth
 	return table_tostring(tbl, depth)
 end
 function table.print(tbl, depth)
