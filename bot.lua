@@ -49,6 +49,7 @@ bot = {
 	github = "https://github.com/Re-Dream/dreambot_mk2/tree/master",
 	funcToGithub = function(func)
 		local info = debug.getinfo(func)
+		if info.source == "eval" then return info.source end
 		local src = info.short_src
 		local s, e = info.linedefined, info.lastlinedefined
 		local cwd = process.cwd()
