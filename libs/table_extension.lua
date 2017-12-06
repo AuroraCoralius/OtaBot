@@ -38,9 +38,7 @@ local function table_tostring(tbl, depth, inline)
 	end
 	for k, v in next, tbl do
 		local lastK = k == table.getlastkey(tbl)
-		if not numOnly then
-			str = str .. ("\t"):rep(inline and 0 or ourI) .. "[" .. (isstring(k) and '"%s"' or "%s"):format(istable(k) and table_tostring(k, 1, true) or tostring(k)) .. "] = "
-		end
+			str = str .. ("\t"):rep(inline and 0 or ourI) .. (numOnly and "" or "[" .. (isstring(k) and '"%s"' or "%s"):format(istable(k) and table_tostring(k, 1, true) or tostring(k)) .. "] = ")
 		if type(v) == "table" and ourI ~= depth then
 			str = str .. table_tostring(v, depth - ourI)
 		else
