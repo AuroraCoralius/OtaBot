@@ -55,3 +55,16 @@ function _G.sortedPairs(tbl, sortFn)
 	return iter
 end
 
+function debug.getupvalues(func)
+	local info = debug.getinfo(func)
+	local ups = {}
+	for i = 1, info.nups do
+		ups[#ups + 1] = { debug.getupvalue(func, i) }
+	end
+	return ups
+end
+
+function debug.getparams(func)
+	return debug.getinfo(func).nparams
+end
+

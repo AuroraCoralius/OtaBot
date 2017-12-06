@@ -48,9 +48,11 @@ bot = {
 	end,
 	github = "https://github.com/Re-Dream/dreambot_mk2/tree/master",
 	funcToGithub = function(func)
-		local str = debug.getinfo(func).short_src
+		local info = debug.getinfo(func)
+		local src = info.short_src
+		local s, e = info.linedefined, info.lastlinedefined
 		local cwd = process.cwd()
-		return bot.github .. "/" .. str:gsub(cwd .. "/", "")
+		return bot.github .. "/" .. src:gsub(cwd .. "/", "") .. "#L" .. s .. "-L" .. e
 	end,
 	errorToGithub = function(str)
 		local cwd = process.cwd()
