@@ -1,9 +1,14 @@
 
-function _G.istable(val)
-	return type(val) == "table"
-end
-function _G.isstring(val)
-	return type(val) == "string"
+local is = {
+	"table",
+	"string",
+	"number",
+	"function"
+}
+for _, _type in next, is do
+	_G["is" .. _type] = function(val)
+		return type(val) == _type
+	end
 end
 
 function _G.hex2rgb(hex)
