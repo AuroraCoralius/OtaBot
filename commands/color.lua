@@ -105,7 +105,7 @@ commands.color = {
 						highestPos = role.position
 					end
 				end
-				role:moveUp(highestPos - 1)
+				role:moveUp(math.max(1, highestPos - 1))
 			end
 
 			-- Set role.
