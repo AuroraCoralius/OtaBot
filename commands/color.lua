@@ -100,7 +100,7 @@ commands.color = {
 				-- local roleColor = Color(color) -- unnecessary
 				role:setColor(color)
 				local highestPos = 0
-				for role in next, botMember.roles:iter() do
+				for role in botMember.roles:iter() do
 					if role.position > highestPos then
 						highestPos = role.position
 					end
