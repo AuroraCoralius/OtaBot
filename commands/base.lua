@@ -3,7 +3,6 @@ local commands = bot.commands
 local errorMsg = bot.errorMsg
 
 local print = print
-Msg = print
 local function doEval(msg, func)
 	local _msg = {}
 	local ret = { pcall(func) }

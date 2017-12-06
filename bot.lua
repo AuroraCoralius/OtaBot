@@ -2,6 +2,7 @@
 -- some fuckery
 _G.require = require
 setfenv(1, _G)
+Msg = print
 
 -- loading
 
