@@ -85,7 +85,7 @@ local function animeToEmbed(data, choice)
 	return _msg, multiple
 end
 commands[{"anime", "mal"}] = {
-	callback = function(msg, args, line)
+	callback = function(msg, line)
 		if not config.mal then errorMsg(msg.channel, "No MAL credentials.") return end
 		if not xml then errorMsg(msg.channel, "No XML module.") return end
 
@@ -148,14 +148,14 @@ commands[{"anime", "mal"}] = {
 }
 
 commands[{"translate", "tr", "тр"}] = {
-	callback = function(msg, args, line)
+	callback = function(msg, line, text, lang)
 		if not config.yandex_api then errorMsg("No Yandex API key provided.") return end
 
-		local lang = args[2] and args[2]:lower() or "en"
+		lang = lang and lang:lower() or "en"
 		local get = urlencode({
 			key = config.yandex_api,
 			lang = lang,
-			text = args[1]
+			text = text
 		})
 
 		local _msg = {}

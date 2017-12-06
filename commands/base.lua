@@ -38,7 +38,7 @@ local function doEval(msg, func)
 	msg.channel:send(_msg)
 end
 commands[{"eval", "l"}] = { -- l command will be used for sandboxed Lua sometime though
-	callback = function(msg, args, line)
+	callback = function(msg, line)
 		_G.self = client
 		_G.msg = msg
 		_G.print = function(...)
@@ -95,8 +95,7 @@ commands.update = {
 	ownerOnly = true
 }
 commands.help = {
-	callback = function(msg, args, line)
-		local cmd = args[1]
+	callback = function(msg, line, cmd)
 		local cmdData
 		if cmd then
 			cmd = cmd:lower()

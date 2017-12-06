@@ -154,7 +154,7 @@ client:on("messageCreate", function(msg)
 							return
 						end
 						bot.currentPrefix = usedPrefix
-						call(cmdData.callback, msg, args, line)
+						call(cmdData.callback, msg, line, unpack(args))
 					end
 				end
 			elseif cmdName:lower() == cmd:lower() then
@@ -164,7 +164,7 @@ client:on("messageCreate", function(msg)
 					return
 				end
 				bot.currentPrefix = usedPrefix
-				call(cmdData.callback, msg, args, line)
+				call(cmdData.callback, msg, line, unpack(args))
 			end
 		end
 	end
