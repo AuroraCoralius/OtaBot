@@ -53,6 +53,10 @@ commands[{"eval", "l"}] = { -- l command will be used for sandboxed Lua sometime
 			end
 			msg.channel:send(str)
 		end
+		_G.whereis = function(func)
+			msg.channel:send(bot.funcToGithub(func))
+		end
+
 		local func, err = loadstring("return " .. line, "eval")
 		if type(func) == "function" then
 			doEval(msg, func)
@@ -64,9 +68,11 @@ commands[{"eval", "l"}] = { -- l command will be used for sandboxed Lua sometime
 				errorMsg(msg.channel, bot.errorToGithub(tostring(err)), "Lua Error:")
 			end
 		end
+
 		_G.self = nil
 		_G.msg = nil
 		_G.print = print
+		_G.whereis = nil
 	end,
 	help = {
 		text = "Runs Lua in the bot's environment. Owner only.",
