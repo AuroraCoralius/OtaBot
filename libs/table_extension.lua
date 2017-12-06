@@ -22,24 +22,24 @@ end
 local i = 0
 local valueTypeEnclosure = {
 	["string"] = '"%s"',
-	["table"] = "[[%s]]",
-	["function"] = "[[%s]]",
+	["table"] = "<%s>",
+	["function"] = "<%s>",
 }
-local function table_tostring(tbl, depth)
-	local str = "{\n"
+local function table_tostring(tbl, depth, inline)
+	local str = "{" .. (inline and "" or "\n")
 	i = i + 1
 	local ourI = i
 	for k, v in next, tbl do
 		local lastK = k == table.getlastkey(tbl)
-		str = str .. ("\t"):rep(ourI) .. "[" .. (isstring(k) and '"%s"' or "%s"):format(tostring(k)) .. "] = "
+		str = str .. ("\t"):rep(ourI) .. "[" .. (isstring(k) and '"%s"' or "%s"):format(istable(k) and table_tostring(k, 1, true) or tostring(k)) .. "] = "
 		if type(v) == "table" and ourI ~= depth then
 			str = str .. table_tostring(v, depth - ourI)
 		else
 			str = str .. (valueTypeEnclosure[type(v)] or "%s"):format(tostring(v))
 		end
-		str = str .. (lastK and "" or ",\n")
+		str = str .. (lastK and "" or "," .. (inline and "" or "\n"))
 	end
-	str = str .. "\n" .. ("\t"):rep(ourI - 1) .. "}"
+	str = str .. (inline and "" or "\n") .. ("\t"):rep(ourI - 1) .. "}"
 	return str
 end
 function table.tostring(tbl, depth)
