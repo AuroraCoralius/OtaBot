@@ -105,7 +105,8 @@ commands.color = {
 						highestPos = role.position
 					end
 				end
-				role:moveUp(math.max(1, highestPos - 3)) -- 3 because it's position is 1 and we want to be BELOW its highest role
+				local pos = math.max(1, highestPos - 4) -- 4 because it's position is 1 and we want to be BELOW its highest role
+				print(role:moveUp(pos))
 			end
 
 			-- Set role.
