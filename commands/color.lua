@@ -84,7 +84,7 @@ commands.color = {
 			if not color then errorMsg(msg.channel, "Invalid color! Hex format only.") return end
 
 			-- Remove other color roles you had...
-			cleanColorRoles(member)
+			cleanColorRoles(authorMember)
 
 			-- Find role...
 			local role
@@ -136,7 +136,7 @@ commands.resetcolor = {
 		-- Do we have permissions to fuck with roles?
 		if botMember:hasPermission(enums.permission.manageRoles) then
 			-- Remove your color roles...
-			cleanColorRoles(member)
+			cleanColorRoles(authorMember)
 
 			-- Announce success!
 			msg.channel:send({
