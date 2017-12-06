@@ -4,10 +4,10 @@ local errorMsg = bot.errorMsg
 
 commands.seecolor = {
 	callback = function(msg, line, hex)
-		if not hex then errorMsg(msg.channel, "Invalid color! Hex format only.") return end
 		hex = hex2string(hex)
+		if not hex then errorMsg(msg.channel, "Invalid color! Hex format only.") return end
 
-		local color = hex and hex2num(hex) or nil
+		local color = hex2num(hex)
 		if not color then errorMsg(msg.channel, "Invalid color! Hex format only.") return end
 
 		local guild = msg.guild
@@ -55,6 +55,16 @@ commands.seecolor = {
 		example = "`{prefix}seecolor #FF0000` or `{prefix}seecolor FF0000` will show your name in red."
 	}
 }
+local function cleanColorRoles(member)
+	for role in member.roles:iter() do
+		if role.name:match("^#") then
+			member:removeRole(role.id)
+			if #role.members < 1 then
+				role:delete()
+			end
+		end
+	end
+end
 commands.color = {
 	callback = function(msg, line, hex)
 		local guild = msg.guild
@@ -67,21 +77,14 @@ commands.color = {
 
 		-- Do we have permissions to fuck with roles?
 		if botMember:hasPermission(enums.permission.manageRoles) then
-			if not hex then errorMsg(msg.channel, "Invalid color! Hex format only.") return end
 			hex = hex2string(hex)
+			if not hex then errorMsg(msg.channel, "Invalid color! Hex format only.") return end
 
-			local color = hex and hex2num(hex) or nil
+			local color = hex2num(hex)
 			if not color then errorMsg(msg.channel, "Invalid color! Hex format only.") return end
 
 			-- Remove other color roles you had...
-			for role in authorMember.roles:iter() do
-				if role.name:match("^#") then
-					authorMember:removeRole(role.id)
-					if #role.members < 1 then
-						role:delete()
-					end
-				end
-			end
+			cleanColorRoles(member)
 
 			-- Find role...
 			local role
@@ -96,7 +99,7 @@ commands.color = {
 				role = guild:createRole("#" .. hex)
 				-- local roleColor = Color(color) -- unnecessary
 				role:setColor(color)
-				role:moveUp() -- show above Tenno role
+				role:moveUp() -- TODO: move role to highest place
 			end
 
 			-- Set role.
@@ -132,12 +135,8 @@ commands.resetcolor = {
 
 		-- Do we have permissions to fuck with roles?
 		if botMember:hasPermission(enums.permission.manageRoles) then
-			-- Remove other color roles you had...
-			for role in authorMember.roles:iter() do
-				if role.name:match("^#") then
-					authorMember:removeRole(role.id)
-				end
-			end
+			-- Remove your color roles...
+			cleanColorRoles(member)
 
 			-- Announce success!
 			msg.channel:send({

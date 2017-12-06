@@ -1,5 +1,13 @@
 
+function _G.istable(val)
+	return type(val) == "table"
+end
+function _G.isstring(val)
+	return type(val) == "string"
+end
+
 function _G.hex2rgb(hex)
+	if not isstring(hex) then return end
 	hex = hex:gsub("#", "")
 	if hex:len() == 3 then
 		return tonumber("0x" .. hex:sub(1, 1)) * 17, tonumber("0x" .. hex:sub(2, 2)) * 17, tonumber("0x" .. hex:sub(3, 3)) * 17
@@ -8,6 +16,7 @@ function _G.hex2rgb(hex)
 	end
 end
 function _G.hex2num(hex)
+	if not isstring(hex) then return end
 	hex = hex:gsub("#", ""):upper()
 	if hex:len() == 3 then
 		return tonumber("0x" .. hex:sub(1, 1) .. hex:sub(1, 1) .. hex:sub(2, 2) .. hex:sub(2, 2) .. hex:sub(3, 3) .. hex:sub(3, 3))
@@ -16,6 +25,7 @@ function _G.hex2num(hex)
 	end
 end
 function _G.hex2string(hex)
+	if not isstring(hex) then return end
 	hex = hex:gsub("#", ""):upper()
 	if hex:len() == 3 then
 		return hex:sub(1, 1) .. hex:sub(1, 1) .. hex:sub(2, 2) .. hex:sub(2, 2) .. hex:sub(3, 3) .. hex:sub(3, 3)
@@ -39,12 +49,4 @@ function _G.sortedPairs(tbl, sortFn)
 	end
 	return iter
 end
-
-function _G.istable(val)
-	return type(val) == "table"
-end
-function _G.isstring(val)
-	return type(val) == "string"
-end
-
 
