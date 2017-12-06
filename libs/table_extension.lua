@@ -29,9 +29,18 @@ local function table_tostring(tbl, depth, inline)
 	local str = "{" .. (inline and "" or "\n")
 	i = i + 1
 	local ourI = i
+	local numOnly = true
+	for k in next, tbl do
+		if not isnumber(k) then
+			numOnly = false
+			break
+		end
+	end
 	for k, v in next, tbl do
 		local lastK = k == table.getlastkey(tbl)
-		str = str .. ("\t"):rep(ourI) .. "[" .. (isstring(k) and '"%s"' or "%s"):format(istable(k) and table_tostring(k, 1, true) or tostring(k)) .. "] = "
+		if not numOnly then
+			str = str .. ("\t"):rep(inline and 0 or ourI) .. "[" .. (isstring(k) and '"%s"' or "%s"):format(istable(k) and table_tostring(k, 1, true) or tostring(k)) .. "] = "
+		end
 		if type(v) == "table" and ourI ~= depth then
 			str = str .. table_tostring(v, depth - ourI)
 		else
@@ -39,7 +48,7 @@ local function table_tostring(tbl, depth, inline)
 		end
 		str = str .. (lastK and "" or "," .. (inline and " " or "\n"))
 	end
-	str = str .. (inline and "" or "\n") .. ("\t"):rep(ourI - 1) .. "}"
+	str = str .. (inline and "" or "\n") .. ("\t"):rep(inline and 0 or ourI - 1) .. "}"
 	return str
 end
 function table.tostring(tbl, depth)
