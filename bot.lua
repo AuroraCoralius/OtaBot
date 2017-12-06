@@ -30,8 +30,6 @@ childprocess = require("childprocess")
 local _, magick = pcall(require, "magick")
 _G.magick = magick
 
-xpcall(function() -- time for death
-
 -- discordia stuff
 discordia = require("discordia")
 enums = discordia.enums
@@ -73,17 +71,9 @@ client:on("ready", function()
 	if exit_code and exit_code ~= "0" then
 		bot.notifyOwners(":warning: Bot didn't exit cleanly, code: `" .. exit_code .. "`")
 	end
-	local exit_error = fs.readFileSync("exit_error")
-	if exit_error and exit_error ~= "" then
-		bot.notifyOwners("Error: ```\n" .. exit_error .. "\n```")
-	end
 end)
 
 event = require("./events.lua")
 
 client:run("Bot " .. config.token)
-
-end, function(err)
-	fs.writeFileSync("exit_error", err)
-end)
 
