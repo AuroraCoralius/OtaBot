@@ -42,4 +42,7 @@ function string.urlencode(str)
 	return str
 end
 
+function string.trim(str)
+	return (str:gsub("^%s*(.-)%s*$", "%1"))
+end
 

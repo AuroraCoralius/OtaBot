@@ -46,17 +46,22 @@ bot = {
 			client:getUser(id):send(content)
 		end
 	end,
-	github = "https://github.com/Re-Dream/dreambot_mk2/tree/master",
+	github = (function()
+		local remotes = io.popen("git remote -v"):read("*all")
+		local remote = remotes:match("origin\t(https://[%w%/%-%_%.]*)")
+		return remote
+	end)() .. "/tree/master",
 	funcToGithub = function(func)
 		local info = debug.getinfo(func)
 		if info.source == "eval" then return info.source end
-		local src = info.short_src
+		local src = info.source:gsub("^@", "")
 		local s, e = info.linedefined, info.lastlinedefined
-		local cwd = process.cwd()
-		return bot.github .. "/" .. src:gsub(cwd .. "/", "") .. "#L" .. s .. "-L" .. e
+		local cwd = process.cwd():gsub("\\", "/")
+		local filePath = src:sub(cwd:len() + 2) -- gsub wouldn't work. trailing space i guess
+		return bot.github .. "/" .. filePath .. "#L" .. s .. "-L" .. e
 	end,
 	errorToGithub = function(str)
-		local cwd = process.cwd()
+		local cwd = process.cwd():gsub("\\", "/")
 		str = str:gsub("<", "\\<")
 		str = str:gsub(">", "\\>")
 		str = str:gsub(cwd .. "/(.-):(%d+):?", "[%1:%2:](" .. bot.github .. "/" .. "%1#L%2)")
