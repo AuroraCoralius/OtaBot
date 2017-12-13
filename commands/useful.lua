@@ -235,7 +235,7 @@ local function sendSteamIDResult(msg, url)
 		end)
 		res:on("end", function()
 			local data = json.decode(body)
-			if data.response then
+			if data and data.response then
 				data = data.response
 				if data.players and table.count(data.players) > 0 then
 					data = table.getfirstvalue(data.players)
