@@ -73,7 +73,7 @@ function parseArgs(str) -- from mingeban2
 	return ret -- give results!!
 end
 
-function bot.errorMsg(channel, msg, title, footer)
+function bot.errorMsg(channel, msg, title, footer, icon_url)
 	local _msg = {
 		embed = {
 			title = title,
@@ -82,9 +82,9 @@ function bot.errorMsg(channel, msg, title, footer)
 			color = 0xFF4040
 		}
 	}
-	if footerText then
+	if footer then
 		_msg.embed.footer = {
-			icon_url = client.user.avatarURL,
+			icon_url = icon_url,
 			text = footer
 		}
 	end

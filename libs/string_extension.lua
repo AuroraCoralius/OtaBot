@@ -35,7 +35,7 @@ function string.urlencode(str)
 	if str then
     	str = str:gsub("\n", "\r\n")
     	str = str:gsub("([^%w ])",
-    		function (c) return string.format ("%%%02X", string.byte(c)) end
+    		function(c) return string.format("%%%02X", string.byte(c)) end
     	)
     	str = str:gsub(" ", "+")
 	end
@@ -43,6 +43,6 @@ function string.urlencode(str)
 end
 
 function string.trim(str)
-	return (str:gsub("^%s*(.-)%s*$", "%1"))
+	return str:gsub("^%s*(.-)%s*$", "%1")
 end
 

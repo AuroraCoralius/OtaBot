@@ -19,7 +19,7 @@ fs = require("fs")
 
 http = require("http")
 https = require("https")
-urlencode = require("querystring").stringify
+querystring = require("querystring")
 
 json = require("json")
 xml = require("./libs/xml.lua").newParser()

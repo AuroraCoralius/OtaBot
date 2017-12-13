@@ -7,6 +7,15 @@ function table.count(tbl)
 	return count
 end
 
+function table.getfirstkey(tbl)
+	for k, v in next, tbl do
+		return k
+	end
+end
+function table.getfirstvalue(tbl)
+	return tbl[table.getfirstkey(tbl)]
+end
+
 function table.getlastkey(tbl)
 	local lastK
 	for k, v in next, tbl do
@@ -14,7 +23,6 @@ function table.getlastkey(tbl)
 	end
 	return lastK
 end
-
 function table.getlastvalue(tbl)
 	return tbl[table.getlastkey(tbl)]
 end

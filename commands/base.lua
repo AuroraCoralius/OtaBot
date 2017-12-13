@@ -206,4 +206,19 @@ commands.ping = {
 	end,
 	help = "Pings the bot."
 }
+commands.invite = {
+	callback = function(msg)
+		msg.channel:send(string.format([[
+Invite link: https://discordapp.com/oauth2/authorize?client_id=%s&scope=bot&permissions=268435456
+The `Manage Roles` permission is required for color roles. If you have no use for it, feel free to remove it.
+]], client.user.id))
+	end,
+	help = "Posts the invite link for this bot."
+}
+commands.todo = {
+	callback = function(msg)
+		msg.channel:send("https://github.com/Re-Dream/dreambot_mk2/projects/1")
+	end,
+	ownerOnly = true
+}
 
