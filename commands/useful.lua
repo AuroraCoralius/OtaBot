@@ -277,7 +277,7 @@ local function sendSteamIDResult(msg, url)
 			if data.gameid then
 				_msg.embed.fields[#_msg.embed.fields + 1] = {
 					name = "Playing",
-					value = data.gameextrainfo .. " (" .. data.gameid .. ")"
+					value = (data.gameextrainfo or "??") .. " (" .. data.gameid .. ")"
 				}
 				if data.gameserverip and data.gameserverip ~= "0.0.0.0:0" then
 					_msg.embed.fields[#_msg.embed.fields + 1] = {
