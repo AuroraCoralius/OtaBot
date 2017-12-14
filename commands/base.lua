@@ -209,7 +209,7 @@ commands.ping = {
 commands.invite = {
 	callback = function(msg)
 		msg.channel:send(string.format([[
-Invite link: https://discordapp.com/oauth2/authorize?client_id=%s&scope=bot&permissions=268435456
+:robot: **Invite link**: <https://discordapp.com/oauth2/authorize?client_id=%s&scope=bot&permissions=268435456>
 The `Manage Roles` permission is required for color roles. If you have no use for it, feel free to remove it.
 ]], client.user.id))
 	end,
