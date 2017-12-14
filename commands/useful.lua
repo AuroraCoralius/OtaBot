@@ -173,7 +173,10 @@ commands[{"translate", "tr", "тр"}] = {
 						color = 0x00FFC0
 					}
 				else
-					errorMsg(msg.channel, data.message, "Translation Error:", "Yandex Translate API - code " .. data.code .. " - lang " .. lang)
+					coroutine.wrap(function()
+						errorMsg(msg.channel, data.message, "Translation Error:", "Yandex Translate API - code " .. data.code .. " - lang " .. lang)
+					end)()
+					return
 				end
 				coroutine.wrap(function()
 					msg.channel:send(_msg) -- well this is ass.
