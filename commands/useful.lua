@@ -166,7 +166,7 @@ commands[{"translate", "tr", "тр"}] = {
 				if data.code == 200 then
 					_msg.embed = {
 						title = "Translation to `" .. data.lang .. "`",
-						description = data.text[1],
+						description = data.text[1] or "No translation available",
 						footer = {
 							text = "Yandex Translate API"
 						},
