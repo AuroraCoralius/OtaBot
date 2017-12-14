@@ -141,7 +141,7 @@ client:on("messageCreate", function(msg)
 	if usedPrefix then
 		local args = text:split(" ")
 		local cmd = args[1]:sub(usedPrefix:len() + 1)
-		local line = text:sub(args[1]:len() + 2)
+		local line = text:sub(args[1]:len() + 2):trim()
 		args = parseArgs(line)
 
 		for cmdName, cmdData in next, bot.commands do
