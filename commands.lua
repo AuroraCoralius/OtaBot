@@ -119,7 +119,7 @@ end
 bot.getCommands() -- hahaa refresh .aliases.
 
 -- command handling
-local function call(callback, msg, args, line)
+local function call(callback, msg, line, ...)
 	local ok, err = xpcall(callback, function(err)
 		local traceback = debug.traceback("", 2)
 		print(err)
@@ -127,7 +127,7 @@ local function call(callback, msg, args, line)
 		coroutine.wrap(function()
 			bot.errorMsg(msg.channel, { name = err:gsub(process.cwd() .. "/", ""), value = bot.errorToGithub(traceback) }, "Command Error:")
 		end)()
-	end, msg, args, line)
+	end, msg, line, ...)
 end
 client:on("messageCreate", function(msg)
 	local text = msg.content
