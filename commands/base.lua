@@ -112,11 +112,11 @@ commands.help = {
 		if not cmd then
 			_msg = {
 				embed = {
-					title = "Help",
+					title = ":information_source: Help",
 					description = "Supply a command name to get specific information.",
 					fields = {
 						{
-							name = "Available commands:",
+							name = ":flashlight: Available commands:",
 							value = "`",
 						}
 					}
@@ -153,7 +153,7 @@ commands.help = {
 			end
 			_msg = {
 				embed = {
-					title = "Help: " .. (cmdData.aliases and table.concat(cmdData.aliases, ", ") or cmd),
+					title = ":information_source: Help: " .. (cmdData.aliases and table.concat(cmdData.aliases, ", ") or cmd),
 					description = istable(help) and help.text or help,
 				}
 			}
@@ -161,19 +161,19 @@ commands.help = {
 				_msg.embed.fields = {}
 				if help.usage then
 					table.insert(_msg.embed.fields, {
-						name = "Usage",
+						name = ":wrench: Usage",
 						value = help.usage
 					})
 				end
 				if help.example then
 					table.insert(_msg.embed.fields, {
-						name = "Example",
+						name = ":bulb: Example",
 						value = help.example
 					})
 				end
 			end
 		else
-			errorMsg(msg.channel, "No such command!", "Help")
+			errorMsg(msg.channel, "No such command!", ":information_source: Help")
 			return
 		end
 		_msg.embed.color = 0x50ACFF
@@ -190,7 +190,7 @@ commands.prefixes = {
 	callback = function(msg)
 		local _msg = {
 			embed = {
-				title = "Available prefixes:",
+				title = ":flashlight: Available prefixes:",
 				description = "`" .. table.concat(bot.commandPrefixes, ","):gsub("`", "\\`") .. "`",
 				color = 0x50ACFF
 			}

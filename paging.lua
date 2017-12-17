@@ -49,7 +49,7 @@ timer.setInterval(1000, function()
 	for msgId, page in next, paging.pages do
 		if page.endTime < os.time() then
 			coroutine.wrap(function()
-				page.message:setContent("(:alarm_clock:)")
+				page.message:setContent("(:hourglass:)")
 				page.message:clearReactions()
 			end)()
 			paging.pages[msgId] = nil

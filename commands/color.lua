@@ -69,7 +69,7 @@ commands.color = {
 	callback = function(msg, line, hex)
 		local guild = msg.guild
 		if not guild then
-			errorMsg(msg.channel, "Command only available on servers.")
+			errorMsg(msg.channel, "You can only use this command in a guild.")
 			return
 		end
 		local botMember = guild.members:get(client.user.id)
@@ -78,10 +78,10 @@ commands.color = {
 		-- Do we have permissions to fuck with roles?
 		if botMember:hasPermission(enums.permission.manageRoles) then
 			hex = hex2string(hex)
-			if not hex then errorMsg(msg.channel, "Invalid color! Hex format only.") return end
+			if not hex then errorMsg(msg.channel, "Invalid color! Hex format only.", ":rainbow: Color") return end
 
 			local color = hex2num(hex)
-			if not color then errorMsg(msg.channel, "Invalid color! Hex format only.") return end
+			if not color then errorMsg(msg.channel, "Invalid color! Hex format only.", ":rainbow: Color") return end
 
 			-- Remove other color roles you had...
 			cleanColorRoles(authorMember)
@@ -115,12 +115,12 @@ commands.color = {
 			-- Announce success!
 			msg.channel:send({
 				embed = {
-					description = authorMember.fullname .. "'s color is now `" .. hex .. "`.",
+					description = ":white_check_mark: **" .. authorMember.fullname .. "**'s color is now <@&`" .. role.id .. ">`.",
 					color = color
 				}
 			})
 		else
-			errorMsg(msg.channel, "Bot doesn't have permission to change roles!")
+			errorMsg(msg.channel, "Bot doesn't have permission to manage roles!", ":rainbow: Color")
 		end
 	end,
 
@@ -134,7 +134,7 @@ commands.resetcolor = {
 	callback = function(msg)
 		local guild = msg.guild
 		if not guild then
-			errorMsg(msg.channel, "Command only available on servers.")
+			errorMsg(msg.channel, "You can only use this command in a guild.")
 			return
 		end
 		local botMember = guild.members:get(client.user.id)

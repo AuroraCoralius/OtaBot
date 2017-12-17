@@ -75,7 +75,7 @@ local function animeToEmbed(data, choice)
 		color = 0xFF7FFF,
 		footer = {
 			icon_url = client.user.avatar_url,
-			text = airTime .. " - MyAnimeList API"
+			text = airTime .. " - :tv: MyAnimeList API"
 		}
 	}
 	if multiple then
@@ -86,7 +86,7 @@ local function animeToEmbed(data, choice)
 end
 commands[{"anime", "mal"}] = {
 	callback = function(msg, line)
-		if not config.mal then errorMsg(msg.channel, "No MAL credentials.") return end
+		if not config.mal then errorMsg(msg.channel, "No MyAnimeList credentials provided.") return end
 		if not xml then errorMsg(msg.channel, "No XML module.") return end
 
 		local query = line
@@ -127,7 +127,7 @@ commands[{"anime", "mal"}] = {
 					end)()
 				else
 					coroutine.wrap(function()
-						errorMsg(msg.channel, body, "MAL Error:", "MyAnimeList API")
+						errorMsg(msg.channel, body, "MyAnimeList Error:", ":tv: MyAnimeList API")
 					end)()
 				end
 			end)
@@ -136,7 +136,7 @@ commands[{"anime", "mal"}] = {
 			if found then return end
 
 			coroutine.wrap(function()
-				errorMsg(msg.channel, "No anime found.", "MAL Error:", "MyAnimeListAPI")
+				errorMsg(msg.channel, "No anime found.", "MyAnimeList Error:", ":tv: MyAnimeList API")
 			end)()
 		end)
 	end,
@@ -168,13 +168,13 @@ commands[{"translate", "tr", "тр"}] = {
 						title = "Translation to `" .. data.lang .. "`",
 						description = data.text[1] or "No translation available",
 						footer = {
-							text = "Yandex Translate API"
+							text = ":pencil: Yandex Translate API"
 						},
 						color = 0x00FFC0
 					}
 				else
 					coroutine.wrap(function()
-						errorMsg(msg.channel, data.message, "Translation Error:", "Yandex Translate API - code " .. data.code .. " - lang " .. lang)
+						errorMsg(msg.channel, data.message, "Translation Error:", ":pencil: Yandex Translate API - code " .. data.code .. " - lang " .. lang)
 					end)()
 					return
 				end
