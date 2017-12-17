@@ -75,7 +75,7 @@ local function animeToEmbed(data, choice)
 		color = 0xFF7FFF,
 		footer = {
 			icon_url = client.user.avatar_url,
-			text = airTime .. " - :tv: MyAnimeList API"
+			text = airTime .. " - MyAnimeList API"
 		}
 	}
 	if multiple then
@@ -127,7 +127,7 @@ commands[{"anime", "mal"}] = {
 					end)()
 				else
 					coroutine.wrap(function()
-						errorMsg(msg.channel, body, "MyAnimeList Error:", ":tv: MyAnimeList API")
+						errorMsg(msg.channel, body, "MyAnimeList Error:", "MyAnimeList API")
 					end)()
 				end
 			end)
@@ -136,7 +136,7 @@ commands[{"anime", "mal"}] = {
 			if found then return end
 
 			coroutine.wrap(function()
-				errorMsg(msg.channel, "No anime found.", "MyAnimeList Error:", ":tv: MyAnimeList API")
+				errorMsg(msg.channel, "No anime found.", "MyAnimeList Error:", "MyAnimeList API")
 			end)()
 		end)
 	end,
@@ -168,13 +168,13 @@ commands[{"translate", "tr", "тр"}] = {
 						title = "Translation to `" .. data.lang .. "`",
 						description = data.text[1] or "No translation available",
 						footer = {
-							text = ":pencil: Yandex Translate API"
+							text = "Yandex Translate API"
 						},
 						color = 0x00FFC0
 					}
 				else
 					coroutine.wrap(function()
-						errorMsg(msg.channel, data.message, "Translation Error:", ":pencil: Yandex Translate API - code " .. data.code .. " - lang " .. lang)
+						errorMsg(msg.channel, data.message, "Translation Error:", "Yandex Translate API - code " .. data.code .. " - lang " .. lang)
 					end)()
 					return
 				end
@@ -186,7 +186,7 @@ commands[{"translate", "tr", "тр"}] = {
 	end,
 	help = {
 		text = "Translate stuff.",
-		example = '`{prefix}tr "I like apples",en-fr` will translate the sentence "I like apples" to French from English.'
+		example = '`{prefix}tr "I like apples",en-fr` will translate the sentence "I like apples" from English to French .'
 	}
 }
 
@@ -251,7 +251,7 @@ local function sendSteamIDResult(msg, url)
 				end
 			else
 				coroutine.wrap(function()
-					errorMsg(msg.channel, "No response from Steam Web API?!", "Steam Web API Error:", "Steam Web API", steamIcon)
+					errorMsg(msg.channel, "No players found.", "Steam Web API Error:", "Steam Web API", steamIcon)
 				end)()
 				return
 			end

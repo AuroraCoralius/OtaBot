@@ -173,7 +173,7 @@ commands.help = {
 				end
 			end
 		else
-			errorMsg(msg.channel, "No such command!", ":information_source: Help")
+			errorMsg(msg.channel, "No such command!", "Help Error:")
 			return
 		end
 		_msg.embed.color = 0x50ACFF
