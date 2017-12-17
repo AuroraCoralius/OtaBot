@@ -148,7 +148,7 @@ commands.resetcolor = {
 			-- Announce success!
 			msg.channel:send({
 				embed = {
-					description = authorMember.fullname .. "'s color has been reset.",
+					description = "**" .. authorMember.fullname .. "**'s color has been reset.",
 					color = 0x7FFF40
 				}
 			})

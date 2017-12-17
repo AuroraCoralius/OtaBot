@@ -77,11 +77,16 @@ function bot.errorMsg(channel, msg, title, footer, icon_url)
 	local _msg = {
 		embed = {
 			title = title,
-			description = isstring(msg) and (":interrobang: " .. msg) or nil,
+			description = isstring(msg) and msg or nil,
 			fields = istable(msg) and { msg } or nil,
 			color = 0xFF4040
 		}
 	}
+	if _msg.embed.title then
+		_msg.embed.title = ":interrobang: " .. _msg.embed.title
+	else
+		_msg.embed.description = ":interrobang: " .. _msg.embed.description
+	end
 	if footer then
 		_msg.embed.footer = {
 			icon_url = icon_url,
