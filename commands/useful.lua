@@ -225,6 +225,7 @@ local onlineStates = {
 	[5] = "Looking to Trade",
 	[6] = "Looking to Play"
 }
+local steamIcon = "https://gmlounge.us/media/steam-white-transparent.png"
 local function sendSteamIDResult(msg, url)
 	local get = querystring.stringify({
 		key = config.steam,
@@ -244,13 +245,13 @@ local function sendSteamIDResult(msg, url)
 					data = table.getfirstvalue(data.players)
 				else
 					coroutine.wrap(function()
-						errorMsg(msg.channel, "No players found.", "Steam Web API Error:", "Steam Web API", "https://tenrys.pw/ShareX/2017/Dec/Doar.png")
+						errorMsg(msg.channel, "No players found.", "Steam Web API Error:", "Steam Web API", steamIcon)
 					end)()
 					return
 				end
 			else
 				coroutine.wrap(function()
-					errorMsg(msg.channel, "No response from Steam Web API?!", "Steam Web API Error:", "Steam Web API", "https://tenrys.pw/ShareX/2017/Dec/Doar.png")
+					errorMsg(msg.channel, "No response from Steam Web API?!", "Steam Web API Error:", "Steam Web API", steamIcon)
 				end)()
 				return
 			end
@@ -268,11 +269,10 @@ local function sendSteamIDResult(msg, url)
 					thumbnail = {
 						url = data.avatarfull
 					},
-					fields = {
-						{
-							name = "SteamID / SteamID64",
-							value = sid64ToSid(data.steamid) .. " / " .. data.steamid
-						},
+					fields = {},
+					footer = {
+						icon_url = steamIcon,
+						text = sid64ToSid(data.steamid) .. " / " .. data.steamid
 					},
 					color = data.personastate ~= 0 and (data.gameid and 0x7FFF40 or 0x50ACFF),
 				}
@@ -280,22 +280,22 @@ local function sendSteamIDResult(msg, url)
 			if data.gameid then
 				_msg.embed.fields[#_msg.embed.fields + 1] = {
 					name = "Playing",
-					value = (data.gameextrainfo or "??") .. " (" .. data.gameid .. ")"
+					value = (data.gameextrainfo or "No game name??") .. " (" .. data.gameid .. ")"
 				}
 				if data.gameserverip and data.gameserverip ~= "0.0.0.0:0" then
 					_msg.embed.fields[#_msg.embed.fields + 1] = {
-						name = "Server",
+						name = "Join",
 						value = "steam://connect/" .. data.gameserverip
 					}
 				end
 			end
 			if data.timecreated then
 				local day = os.date("%d", data.timecreated)
-				local memberSince = "Member since " .. os.date("%A %%s, %B %Y %X", data.timecreated):format(tostring(day) .. th(day))
+				local timeCreated = os.date("%A %%s, %B %Y %X", data.timecreated):format(tostring(day) .. th(day))
 
-				_msg.embed.footer = {
-					icon_url = "https://tenrys.pw/ShareX/2017/Dec/Doar.png",
-					text = memberSince
+				_msg.embed.fields[#_msg.embed.fields + 1] = {
+					name = "Account created",
+					value = timeCreated
 				}
 			end
 
