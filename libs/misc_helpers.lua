@@ -1,11 +1,5 @@
 
-local is = {
-	"table",
-	"string",
-	"number",
-	"function"
-}
-for _, _type in next, is do
+for _, _type in next, {	"table", "string", "number", "function" } do
 	_G["is" .. _type] = function(val)
 		return type(val) == _type
 	end
