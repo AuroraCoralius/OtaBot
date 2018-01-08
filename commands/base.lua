@@ -76,7 +76,7 @@ commands[{"eval", "l"}] = { -- l command will be used for sandboxed Lua sometime
 		example = "`{prefix}eval function foo() return 1 end return foo()` will result into 1 being output by the bot."
 	},
 	ownerOnly = true,
-	category = "Lua"
+	category = "Admin" -- "Lua"?
 }
 local function restart(msg, doUpdate)
 	local out = doUpdate and io.popen("git pull"):read("*all") or nil
@@ -105,8 +105,8 @@ local categoryIcons = { -- too lazy to find a better way
 	Lua = "<:lua:399925204953989130>", -- might break if I ever remove the emote from tenrys.pw
 	Utility = ":tools:",
 	Admin = ":lock:",
-	Colors = ":rainbow:",
-	Help = ":information_source:"
+	Colors = ":paintbrush:",
+	Misc = ":gear:"
 }
 local function iconizeCategoryName(cat)
 	if categoryIcons[cat] then
@@ -258,7 +258,7 @@ commands.help = {
 		usage = "`{prefix}help <command / category name>`\n`{prefix}help all`",
 		example = "`{prefix}help ping`\n`{prefix}help all`"
 	},
-	category = "Help"
+	category = "Misc"
 }
 commands.prefixes = {
 	callback = function(msg)
@@ -272,7 +272,7 @@ commands.prefixes = {
 		msg.channel:send(_msg)
 	end,
 	help = "Shows all prefixes the bot is willing to accept.",
-	category = "Help"
+	category = "Misc"
 }
 commands.ping = {
 	callback = function(msg)
@@ -280,7 +280,7 @@ commands.ping = {
 		sent:setContent(":alarm_clock: Pong! Took `" .. math.ceil((sent.createdAt - msg.createdAt) * 10000) * 0.1 .. "ms`.")
 	end,
 	help = "Pings the bot.",
-	category = "Utility"
+	category = "Misc"
 }
 commands.invite = {
 	callback = function(msg)
@@ -297,6 +297,6 @@ commands.todo = {
 		msg.channel:send("https://github.com/Re-Dream/dreambot_mk2/projects/1")
 	end,
 	ownerOnly = true,
-	category = "Admin"
+	category = "Misc"
 }
 
