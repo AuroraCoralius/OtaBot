@@ -110,7 +110,7 @@ commands.help = {
 		end
 
 		local _msg = {}
-		local desc = ("Supply a command or category name to get specific information.\nUse `%shelp all` to display all available commands in one go."):format(bot.currentPrefix)
+		local desc = "Supply a command or category name to get specific information."
 		if not cmd then
 			_msg = {
 				embed = {
@@ -234,7 +234,7 @@ commands.help = {
 		msg.channel:send(_msg)
 	end,
 	help = {
-		text = "Displays information on a command, or commands available in a category.",
+		text = "Displays specific information about a command, or all commands available in a category.\nUse `%shelp all` to display all available commands in one go.",
 		usage = "`{prefix}help <command / category name>`\n`{prefix}help all`",
 		example = "`{prefix}help ping`\n`{prefix}help all`"
 	},
