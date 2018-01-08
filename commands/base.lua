@@ -100,6 +100,19 @@ commands.update = {
 	ownerOnly = true,
 	category = "Admin"
 }
+
+local categoryIcons = { -- too lazy to find a better way
+	Lua = "<:lua:399925204953989130>", -- might break if I ever remove the emote from tenrys.pw
+	Utility = ":tools:",
+	Admin = ":lock:",
+	Colors = ":rainbow:",
+	Help = ":information_source:"
+}
+local function iconizeCategoryName(cat)
+	if categoryIcons[cat] then
+		return categoryIcons[cat] .. " " .. cat
+	end
+end
 commands.help = {
 	callback = function(msg, line, cmd)
 		local cmdData
@@ -122,7 +135,7 @@ commands.help = {
 
 			local field = 1
 			for catName, catCmds in next, bot.getCommands() do
-				_msg.embed.fields[field] = { name = catName, value = "`" }
+				_msg.embed.fields[field] = { name = iconizeCategoryName(catName), value = "`" }
 				local count = table.count(catCmds)
 				local i = 0
 				for cmd, cmdData in sortedPairs(catCmds) do
@@ -203,7 +216,7 @@ commands.help = {
 		elseif catCmds and table.count(catCmds) > 0 then
 			_msg = {
 				embed = {
-					title = ":information_source: Category Help: " .. catName,
+					title = ":information_source: Category Help: " .. iconizeCategoryName(catName),
 					description = desc,
 					fields = {
 						{
