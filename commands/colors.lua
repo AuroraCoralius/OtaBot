@@ -140,6 +140,8 @@ commands.resetcolor = {
 		local botMember = guild.members:get(client.user.id)
 		local authorMember = guild.members:get(msg.author.id)
 
+		if not authorMember then return false, "Webhooks unsupported." end
+
 		-- Do we have permissions to fuck with roles?
 		if botMember:hasPermission(enums.permission.manageRoles) then
 			-- Remove your color roles...
