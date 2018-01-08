@@ -147,7 +147,14 @@ commands.help = {
 						_msg.embed.fields[field].value = desc
 					end
 				end
-				_msg.embed.fields[field].value = _msg.embed.fields[field].value .. "`"
+
+				if i == 0 then -- if no commands are available (example if you're not admin) then don't show the category
+					_msg.embed.fields[field] = nil
+					field = field - 1
+				else
+					_msg.embed.fields[field].value = _msg.embed.fields[field].value .. "`"
+				end
+
 				field = field + 1
 			end
 		elseif cmd:lower():trim() == "all" then
