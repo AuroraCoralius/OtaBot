@@ -1,6 +1,5 @@
 
 local commands = bot.commands
-local errorMsg = bot.errorMsg
 
 local print = print
 local function doEval(msg, func)
@@ -8,10 +7,7 @@ local function doEval(msg, func)
 	local ret = { pcall(func) }
 	local ok = ret[1]
 	table.remove(ret, 1)
-	if not ok then
-		errorMsg(msg.channel, bot.errorToGithub(tostring(ret[1])), "Lua Error:")
-		return
-	end
+	if not ok then return false, bot.errorToGithub(tostring(ret[1])) end
 	if ret[1] then
 		for k, v in next, ret do
 			if not isstring(v) then
@@ -57,15 +53,14 @@ commands[{"eval", "l"}] = { -- l command will be used for sandboxed Lua sometime
 			msg.channel:send(bot.funcToGithub(func))
 		end
 
+		local ret = {}
 		local func, err = loadstring("return " .. line, "eval")
 		if type(func) == "function" then
-			doEval(msg, func)
+			ret = { doEval(msg, func) }
 		else
 			local func, err = loadstring(line, "eval")
 			if type(func) == "function" then
-				doEval(msg, func)
-			else
-				errorMsg(msg.channel, bot.errorToGithub(tostring(err)), "Lua Error:")
+				ret = { doEval(msg, func) }
 			end
 		end
 
@@ -73,12 +68,15 @@ commands[{"eval", "l"}] = { -- l command will be used for sandboxed Lua sometime
 		_G.msg = nil
 		_G.print = print
 		_G.whereis = nil
+
+		return unpack(ret)
 	end,
 	help = {
 		text = "Runs Lua in the bot's environment. Owner only.",
 		example = "`{prefix}eval function foo() return 1 end return foo()` will result into 1 being output by the bot."
 	},
-	ownerOnly = true
+	ownerOnly = true,
+	category = "Lua"
 }
 local function restart(msg, doUpdate)
 	local out = doUpdate and io.popen("git pull"):read("*all") or nil
@@ -91,29 +89,59 @@ commands.restart = {
 		restart(msg, false)
 	end,
 	help = "Restarts the bot. Owner only.",
-	ownerOnly = true
+	ownerOnly = true,
+	category = "Admin"
 }
 commands.update = {
 	callback = function(msg)
 		restart(msg, true)
 	end,
 	help = "Updates the bot from its git repository and restarts it. Owner only.",
-	ownerOnly = true
+	ownerOnly = true,
+	category = "Admin"
 }
 commands.help = {
 	callback = function(msg, line, cmd)
 		local cmdData
 		if cmd then
-			cmd = cmd:lower()
+			cmd = cmd:lower():trim()
 			cmdData = bot.getCommand(cmd)
+			catCmds, catName = bot.getCommands(cmd)
 		end
 
 		local _msg = {}
+		local desc = ("Supply a command or category name to get specific information.\nUse `%shelp all` to display all available commands in one go."):format(bot.currentPrefix)
 		if not cmd then
 			_msg = {
 				embed = {
-					title = ":information_source: Help",
-					description = "Supply a command name to get specific information.",
+					title = ":information_source: Help: All Categories",
+					description = desc,
+					fields = {}
+				}
+			}
+
+			local field = 1
+			for catName, catCmds in next, bot.getCommands() do
+				_msg.embed.fields[field] = { name = catName, value = "`" }
+				local count = table.count(catCmds)
+				local i = 0
+				for cmd, cmdData in sortedPairs(catCmds) do
+					if not cmdData.ownerOnly or (cmdData.ownerOnly and config.owners[msg.author.id]) then
+						i = i + 1
+						local desc = _msg.embed.fields[field].value
+						local name = cmd
+						desc = desc .. name .. (i == count and "" or ", ")
+						_msg.embed.fields[field].value = desc
+					end
+				end
+				_msg.embed.fields[field].value = _msg.embed.fields[field].value .. "`"
+				field = field + 1
+			end
+		elseif cmd:lower():trim() == "all" then
+			_msg = {
+				embed = {
+					title = ":information_source: Help: All Commands",
+					description = desc,
 					fields = {
 						{
 							name = ":flashlight: Available commands:",
@@ -123,9 +151,9 @@ commands.help = {
 				}
 			}
 
-			local count = table.count(bot.getCommands())
+			local count = table.count(bot.getCommands(true))
 			local i = 0
-			for cmd, cmdData in sortedPairs(bot.getCommands()) do
+			for cmd, cmdData in sortedPairs(bot.getCommands(true)) do
 				if not cmdData.ownerOnly or (cmdData.ownerOnly and config.owners[msg.author.id]) then
 					i = i + 1
 					local desc = _msg.embed.fields[1].value
@@ -153,7 +181,7 @@ commands.help = {
 			end
 			_msg = {
 				embed = {
-					title = ":information_source: Help: " .. (cmdData.aliases and table.concat(cmdData.aliases, ", ") or cmd),
+					title = ":information_source: Command Help: " .. (cmdData.aliases and table.concat(cmdData.aliases, ", ") or cmd),
 					description = istable(help) and help.text or help,
 				}
 			}
@@ -172,19 +200,45 @@ commands.help = {
 					})
 				end
 			end
+		elseif catCmds and table.count(catCmds) > 0 then
+			_msg = {
+				embed = {
+					title = ":information_source: Category Help: " .. catName,
+					description = desc,
+					fields = {
+						{
+							name = ":flashlight: Available commands:",
+							value = "`",
+						}
+					}
+				}
+			}
+
+			local count = table.count(bot.getCommands(cmd))
+			local i = 0
+			for cmd, cmdData in sortedPairs(bot.getCommands(cmd)) do
+				if not cmdData.ownerOnly or (cmdData.ownerOnly and config.owners[msg.author.id]) then
+					i = i + 1
+					local desc = _msg.embed.fields[1].value
+					local name = cmd
+					desc = desc .. name .. (i == count and "" or ", ")
+					_msg.embed.fields[1].value = desc
+				end
+			end
+			_msg.embed.fields[1].value = _msg.embed.fields[1].value .. "`"
 		else
-			errorMsg(msg.channel, "No such command!", "Help Error:")
-			return
+			return false, "No such command / category!"
 		end
 		_msg.embed.color = 0x50ACFF
 
 		msg.channel:send(_msg)
 	end,
 	help = {
-		text = "Displays this.",
-		usage = "`{prefix}help <command name>`",
-		example = "`{prefix}help ping`"
-	}
+		text = "Displays information on a command, or commands available in a category.",
+		usage = "`{prefix}help <command / category name>`\n`{prefix}help all`",
+		example = "`{prefix}help ping`\n`{prefix}help all`"
+	},
+	category = "Help"
 }
 commands.prefixes = {
 	callback = function(msg)
@@ -197,14 +251,16 @@ commands.prefixes = {
 		}
 		msg.channel:send(_msg)
 	end,
-	help = "Shows all prefixes the bot is willing to accept."
+	help = "Shows all prefixes the bot is willing to accept.",
+	category = "Help"
 }
 commands.ping = {
 	callback = function(msg)
 		local sent = msg.channel:send(":alarm_clock: Ping?")
 		sent:setContent(":alarm_clock: Pong! Took `" .. math.ceil((sent.createdAt - msg.createdAt) * 10000) * 0.1 .. "ms`.")
 	end,
-	help = "Pings the bot."
+	help = "Pings the bot.",
+	category = "Utility"
 }
 commands.invite = {
 	callback = function(msg)
@@ -213,12 +269,14 @@ commands.invite = {
 The `Manage Roles` permission is required for color roles. If you have no use for it, feel free to remove it.
 ]], client.user.id))
 	end,
-	help = "Posts the invite link for this bot."
+	help = "Posts the invite link for this bot.",
+	category = "Utility",
 }
 commands.todo = {
 	callback = function(msg)
 		msg.channel:send("https://github.com/Re-Dream/dreambot_mk2/projects/1")
 	end,
-	ownerOnly = true
+	ownerOnly = true,
+	category = "Admin"
 }
 

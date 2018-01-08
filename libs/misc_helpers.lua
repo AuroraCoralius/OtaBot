@@ -33,12 +33,12 @@ function _G.hex2string(hex)
 	end
 end
 
-function _G.sortedPairs(tbl, sortFn)
+function _G.sortedPairs(tbl)
 	local keys = {}
 	for k, _ in next, tbl do
 		table.insert(keys, k)
 	end
-	table.sort(keys, sortFn)
+	table.sort(keys)
 	local i = 0
 	local iter = function()
 		i = i + 1

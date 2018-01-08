@@ -1,6 +1,5 @@
 
 local commands = bot.commands
-local errorMsg = bot.errorMsg
 
 local animeChoice = 1
 local function animeToEmbed(data, choice)
@@ -86,16 +85,17 @@ local function animeToEmbed(data, choice)
 end
 commands[{"anime", "mal"}] = {
 	callback = function(msg, line)
-		if not config.mal then errorMsg(msg.channel, "No MyAnimeList credentials provided.") return end
-		if not xml then errorMsg(msg.channel, "No XML module.") return end
+		if not config.mal then return false, "No MyAnimeList credentials provided." end
+		if not xml then return false, "No XML module." end
 
 		local query = line
-		if not query then errorMsg(msg.channel, "No search query provided.") return end
+		if not query then return false, "No search query provided." end
 
 		local get = querystring.stringify({
 			q = query
 		})
 
+		local ret = {}
 		local url = "https://myanimelist.net/api/anime/search.xml?" .. get
 		local options = http.parseUrl(url)
 		if not options.headers then options.headers = {} end
@@ -126,30 +126,29 @@ commands[{"anime", "mal"}] = {
 						end
 					end)()
 				else
-					coroutine.wrap(function()
-						errorMsg(msg.channel, body, "MyAnimeList Error:", "MyAnimeList API")
-					end)()
+					ret = { false, body, "MyAnimeList API" }
 				end
 			end)
 		end)
 		timer.setTimeout(5000, function()
 			if found then return end
 
-			coroutine.wrap(function()
-				errorMsg(msg.channel, "No anime found.", "MyAnimeList Error:", "MyAnimeList API")
-			end)()
+			ret = { false, "No anime found.", "MyAnimeList API" }
 		end)
+
+		return unpack(ret)
 	end,
 	help = {
 		text = "Provides condensed information about an anime.\n*Makes uses of reactions to create a page system that the caller can use to browse through multiple results!*",
 		usage = "`{prefix}anime <anime name>`",
 		example = "`{prefix}anime Charlotte`"
-	}
+	},
+	category = "Utility"
 }
 
 commands[{"translate", "tr", "тр"}] = {
 	callback = function(msg, line, text, lang)
-		if not config.yandex then errorMsg("No Yandex API key provided.") return end
+		if not config.yandex then return false, "No Yandex API key provided." end
 
 		lang = lang and lang:lower() or "en"
 		local get = querystring.stringify({
@@ -158,6 +157,7 @@ commands[{"translate", "tr", "тр"}] = {
 			text = text
 		})
 
+		local ret = {}
 		local _msg = {}
 		local url = "https://translate.yandex.net/api/v1.5/tr.json/translate?" .. get
 		local req = https.get(url, function(res)
@@ -173,9 +173,7 @@ commands[{"translate", "tr", "тр"}] = {
 						color = 0x00FFC0
 					}
 				else
-					coroutine.wrap(function()
-						errorMsg(msg.channel, data.message, "Translation Error:", "Yandex Translate API - code " .. data.code .. " - lang " .. lang)
-					end)()
+					ret = { false, data.message, "Yandex Translate API - code " .. data.code .. " - lang " .. lang }
 					return
 				end
 				coroutine.wrap(function()
@@ -183,11 +181,14 @@ commands[{"translate", "tr", "тр"}] = {
 				end)()
 			end)
 		end)
+
+		return unpack(ret)
 	end,
 	help = {
 		text = "Translate stuff.",
 		example = '`{prefix}tr "I like apples",en-fr` will translate the sentence "I like apples" from English to French .'
-	}
+	},
+	category = "Utility"
 }
 
 local function validSteamID(sid)
@@ -227,6 +228,7 @@ local onlineStates = {
 }
 local steamIcon = "https://gmlounge.us/media/steam-white-transparent.png"
 local function sendSteamIDResult(msg, url)
+	local ret = {}
 	local get = querystring.stringify({
 		key = config.steam,
 		steamids = url
@@ -244,15 +246,11 @@ local function sendSteamIDResult(msg, url)
 				if data.players and table.count(data.players) > 0 then
 					data = table.getfirstvalue(data.players)
 				else
-					coroutine.wrap(function()
-						errorMsg(msg.channel, "No players found.", "Steam Web API Error:", "Steam Web API", steamIcon)
-					end)()
+					ret = { false, "No players found.", "Steam Web API", steamIcon }
 					return
 				end
 			else
-				coroutine.wrap(function()
-					errorMsg(msg.channel, "No players found.", "Steam Web API Error:", "Steam Web API", steamIcon)
-				end)()
+				ret = { false, "No players found.", "Steam Web API", steamIcon }
 				return
 			end
 
@@ -303,6 +301,8 @@ local function sendSteamIDResult(msg, url)
 				msg.channel:send(_msg)
 			end)()
 		end)
+
+		return unpack(ret)
 	end)
 end
 commands[{"steam", "steamid", "sid"}] = {
@@ -315,8 +315,9 @@ commands[{"steam", "steamid", "sid"}] = {
 		if validSteamID(line) then
 			local sid64 = sidToSid64(line:upper():trim())
 			local url = sid64
-			sendSteamIDResult(msg, url)
+			return sendSteamIDResult(msg, url)
 		elseif line:match("^https?://steamcommunity.com/id/%w*/?") or line:match("^https?://steamcommunity.com/profiles/%d*/?") then
+			local ret = {}
 			local url = line:gsub("/*$", ""):gsub("^https", "http") .. "/?xml=1"
 			local options = http.parseUrl(url)
 			local body = ""
@@ -326,12 +327,14 @@ commands[{"steam", "steamid", "sid"}] = {
 				end)
 				res:on("end", function()
 					url = body:match("<steamID64>(.*)</steamID64>")
-					sendSteamIDResult(msg, url)
+					ret = { sendSteamIDResult(msg, url) }
 				end)
 			end)
+			return unpack(ret)
 		elseif type(tonumber(line)) == "number" then
-			sendSteamIDResult(msg, line)
+			return sendSteamIDResult(msg, line)
 		else
+			local ret = {}
 			local get = querystring.urlencode(line)
 			local url = "http://steamcommunity.com/id/" .. get .. "/?xml=1"
 			local options = http.parseUrl(url)
@@ -342,9 +345,10 @@ commands[{"steam", "steamid", "sid"}] = {
 				end)
 				res:on("end", function()
 					url = body:match("<steamID64>(.*)</steamID64>")
-					sendSteamIDResult(msg, url)
+					ret = { sendSteamIDResult(msg, url) }
 				end)
 			end)
+			return unpack(ret)
 		end
 	end,
 	help = {
@@ -353,6 +357,7 @@ commands[{"steam", "steamid", "sid"}] = {
 `{prefix}steam STEAM_0:1:32476157`
 `{prefix}steam 76561198025218043`
 `{prefix}steam https://steamcommunity.com/id/tenrys`]]
-	}
+	},
+	category = "Utility"
 }
 

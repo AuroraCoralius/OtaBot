@@ -97,22 +97,53 @@ function bot.errorMsg(channel, msg, title, footer, icon_url)
 end
 
 bot.commands = {}
-function bot.getCommands()
+function bot.getCommands(cat)
 	local tbl = {}
-	for cmd, cmdData in next, bot.commands do
-		if istable(cmd) then
-			for _, name in next, cmd do
-				cmdData.aliases = cmd
-				tbl[name] = cmdData
+	if not cat then
+		for cmd, cmdData in next, bot.commands do
+			local cat = cmdData.category or "No Category"
+			if not tbl[cat] then
+				tbl[cat] = {}
 			end
-		else
-			tbl[cmd] = cmdData
+			if istable(cmd) then
+				for _, name in next, cmd do
+					cmdData.aliases = cmd
+					tbl[cat][name] = cmdData
+				end
+			else
+				tbl[cat][cmd] = cmdData
+			end
+		end
+	elseif cat == true then
+		for cmd, cmdData in next, bot.commands do
+			if istable(cmd) then
+				for _, name in next, cmd do
+					cmdData.aliases = cmd
+					tbl[name] = cmdData
+				end
+			else
+				tbl[cmd] = cmdData
+			end
+		end
+	else
+		for cmd, cmdData in next, bot.commands do
+			if cmdData.category and cmdData.category:lower() == cat:lower() then
+				cat = cmdData.category -- preserve original case
+				if istable(cmd) then
+					for _, name in next, cmd do
+						cmdData.aliases = cmd
+						tbl[name] = cmdData
+					end
+				else
+					tbl[cmd] = cmdData
+				end
+			end
 		end
 	end
-	return tbl
+	return tbl, cat
 end
 function bot.getCommand(cmd)
-	return bot.getCommands()[cmd:lower()]
+	return bot.getCommands(true)[cmd:lower()]
 end
 
 -- load commands
@@ -124,15 +155,18 @@ end
 bot.getCommands() -- hahaa refresh .aliases.
 
 -- command handling
-local function call(callback, msg, line, ...)
-	local ok, err = xpcall(callback, function(err)
-		local traceback = debug.traceback("", 2)
+local function call(cmdData, cmdName, msg, line, ...)
+	local _, ok, err, footer, icon_url = xpcall(cmdData.callback, function(err)
+		local traceback = debug.traceback("Error while running " .. cmdName .. " command:", 2)
 		print(err)
 		print(traceback)
 		coroutine.wrap(function()
-			bot.errorMsg(msg.channel, { name = err:gsub(process.cwd() .. "/", ""), value = bot.errorToGithub(traceback) }, "Command Error:")
+			bot.errorMsg(msg.channel, { name = err:gsub(process.cwd() .. "/", ""), value = bot.errorToGithub(traceback) }, cmdName .. " Internal Error:")
 		end)()
 	end, msg, line, ...)
+	if ok == false then
+		bot.errorMsg(msg.channel, err, cmdName .. " Error:", footer, icon_url)
+	end
 end
 client:on("messageCreate", function(msg)
 	local text = msg.content
@@ -155,21 +189,21 @@ client:on("messageCreate", function(msg)
 					if cmdName:lower() == cmd:lower() then
 						msg.channel:broadcastTyping()
 						if cmdData.ownerOnly and not config.owners[msg.author.id] then
-							bot.errorMsg(msg.channel, "No access!", "Command Error:")
+							bot.errorMsg(msg.channel, "No access!", cmdName .. " Error:")
 							return
 						end
 						bot.currentPrefix = usedPrefix
-						call(cmdData.callback, msg, line, unpack(args))
+						call(cmdData, cmdName, msg, line, unpack(args))
 					end
 				end
 			elseif cmdName:lower() == cmd:lower() then
 				msg.channel:broadcastTyping()
 				if cmdData.ownerOnly and not config.owners[msg.author.id] then
-					bot.errorMsg(msg.channel, "No access!", "Command Error:")
+					bot.errorMsg(msg.channel, "No access!", cmdName .. " Error:")
 					return
 				end
 				bot.currentPrefix = usedPrefix
-				call(cmdData.callback, msg, line, unpack(args))
+				call(cmdData, cmdName, msg, line, unpack(args))
 			end
 		end
 	end

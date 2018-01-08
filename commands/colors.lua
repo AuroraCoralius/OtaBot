@@ -1,14 +1,13 @@
 
 local commands = bot.commands
-local errorMsg = bot.errorMsg
 
 commands.seecolor = {
 	callback = function(msg, line, hex)
 		hex = hex2string(hex)
-		if not hex then errorMsg(msg.channel, "Invalid color! Hex format only.", "Colors Error:") return end
+		if not hex then return false, "Invalid color! Hex format only." end
 
 		local color = hex2num(hex)
-		if not color then errorMsg(msg.channel, "Invalid color! Hex format only.", "Colors Error:") return end
+		if not color then return false, "Invalid color! Hex format only." end
 
 		local guild = msg.guild
 		local botMember, authorMember
@@ -53,7 +52,8 @@ commands.seecolor = {
 		text = "Preview a color!",
 		usage = "`{prefix}seecolor <color in Hexadecimal format>`\nYou can grab Hex color codes from [there](http://htmlcolorcodes.com/color-picker/).",
 		example = "`{prefix}seecolor #FF0000` or `{prefix}seecolor FF0000` will show your name in red."
-	}
+	},
+	category = "Colors"
 }
 local function cleanColorRoles(member)
 	for role in member.roles:iter() do
@@ -69,19 +69,20 @@ commands.color = {
 	callback = function(msg, line, hex)
 		local guild = msg.guild
 		if not guild then
-			errorMsg(msg.channel, "You can only use this command in a guild.")
-			return
+			return false, "You can only use this command in a guild."
 		end
 		local botMember = guild.members:get(client.user.id)
 		local authorMember = guild.members:get(msg.author.id)
 
+		if not authorMember then return false, "Webhooks unsupported." end
+
 		-- Do we have permissions to fuck with roles?
 		if botMember:hasPermission(enums.permission.manageRoles) then
 			hex = hex2string(hex)
-			if not hex then errorMsg(msg.channel, "Invalid color! Hex format only.", "Colors Error:") return end
+			if not hex then return false, "Invalid color! Hex format only." end
 
 			local color = hex2num(hex)
-			if not color then errorMsg(msg.channel, "Invalid color! Hex format only.", "Colors Error:") return end
+			if not color then return false, "Invalid color! Hex format only." end
 
 			-- Remove other color roles you had...
 			cleanColorRoles(authorMember)
@@ -120,22 +121,21 @@ commands.color = {
 				}
 			})
 		else
-			errorMsg(msg.channel, "Bot doesn't have permission to manage roles!", "Colors Error:")
+			return false, "Bot doesn't have permission to manage roles!"
 		end
 	end,
-
 	help = {
 		text = "Set your name color! Gives you a role with the supplied color.",
 		usage = "`{prefix}color <color in Hexadecimal format>`\nYou can grab Hex color codes from [there](http://htmlcolorcodes.com/color-picker/).",
 		example = "`{prefix}color #FF0000` or `{prefix}color FF0000` will set your name color to red."
-	}
+	},
+	category = "Colors"
 }
 commands.resetcolor = {
 	callback = function(msg)
 		local guild = msg.guild
 		if not guild then
-			errorMsg(msg.channel, "You can only use this command in a guild.")
-			return
+			return false, "You can only use this command in a guild."
 		end
 		local botMember = guild.members:get(client.user.id)
 		local authorMember = guild.members:get(msg.author.id)
@@ -153,9 +153,10 @@ commands.resetcolor = {
 				}
 			})
 		else
-			errorMsg(msg.channel, "Bot doesn't have permission to change roles!")
+			return false, "Bot doesn't have permission to change roles!"
 		end
 	end,
-	help = "Reset your color."
+	help = "Reset your color.",
+	category = "Colors"
 }
 
