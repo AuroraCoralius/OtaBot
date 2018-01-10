@@ -170,7 +170,6 @@ local function call(cmdData, cmdName, msg, line, ...)
 	if ok == false then
 		bot.errorMsg(msg.channel, err, cmdName .. " Error:", footer, icon_url)
 	end
-	cmdError = nil
 end
 client:on("messageCreate", function(msg)
 	local text = msg.content
