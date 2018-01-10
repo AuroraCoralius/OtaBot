@@ -131,10 +131,13 @@ commands[{"anime", "mal"}] = {
 			end)
 		end)
 		timer.setTimeout(5000, function()
-			if found then return end
-
-			ret = { false, "No anime found.", "MyAnimeList API" }
+			if not found then
+				found = true
+				ret = { false, "No anime found.", "MyAnimeList API" }
+			end
 		end)
+
+		while not found do end
 
 		return unpack(ret)
 	end,
