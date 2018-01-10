@@ -156,6 +156,9 @@ bot.getCommands() -- hahaa refresh .aliases.
 
 -- command handling
 local function call(cmdData, cmdName, msg, line, ...)
+	cmdError = function(err, footer, icon_url)
+		coroutine.wrap(function() bot.errorMsg(msg.channel, err, cmdName .. "Error:", footer, icon_url) end)()
+	end
 	local _, ok, err, footer, icon_url = xpcall(cmdData.callback, function(err)
 		local traceback = debug.traceback("Error while running " .. cmdName .. " command:", 2)
 		print(err)
@@ -167,6 +170,7 @@ local function call(cmdData, cmdName, msg, line, ...)
 	if ok == false then
 		bot.errorMsg(msg.channel, err, cmdName .. " Error:", footer, icon_url)
 	end
+	cmdError = nil
 end
 client:on("messageCreate", function(msg)
 	local text = msg.content
@@ -194,6 +198,7 @@ client:on("messageCreate", function(msg)
 						end
 						bot.currentPrefix = usedPrefix
 						call(cmdData, cmdName, msg, line, unpack(args))
+						break
 					end
 				end
 			elseif cmdName:lower() == cmd:lower() then

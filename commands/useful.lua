@@ -95,7 +95,6 @@ commands[{"anime", "mal"}] = {
 			q = query
 		})
 
-		local ret = {}
 		local url = "https://myanimelist.net/api/anime/search.xml?" .. get
 		local options = http.parseUrl(url)
 		if not options.headers then options.headers = {} end
@@ -126,20 +125,16 @@ commands[{"anime", "mal"}] = {
 						end
 					end)()
 				else
-					ret = { false, body, "MyAnimeList API" }
+					cmdError(body, "MyAnimeList API")
 				end
 			end)
 		end)
-		timer.setTimeout(5000, function()
+
+		timer.setTimeout(3000, function()
 			if not found then
-				found = true
-				ret = { false, "No anime found.", "MyAnimeList API" }
+				cmdError("No anime found.", "MyAnimeList API")
 			end
 		end)
-
-		while not found do end
-
-		return unpack(ret)
 	end,
 	help = {
 		text = "Provides condensed information about an anime.\n*Makes uses of reactions to create a page system that the caller can use to browse through multiple results!*",
