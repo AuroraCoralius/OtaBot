@@ -31,7 +31,7 @@ local function onReaction(reaction, userId)
 	local page = paging.pages[reaction.message.id]
 	if page and page.endTime > os.time() then
 		-- if reaction.message.id ~= page.message.id then return end -- redundant
-		if userId ~= page.author.id then return end
+		if userId ~= page.author.id and not config.owners[userId] then return end
 
 		local emoji = reaction.emojiName
 		if emoji == emojis.backArrow or emoji == emojis.fwdArrow then
