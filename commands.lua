@@ -156,7 +156,7 @@ bot.getCommands() -- hahaa refresh .aliases.
 
 -- command handling
 local function call(cmdData, cmdName, msg, line, ...)
-	cmdError = function(err, footer, icon_url)
+	_G.cmdError = function(err, footer, icon_url)
 		coroutine.wrap(function() bot.errorMsg(msg.channel, err, cmdName .. "Error:", footer, icon_url) end)()
 	end
 	local _, ok, err, footer, icon_url = xpcall(cmdData.callback, function(err)
