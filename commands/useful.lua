@@ -130,7 +130,7 @@ commands[{"anime", "mal"}] = {
 			end)
 		end)
 
-		timer.setTimeout(3000, function()
+		timer.setTimeout(5000, function()
 			if not found then
 				cmdError("No anime found.", "MyAnimeList API")
 			end
