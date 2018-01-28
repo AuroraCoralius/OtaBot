@@ -111,6 +111,8 @@ local categoryIcons = { -- too lazy to find a better way
 local function iconizeCategoryName(cat)
 	if categoryIcons[cat] then
 		return categoryIcons[cat] .. " " .. cat
+	else
+		return cat
 	end
 end
 commands.help = {
