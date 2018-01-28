@@ -1,15 +1,15 @@
--- 『 』
--- ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ
--- ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ
 
 local commands = bot.commands
 
+local fwSmall = ("ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ"):split("")
+local fwBig = ("ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ"):split("")
+
 local charMap = {}
 for i = 97, 122 do
-	charMap[i] = string.char(i)
+	charMap[i] = fwSmall[i - 96]
 end
 for i = 65, 90 do
-	charMap[i] = string.char(i)
+	charMap[i] = fwBig[i - 96]
 end
 
 commands.animetalk = {
