@@ -50,8 +50,8 @@ commands.seecolor = {
 	end,
 	help = {
 		text = "Preview a color!",
-		usage = "`{prefix}seecolor <color in Hexadecimal format>`\nYou can grab Hex color codes from [there](http://htmlcolorcodes.com/color-picker/).",
-		example = "`{prefix}seecolor #FF0000` or `{prefix}seecolor FF0000` will show your name in red."
+		usage = "`{prefix}{cmd} <color in Hexadecimal format>`\nYou can grab Hex color codes from [there](http://htmlcolorcodes.com/color-picker/).",
+		example = "`{prefix}{cmd} #FF0000` or `{prefix}{cmd} FF0000` will show your name in red."
 	},
 	category = "Colors"
 }
@@ -126,8 +126,8 @@ commands.color = {
 	end,
 	help = {
 		text = "Set your name color! Gives you a role with the supplied color.",
-		usage = "`{prefix}color <color in Hexadecimal format>`\nYou can grab Hex color codes from [there](http://htmlcolorcodes.com/color-picker/).",
-		example = "`{prefix}color #FF0000` or `{prefix}color FF0000` will set your name color to red."
+		usage = "`{prefix}{cmd} <color in Hexadecimal format>`\nYou can grab Hex color codes from [there](http://htmlcolorcodes.com/color-picker/).",
+		example = "`{prefix}{cmd} #FF0000` or `{prefix}{cmd} FF0000` will set your name color to red."
 	},
 	category = "Colors"
 }

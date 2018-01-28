@@ -32,6 +32,7 @@ _G.magick = magick
 
 -- discordia stuff
 discordia = require("discordia")
+discordia.extensions() -- I had no idea this was a thing, some of my code is being overwritten, careful there.
 enums = discordia.enums
 Color = discordia.Color
 

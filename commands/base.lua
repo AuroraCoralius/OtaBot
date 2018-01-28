@@ -73,7 +73,7 @@ commands[{"eval", "l"}] = { -- l command will be used for sandboxed Lua sometime
 	end,
 	help = {
 		text = "Runs Lua in the bot's environment. Owner only.",
-		example = "`{prefix}eval function foo() return 1 end return foo()` will result into 1 being output by the bot."
+		example = "`{prefix}{cmd} function foo() return 1 end return foo()` will result into 1 being output by the bot."
 	},
 	ownerOnly = true,
 	category = "Admin" -- "Lua"?
@@ -106,7 +106,8 @@ local categoryIcons = { -- too lazy to find a better way
 	Utility = ":tools:",
 	Admin = ":lock:",
 	Colors = ":paintbrush:",
-	Misc = ":gear:"
+	Misc = ":gear:",
+	Fun = ":tada:"
 }
 local function iconizeCategoryName(cat)
 	if categoryIcons[cat] then
@@ -196,6 +197,7 @@ commands.help = {
 				for name, text in next, help do
 					if toReplace[name] then
 						help[name] = text:gsub("{prefix}", bot.currentPrefix)
+						help[name] = text:gsub("{cmd}", cmd)
 					end
 				end
 			elseif not help then
@@ -257,8 +259,8 @@ commands.help = {
 	end,
 	help = {
 		text = "Displays specific information about a command, or all commands available in a category.\nUse `%shelp all` to display all available commands in one go.",
-		usage = "`{prefix}help <command / category name>`\n`{prefix}help all`",
-		example = "`{prefix}help ping`\n`{prefix}help all`"
+		usage = "`{prefix}{cmd} <command / category name>`\n`{prefix}{cmd} all`",
+		example = "`{prefix}{cmd} ping`\n`{prefix}{cmd} all`"
 	},
 	category = "Misc"
 }

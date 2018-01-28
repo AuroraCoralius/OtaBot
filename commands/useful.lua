@@ -138,8 +138,8 @@ commands[{"anime", "mal"}] = {
 	end,
 	help = {
 		text = "Provides condensed information about an anime.\n*Makes uses of reactions to create a page system that the caller can use to browse through multiple results!*",
-		usage = "`{prefix}anime <anime name>`",
-		example = "`{prefix}anime Charlotte`"
+		usage = "`{prefix}{cmd} <anime name>`",
+		example = "`{prefix}{cmd} Charlotte`"
 	},
 	category = "Utility"
 }
@@ -184,7 +184,7 @@ commands[{"translate", "tr", "тр"}] = {
 	end,
 	help = {
 		text = "Translate stuff.",
-		example = '`{prefix}tr "I like apples",en-fr` will translate the sentence "I like apples" from English to French .'
+		example = '`{prefix}{cmd} "I like apples",en-fr` will translate the sentence "I like apples" from English to French .'
 	},
 	category = "Utility"
 }
@@ -351,10 +351,10 @@ commands[{"steam", "steamid", "sid"}] = {
 	end,
 	help = {
 		text = "Looks for a [Steam](http://steamcommunity.com) profile using a custom URL name, SteamID, SteamID64, or URL and returns basic information.",
-		example = [[`{prefix}steam tenrys`
-`{prefix}steam STEAM_0:1:32476157`
-`{prefix}steam 76561198025218043`
-`{prefix}steam https://steamcommunity.com/id/tenrys`]]
+		example = [[`{prefix}{cmd} tenrys`
+`{prefix}{cmd} STEAM_0:1:32476157`
+`{prefix}{cmd} 76561198025218043`
+`{prefix}{cmd} https://steamcommunity.com/id/tenrys`]]
 	},
 	category = "Utility"
 }

@@ -1,33 +1,30 @@
 
 local commands = bot.commands
 
-local fwSmall = ("ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ"):split("")
-local fwBig = ("ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ"):split("")
-
+local fw = "𝑨 𝑩 𝑪 𝑫 𝑬 𝑭 𝑮 𝑯 𝑰 𝑱 𝑲 𝑳 𝑴 𝑵 𝑶 𝑷 𝑸 𝑹 𝑺 𝑻 𝑼 𝑽 𝑾 𝑿 𝒀 𝒁"
 local charMap = {}
-for i = 97, 122 do
-	charMap[i] = fwSmall[i - 96]
-end
-for i = 65, 90 do
-	charMap[i] = fwBig[i - 96]
+for i, c in next, fw:split(" ") do
+	charMap[64 + i] = { string.byte(c, 1, 9) }
 end
 
-commands.animetalk = {
-	callback = function(msg, line, cmd)
-		local str = "『"
+commands.stand = {
+	callback = function(msg, line)
+		local str = "『 " .. line .. " 』"
 
-		for _, char in next, line:split("") do
-			local anime = charMap[char:byte()]
-			print(anime)
-			str = str .. (anime or char)
-		end
-
-		str = str .. "』"
+		-- props to string.anime from Metastruct
+		str = str:upper()
+		-- str = str:gsub("%l", function(c) return string.char(239, 189, 130 + (c:byte() - 98)) end)
+		str = str:gsub("%u", function(c) return
+			-- string.char(239, 188, 161 + (c:byte() - 65)) -- OG fullwidth
+			string.char(unpack(charMap[c:byte()]))
+		end)
 
 		msg.channel:send(str)
 	end,
 	help = {
-		text = "Convert text to something ressembling a Stand name from JoJo.",
+		text = "Converts text to something ressembling a Stand name from JoJo.",
+		usage = "{prefix}{cmd} <any text>",
+		example = "{prefix}{cmd} Star Platinum"
 	},
 	category = "Fun"
 }
