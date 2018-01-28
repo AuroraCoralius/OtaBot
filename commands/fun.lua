@@ -23,8 +23,8 @@ commands.stand = {
 	end,
 	help = {
 		text = "Converts text to something ressembling a Stand name from JoJo.",
-		usage = "{prefix}{cmd} <any text>",
-		example = "{prefix}{cmd} Star Platinum"
+		usage = "`{prefix}{cmd} <any text>`",
+		example = "`{prefix}{cmd} Star Platinum`"
 	},
 	category = "Fun"
 }

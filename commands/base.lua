@@ -189,6 +189,7 @@ commands.help = {
 		elseif cmdData then
 			local help = cmdData.help
 			if istable(help) then
+				help = table.copy(help) -- don't override actual command help
 				local toReplace = { -- foreshadowing
 					text = true,
 					usage = true,
@@ -196,7 +197,7 @@ commands.help = {
 				}
 				for name, text in next, help do
 					if toReplace[name] then
-						help[name] = text:gsub("{(.+)}", function(field)
+						help[name] = text:gsub("{([^}.]+)}", function(field)
 							if field == "prefix" then
 								return bot.currentPrefix
 							elseif field == "cmd" then
@@ -263,7 +264,7 @@ commands.help = {
 		msg.channel:send(_msg)
 	end,
 	help = {
-		text = "Displays specific information about a command, or all commands available in a category.\nUse `%shelp all` to display all available commands in one go.",
+		text = "Displays specific information about a command, or all commands available in a category.\nUse `{prefix}{cmd} all` to display all available commands in one go.",
 		usage = "`{prefix}{cmd} <command / category name>`\n`{prefix}{cmd} all`",
 		example = "`{prefix}{cmd} ping`\n`{prefix}{cmd} all`"
 	},
