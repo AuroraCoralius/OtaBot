@@ -12,7 +12,7 @@ for i = 65, 90 do
 	charMap[i] = string.char(i)
 end
 
-commands.help = {
+commands.animetalk = {
 	callback = function(msg, line, cmd)
 		local str = "『"
 
