@@ -18,6 +18,7 @@ commands.animetalk = {
 
 		for _, char in next, line:split("") do
 			local anime = charMap[char:byte()]
+			print(anime)
 			str = str .. (anime or char)
 		end
 
