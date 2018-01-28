@@ -196,8 +196,13 @@ commands.help = {
 				}
 				for name, text in next, help do
 					if toReplace[name] then
-						help[name] = text:gsub("{prefix}", bot.currentPrefix)
-						help[name] = text:gsub("{cmd}", cmd)
+						help[name] = text:gsub("{(.+)}", function(field)
+							if field == "prefix" then
+								return bot.currentPrefix
+							elseif field == "cmd" then
+								return cmd
+							end
+						end)
 					end
 				end
 			elseif not help then
