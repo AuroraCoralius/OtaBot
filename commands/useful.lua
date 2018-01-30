@@ -224,7 +224,7 @@ local onlineStates = {
 	[5] = "Looking to Trade",
 	[6] = "Looking to Play"
 }
-local steamIcon = "https://gmlounge.us/media/steam-white-transparent.png"
+local steamIcon = "https://re-dream.org/media/steam-white-transparent.png"
 local function sendSteamIDResult(msg, url)
 	local ret = {}
 	local get = querystring.stringify({
