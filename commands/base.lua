@@ -335,10 +335,10 @@ commands.setavatar = {
 	end,
 	ownerOnly = true,
 	help = {
-		text = "Changes the bot's avatar. Accepts URLs. HTTP / HTTPS only."
-		usage = "`{prefix}{cmd} <url>`"
+		text = "Changes the bot's avatar. Accepts URLs. HTTP / HTTPS only.",
+		usage = "`{prefix}{cmd} <url>`",
 		example = "`{prefix}{cmd} http://example.com/image.png`"
-	}
+	},
 	category = "Admin"
 }
 
