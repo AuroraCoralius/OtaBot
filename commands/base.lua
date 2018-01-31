@@ -329,7 +329,10 @@ commands.setavatar = {
 			end)
 			res:on("end", function()
 				fs.writeFileSync("avatar", body)
-				client:setAvatar("avatar")
+				coroutine.wrap(function()
+					client:setAvatar("avatar")
+					msg.channel:send(":white_check_mark:")
+				end)()
 			end)
 		end)
 	end,
