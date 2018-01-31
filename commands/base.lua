@@ -309,4 +309,36 @@ commands.todo = {
 	ownerOnly = true,
 	category = "Misc"
 }
+commands.setavatar = {
+	callback = function(msg, line)
+		line = line:trim()
+
+		local use
+		if line:match("^http://") then
+			use = http
+		elseif line:match("^https://") then
+			use = https
+		else
+			return false, "Invalid protocol / URL!"
+		end
+
+		local body = ""
+		use.get(line, function(res)
+			res:on("data", function(chunk)
+				body = body .. chunk
+			end)
+			res:on("end", function()
+				fs.writeFileSync("avatar", body)
+				client:setAvatar("avatar")
+			end)
+		end)
+	end,
+	ownerOnly = true,
+	help = {
+		text = "Changes the bot's avatar. Accepts URLs. HTTP / HTTPS only."
+		usage = "`{prefix}{cmd} <url>`"
+		example = "`{prefix}{cmd} http://example.com/image.png`"
+	}
+	category = "Admin"
+}
 
