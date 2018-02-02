@@ -156,7 +156,7 @@ bot.getCommands() -- hahaa refresh .aliases.
 
 -- command handling
 local function call(cmdData, cmdName, msg, line, ...)
-	_G.cmdError = function(err, footer, icon_url)
+	_G.cmdError = function(err, footer, icon_url) -- this is gay
 		local cmdName = cmdName
 		coroutine.wrap(function() bot.errorMsg(msg.channel, err, cmdName .. " Error:", footer, icon_url) end)()
 	end

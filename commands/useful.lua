@@ -155,7 +155,6 @@ commands[{"translate", "tr", "тр"}] = {
 			text = text
 		})
 
-		local ret = {}
 		local _msg = {}
 		local url = "https://translate.yandex.net/api/v1.5/tr.json/translate?" .. get
 		local req = https.get(url, function(res)
@@ -170,17 +169,14 @@ commands[{"translate", "tr", "тр"}] = {
 						},
 						color = 0x00FFC0
 					}
+					coroutine.wrap(function()
+						msg.channel:send(_msg) -- well this is ass.
+					end)()
 				else
-					ret = { false, data.message, "Yandex Translate API - code " .. data.code .. " - lang " .. lang }
-					return
+					cmdError(data.message, "Yandex Translate API - code " .. data.code .. " - lang " .. lang)
 				end
-				coroutine.wrap(function()
-					msg.channel:send(_msg) -- well this is ass.
-				end)()
 			end)
 		end)
-
-		return unpack(ret)
 	end,
 	help = {
 		text = "Translate stuff.",
@@ -226,7 +222,6 @@ local onlineStates = {
 }
 local steamIcon = "https://re-dream.org/media/steam-white-transparent.png"
 local function sendSteamIDResult(msg, url)
-	local ret = {}
 	local get = querystring.stringify({
 		key = config.steam,
 		steamids = url
@@ -244,11 +239,11 @@ local function sendSteamIDResult(msg, url)
 				if data.players and table.count(data.players) > 0 then
 					data = table.getfirstvalue(data.players)
 				else
-					ret = { false, "No players found.", "Steam Web API", steamIcon }
+					cmdError("No players found.", "Steam Web API", steamIcon)
 					return
 				end
 			else
-				ret = { false, "No players found.", "Steam Web API", steamIcon }
+				cmdError("No players found.", "Steam Web API", steamIcon)
 				return
 			end
 
@@ -299,8 +294,6 @@ local function sendSteamIDResult(msg, url)
 				msg.channel:send(_msg)
 			end)()
 		end)
-
-		return unpack(ret)
 	end)
 end
 commands[{"steam", "steamid", "sid"}] = {
