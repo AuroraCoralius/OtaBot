@@ -140,6 +140,11 @@ commands.help = {
 			for catName, catCmds in next, bot.getCommands() do
 				_msg.embed.fields[field] = { name = iconizeCategoryName(catName), value = "`" }
 				local count = table.count(catCmds)
+				for _, cmdData in next, catCmds do
+					if cmdData.ownerOnly and not config.owners[msg.author.id] then
+						count = count - 1
+					end
+				end
 				local i = 0
 				for cmd, cmdData in sortedPairs(catCmds) do
 					if not cmdData.ownerOnly or (cmdData.ownerOnly and config.owners[msg.author.id]) then
@@ -175,6 +180,11 @@ commands.help = {
 			}
 
 			local count = table.count(bot.getCommands(true))
+			for _, cmdData in next, bot.getCommands(true) do
+				if cmdData.ownerOnly and not config.owners[msg.author.id] then
+					count = count - 1
+				end
+			end
 			local i = 0
 			for cmd, cmdData in sortedPairs(bot.getCommands(true)) do
 				if not cmdData.ownerOnly or (cmdData.ownerOnly and config.owners[msg.author.id]) then
