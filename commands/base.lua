@@ -180,7 +180,7 @@ commands.help = {
 			}
 
 			local count = table.count(bot.getCommands(true))
-			for _, cmdData in next, bot.getCommands(true) do
+			for _, cmdData in next, bot.getCommands(true), nil do
 				if cmdData.ownerOnly and not config.owners[msg.author.id] then
 					count = count - 1
 				end
