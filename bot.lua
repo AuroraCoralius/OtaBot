@@ -81,9 +81,9 @@ client:on("ready", function()
 	client:setGame({ name = prefix .. "help" , type = 2 }) -- Listening to d$help
 	-- client:setGame({ name = "you 👀", type = 3 }) -- Watching you :eyes:
 
-	local exit_code = fs.readFileSync("exit_code")
-	if exit_code and exit_code ~= "0" then
-		bot.notifyOwners(":warning: Bot didn't exit cleanly, code: `" .. exit_code .. "`")
+	local errorlog = fs.readFileSync("errorlog")
+	if errorlog and errorlog:trim() ~= "" then
+		bot.notifyOwners((":warning: Bot didn't exit cleanly: ```\n%s\n```"):format(errorlog))
 	end
 end)
 
