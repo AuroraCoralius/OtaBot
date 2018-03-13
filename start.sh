@@ -10,8 +10,9 @@ while true; do
 	else
 		rm restart
 	fi
-	luvit bot.lua
-	exitcode=$?
+	rm errorlog
+	luvit bot.lua 2>errorlog
+	exitcode=$1
 	if [ -f "restart" ]; then
 		echo
 		echo -e "\e[46;30m RESTART \e[0m"
@@ -24,6 +25,5 @@ while true; do
 	if [ $exitcode != "0" ]; then
 		echo -e "\e[41;30m ERROR \e[0m Bot didn't exit cleanly, code: \e[30;46m $exitcode \e[0m"
 	fi
-	echo -n $exitcode > exit_code
 done
 
