@@ -10,9 +10,8 @@ while true; do
 	else
 		rm restart
 	fi
-	rm errorlog
-	luvit bot.lua 2>errorlog
-	exitcode=$1
+	luvit bot.lua 2>> errorlog
+	exitcode=$?
 	if [ -f "restart" ]; then
 		echo
 		echo -e "\e[46;30m RESTART \e[0m"
