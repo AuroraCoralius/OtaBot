@@ -10,7 +10,7 @@ while true; do
 	else
 		rm restart
 	fi
-	luvit bot.lua 2>> errorlog
+	luvit bot.lua 2>> >(tee -a errorlog)
 	exitcode=$?
 	if [ -f "restart" ]; then
 		echo
