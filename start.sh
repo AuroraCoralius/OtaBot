@@ -1,16 +1,15 @@
 #!/bin/bash
 
 git pull
-echo -n "0" > exit_code
 while true; do
 	if [ ! -f "restart" ]; then
 		echo
 		echo -e "\e[42;30m START \e[0m"
 		echo
 	else
-		rm restart
+		rm restart # file created by bot
 	fi
-	luvit bot.lua 2>> >(tee -a errorlog)
+	luvit bot.lua 2>> >(tee -a errorlog) # this filename is important, used in the bot
 	exitcode=$?
 	if [ -f "restart" ]; then
 		echo
