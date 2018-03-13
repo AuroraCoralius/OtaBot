@@ -84,7 +84,7 @@ client:on("ready", function()
 	local errorlog = fs.readFileSync("errorlog")
 	if errorlog and errorlog:trim() ~= "" then
 		bot.notifyOwners((":warning: Bot didn't exit cleanly: ```\n%s\n```"):format(errorlog))
-		os.execute("rm errorlog")
+		fs.writeFileSync("errorlog", "")
 	end
 end)
 
