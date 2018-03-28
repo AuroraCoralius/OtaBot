@@ -126,7 +126,7 @@ commands.help = {
 		end
 
 		local _msg = {}
-		local desc = "Supply a command or category name to get specific information."
+		local desc = "Supply a command or category name to get specific information.\nUse the command with `all` parameter to show all available commands at once."
 		if not cmd then
 			_msg = {
 				embed = {
@@ -327,7 +327,7 @@ The `Manage Roles` permission is required for color roles. If you have no use fo
 ]]):format(authors, client.user.id, _VERSION, discordia.package.version, bot.github))
 	end,
 	help = "Posts information about this bot including the invite link.",
-	category = "Utility",
+	category = "Misc",
 }
 commands.todo = {
 	callback = function(msg)
