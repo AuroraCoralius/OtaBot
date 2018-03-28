@@ -1,7 +1,7 @@
 
 local commands = bot.commands
 
-local invalidColorErr = "Invalid color! Hex / RGB format only."
+local invalidColorErr = "Invalid color! Hex/RGB format only."
 local function figureOutColor(r, g, b)
 	local hex, color
 	if r and g and b then
