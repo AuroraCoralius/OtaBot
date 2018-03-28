@@ -302,14 +302,31 @@ commands.ping = {
 	help = "Pings the bot.",
 	category = "Misc"
 }
-commands.invite = {
+commands.about = {
 	callback = function(msg)
-		msg.channel:send(string.format([[
+		local authors = ""
+		local i = 0
+		local authorCount = table.count(config.owners)
+		for id in next, config.owners do
+			i = i + 1
+			authors = authors .. client:getUser(id).fullname .. (i == authorCount and "" or ", ")
+		end
+
+		msg.channel:send(([[
+:scroll: **Bot Owners**: %s
+
+Created at first solely for the purpose of allowing users to have custom color roles, more has been added to it over time to do what other bots couldn't always do properly.
+
 :robot: **Invite link**: <https://discordapp.com/oauth2/authorize?client_id=%s&scope=bot&permissions=268435456>
 The `Manage Roles` permission is required for color roles. If you have no use for it, feel free to remove it.
-]], client.user.id))
+
+**Lua version**: `%s`
+**Luvit version**: `???` (couldn't find the damn value)
+**Discordia version**: `%s`
+:squid: **Github**: %s
+]]):format(authors, client.user.id, _VERSION, discordia.package.version, bot.github))
 	end,
-	help = "Posts the invite link for this bot.",
+	help = "Posts information about this bot including the invite link.",
 	category = "Utility",
 }
 commands.todo = {
@@ -352,7 +369,7 @@ commands.setavatar = {
 	end,
 	ownerOnly = true,
 	help = {
-		text = "Changes the bot's avatar. Accepts URLs. HTTP / HTTPS only.",
+		text = "Changes the bot's avatar. Accepts URLs. HTTP / HTTPS only. You can also attach a file.",
 		usage = "`{prefix}{cmd} <url>`",
 		example = "`{prefix}{cmd} http://example.com/image.png`"
 	},
