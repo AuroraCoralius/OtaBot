@@ -28,7 +28,7 @@ function xml.newParser()
         value = string.gsub(value, "\"", "&quot;"); -- '"' -> "&quot;"
         value = string.gsub(value, "([^%w%&%;%p%\t% ])",
             function(c)
-                return string.format("&#x%X;", string.byte(c))
+                return ("&#x%X;"):format(string.byte(c))
             end);
         return value;
     end

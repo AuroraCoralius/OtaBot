@@ -11,7 +11,7 @@ local function figureOutColor(r, g, b)
 		color = hex2num(hex)
 		if not color then return false, invalidColorErr end
 
-		hex = ("%s, %s, %s"):format(r, g, b)
+		hex = ("%s, %s, %s"):format(tonumber(r:trim()), tonumber(r:trim()), tonumber(r:trim()))
 	elseif r and not g and not b then
 		hex = hex2string(r)
 		if not hex then return false, invalidColorErr end
@@ -40,13 +40,8 @@ commands.seecolor = {
 			local name = authorMember and authorMember.name or msg.author.username
 			name = name:gsub("\\%w", "")
 			fs.writeFile("last_user", name, function()
-				os.execute(string.format(
-						"convert -background transparent -fill '%s' -font 'Whitney-Medium' -gravity west -size 256x64 caption:@last_user seecolor.png",
-						"#" .. hex
-					)
-				)
-				coroutine.wrap(function() -- OH YEAH BABY ITS THAT TIME AGAIN
-					-- Announce success!
+				os.execute(("convert -background transparent -fill '%s' -font 'Whitney-Medium' -gravity west -size 256x64 caption:@last_user seecolor.png"):format("#" .. num2hex(color)))
+				coroutine.wrap(function()
 					msg.channel:send({
 						embed = {
 							description = "This is what `" .. hex .. "` looks like.",
@@ -58,7 +53,6 @@ commands.seecolor = {
 			end)
 		else
 			coroutine.wrap(function()
-				-- Announce success!
 				msg.channel:send({
 					embed = {
 						description = ":arrow_left: This is what `" .. hex .. "` looks like.",

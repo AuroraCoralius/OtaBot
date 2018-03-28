@@ -209,7 +209,7 @@ local function sid64ToSid(sid64)
 end
 local function sidToSid64(sid)
 	local universe, id = sid:match("STEAM_0:(%d):(%d+)")
-	return "7" .. string.format("%.0f", math.abs(6561197960265728 + id * 2 + universe))
+	return "7" .. ("%.0f"):format(math.abs(6561197960265728 + id * 2 + universe)
 end
 local onlineStates = {
 	[0] = "Offline",

@@ -61,6 +61,9 @@ function _G.hex2string(hex)
 		return hex
 	end
 end
+function _G.num2hex(num)
+	return "0x" .. ("%x"):format(num)
+end
 
 function _G.sortedPairs(tbl)
 	local keys = {}
