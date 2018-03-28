@@ -55,12 +55,25 @@ commands.seecolor = {
 	},
 	category = "Colors"
 }
+
 local function cleanColorRoles(member)
-	for role in member.roles:iter() do
-		if role.name:match("^#") then
-			member:removeRole(role.id)
-			if #role.members < 1 then
-				role:delete()
+	if member then
+		for role in member.roles:iter() do
+			if role.name:match("^#") then
+				member:removeRole(role.id)
+				if #role.members < 1 then
+					role:delete()
+				end
+			end
+		end
+	else
+		for guild in client.guilds:iter() do
+			for role in guild.roles:iter() do
+				if role.name:match("^#") then
+					if #role.members < 1 then
+						role:delete()
+					end
+				end
 			end
 		end
 	end
@@ -90,7 +103,7 @@ commands.color = {
 			-- Find role...
 			local role
 			for _role in guild.roles:iter() do
-				if _role.name:match("#" .. hex) then
+				if _role.name:match("^#" .. hex) then
 					role = _role
 					break
 				end
@@ -161,4 +174,10 @@ commands.resetcolor = {
 	help = "Reset your color.",
 	category = "Colors"
 }
+timer.setInterval(60 * 60, function()
+	coroutine.wrap(function()
+		cleanColorRoles()
+	end)()
+end)
+cleanColorRoles()
 
