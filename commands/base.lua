@@ -79,7 +79,7 @@ commands[{"eval", "l"}] = { -- l command will be used for sandboxed Lua sometime
 	category = "Admin" -- "Lua"?
 }
 local function restart(msg, doUpdate)
-	local out = doUpdate and io.popen("git pull"):read("*a") or nil
+	local out = doUpdate and io.popen("git pull 2>1"):read("*a") or nil
 	msg.channel:send("```" .. (out and out .. "\n" or "") .. "Restarting..." .. "```")
 	fs.writeFileSync("restart", "")
 	process:exit() -- restart handled by shell script, I can't figure out any better way of doing this
