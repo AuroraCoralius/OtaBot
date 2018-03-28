@@ -11,7 +11,7 @@ local function figureOutColor(r, g, b)
 		color = hex2num(hex)
 		if not color then return false, invalidColorErr end
 
-		hex = ("%s, %s, %s"):format(tonumber(r:trim()), tonumber(r:trim()), tonumber(r:trim()))
+		hex = ("%s, %s, %s"):format(tonumber(r:trim()), tonumber(g:trim()), tonumber(b:trim()))
 	elseif r and not g and not b then
 		hex = hex2string(r)
 		if not hex then return false, invalidColorErr end
