@@ -9,10 +9,10 @@ function _G.rgb2hex(r, g, b)
 	local r, g, b = tonumber(r), tonumber(g), tonumber(b)
 	if not r or not g or not b then return end
 
-	local finalHex = "0x"
+	local finalHex = ""
 
-	for _, v in next, {r, g, b} do
-		local hex = ''
+	for _, v in next, { r, g, b } do
+		local hex = ""
 
 		while v > 0 do
 			local index = math.fmod(v, 16) + 1

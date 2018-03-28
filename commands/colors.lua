@@ -2,28 +2,32 @@
 local commands = bot.commands
 
 local invalidColorErr = "Invalid color! Hex / RGB format only."
-local function figureOutColor(hex, g, b)
-	local color
-	if tonumber(hex) and tonumber(g) and tonumber(b) then
-		hex = rgb2hex(hex, g, b)
+local function figureOutColor(r, g, b)
+	local hex, color
+	if r and g and b then
+		hex = rgb2hex(r, g, b)
+		if not hex then return false, invalidColorErr end
+
+		color = hex2num(hex)
+		if not color then return false, invalidColorErr end
+
+		hex = ("%s, %s, %s"):format(r, g, b)
+	elseif r and not g and not b then
+		hex = hex2string(r)
 		if not hex then return false, invalidColorErr end
 
 		color = hex2num(hex)
 		if not color then return false, invalidColorErr end
 	else
-		hex = hex2string(hex)
-		if not hex then return false, invalidColorErr end
-
-		color = hex2num(hex)
-		if not color then return false, invalidColorErr end
+		return false, invalidColorErr
 	end
 
-	return color
+	return color, hex
 end
 commands.seecolor = {
 	callback = function(msg, line, hex, g, b)
-		local color, err = figureOutColor(hex, g, b)
-		if not color then return false, err end
+		local color, hex = figureOutColor(hex, g, b)
+		if not color then return false, hex end
 
 		local guild = msg.guild
 		local botMember, authorMember
@@ -66,8 +70,8 @@ commands.seecolor = {
 	end,
 	help = {
 		text = "Preview a color!",
-		usage = "`{prefix}{cmd} <color in Hexadecimal format>`\nYou can grab Hex color codes from [there](http://htmlcolorcodes.com/color-picker/).",
-		example = "`{prefix}{cmd} #FF0000` or `{prefix}{cmd} FF0000` will show your name in red."
+		usage = "`{prefix}{cmd} <color in Hexadecimal or RGB format>`\nYou can grab Hex/RGB color codes from [there](http://htmlcolorcodes.com/color-picker/).",
+		example = "`{prefix}{cmd} #FF0000`, `{prefix}{cmd} FF0000` or `{prefix}{cmd} 255,0,0` will show your name in red."
 	},
 	category = "Colors"
 }
@@ -114,8 +118,8 @@ commands.color = {
 
 		-- Do we have permissions to fuck with roles?
 		if botMember:hasPermission(enums.permission.manageRoles) then
-			local color, err = figureOutColor(hex, g, b)
-			if not color then return false, err end
+			local color, hex = figureOutColor(hex, g, b)
+			if not color then return false, hex end
 
 			-- Remove other color roles you had...
 			cleanColorRoles(authorMember)
@@ -159,8 +163,8 @@ commands.color = {
 	end,
 	help = {
 		text = "Set your name color! Gives you a role with the supplied color.",
-		usage = "`{prefix}{cmd} <color in Hexadecimal format>`\nYou can grab Hex color codes from [there](http://htmlcolorcodes.com/color-picker/).",
-		example = "`{prefix}{cmd} #FF0000` or `{prefix}{cmd} FF0000` will set your name color to red."
+		usage = "`{prefix}{cmd} <color in Hexadecimal or RGB format>`\nYou can grab Hex/RGB color codes from [there](http://htmlcolorcodes.com/color-picker/).",
+		example = "`{prefix}{cmd} #FF0000`, `{prefix}{cmd} FF0000` or `{prefix}{cmd} 255,0,0` will set your name color to red."
 	},
 	category = "Colors"
 }
