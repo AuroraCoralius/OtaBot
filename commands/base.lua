@@ -323,6 +323,10 @@ commands.setavatar = {
 	callback = function(msg, line)
 		line = line:trim()
 
+		if msg.attachment and msg.attachment.url then
+			line = msg.attachment.url
+		end
+
 		local use
 		if line:match("^http://") then
 			use = http
