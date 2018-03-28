@@ -121,14 +121,14 @@ commands.color = {
 			-- Find role...
 			local role
 			for _role in guild.roles:iter() do
-				if _role.name:match("^#" .. hex) then
+				if _role.name:match("^#" .. num2hex(color)) then
 					role = _role
 					break
 				end
 			end
 			-- If it doesn't exist, make it!
 			if not role then
-				role = guild:createRole("#" .. hex)
+				role = guild:createRole("#" .. num2hex(color))
 				-- local roleColor = Color(color) -- unnecessary
 				role:setColor(color)
 				local highestPos = 0
