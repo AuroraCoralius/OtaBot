@@ -62,7 +62,7 @@ function _G.hex2string(hex)
 	end
 end
 function _G.num2hex(num)
-	return "0x" .. ("%x"):format(num)
+	return ("%02x"):format(num)
 end
 
 function _G.sortedPairs(tbl)
