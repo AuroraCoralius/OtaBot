@@ -71,8 +71,8 @@ bot = {
 }
 config = bot.config
 
--- paging system
 paging = require("./paging.lua")
+event = require("./events.lua")
 
 -- commands
 require("./commands.lua")
@@ -87,8 +87,6 @@ client:on("ready", function()
 		fs.writeFileSync("errorlog", "")
 	end
 end)
-
-event = require("./events.lua")
 
 client:run("Bot " .. config.token)
 

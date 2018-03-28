@@ -71,26 +71,31 @@ commands.seecolor = {
 }
 
 local function cleanColorRoles(member)
+
 	if member then
-		for role in member.roles:iter() do
-			if role.name:match("^#") then
-				member:removeRole(role.id)
-				if #role.members < 1 then
-					role:delete()
+		local botMember = member.guild.members:get(client.user.id)
+		if botMember:hasPermission(enums.permission.manageRoles) then
+			for role in member.roles:iter() do
+				if role.name:match("^#") then
+					member:removeRole(role.id)
+					if #role.members < 1 then
+						role:delete()
+					end
 				end
 			end
 		end
 	else
 		for guild in client.guilds:iter() do
-			for role in guild.roles:iter() do
-				if role.name:match("^#") and #role.members < 1 then
-					local highestPos = 0
-					for role in botMember.roles:iter() do
-						if role.position > highestPos then
-							highestPos = role.position
-						end
+			local botMember = guild.members:get(client.user.id)
+			if botMember:hasPermission(enums.permission.manageRoles) then
+				local lowestPos = math.huge
+				for role in botMember.roles:iter() do
+					if role.name:lower() ~= "@everyone" and role.position < lowestPos then
+						lowestPos = role.position
 					end
-					if role.position < highestPos then
+				end
+				for role in guild.roles:iter() do
+					if role.name:match("^#") and #role.members < 1 and role.position < lowestPos then
 						role:delete()
 					end
 				end
@@ -131,13 +136,13 @@ commands.color = {
 				role = guild:createRole("#" .. num2hex(color))
 				-- local roleColor = Color(color) -- unnecessary
 				role:setColor(color)
-				local highestPos = 0
+				local lowestPos = math.huge
 				for role in botMember.roles:iter() do
-					if role.position > highestPos then
-						highestPos = role.position
+					if role.name:lower() ~= "@everyone" and role.position < lowestPos then
+						lowestPos = role.position
 					end
 				end
-				local pos = math.max(1, highestPos - 3) -- 3 because it's position is 1 and we want to be BELOW its highest role
+				local pos = math.max(1, lowestPos - 2) -- 2 because it's position is 1 and we want to be BELOW its highest role
 				role:moveUp(pos)
 			end
 
@@ -198,5 +203,7 @@ timer.setInterval(60 * 60 * 1000, function()
 		cleanColorRoles()
 	end)()
 end)
-cleanColorRoles()
+client:on("ready", function()
+	cleanColorRoles()
+end)
 
