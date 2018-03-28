@@ -85,8 +85,14 @@ local function cleanColorRoles(member)
 	else
 		for guild in client.guilds:iter() do
 			for role in guild.roles:iter() do
-				if role.name:match("^#") then
-					if #role.members < 1 then
+				if role.name:match("^#") and #role.members < 1 then
+					local highestPos = 0
+					for role in botMember.roles:iter() do
+						if role.position > highestPos then
+							highestPos = role.position
+						end
+					end
+					if role.position < highestPos then
 						role:delete()
 					end
 				end
@@ -189,7 +195,7 @@ commands.resetcolor = {
 	help = "Reset your color.",
 	category = "Colors"
 }
-timer.setInterval(60 * 60, function()
+timer.setInterval(60 * 60 * 1000, function()
 	coroutine.wrap(function()
 		cleanColorRoles()
 	end)()
