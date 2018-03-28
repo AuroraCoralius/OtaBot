@@ -34,7 +34,7 @@ end
 function _G.hex2rgb(hex)
 	if not isstring(hex) then return end
 
-	hex = hex:gsub("#", "")
+	hex = hex:gsub("#", ""):upper()
 	if hex:len() == 3 then
 		return tonumber("0x" .. hex:sub(1, 1)) * 17, tonumber("0x" .. hex:sub(2, 2)) * 17, tonumber("0x" .. hex:sub(3, 3)) * 17
 	elseif hex:len() == 6 then
@@ -62,7 +62,7 @@ function _G.hex2string(hex)
 	end
 end
 function _G.num2hex(num)
-	return ("%02x"):format(num)
+	return ("%02x"):format(num):upper()
 end
 
 function _G.sortedPairs(tbl)
