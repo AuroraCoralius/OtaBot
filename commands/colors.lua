@@ -1,13 +1,29 @@
 
 local commands = bot.commands
 
-commands.seecolor = {
-	callback = function(msg, line, hex)
-		hex = hex2string(hex)
-		if not hex then return false, "Invalid color! Hex format only." end
+local invalidColorErr = "Invalid color! Hex / RGB format only."
+local function figureOutColor(hex, g, b)
+	local color
+	if tonumber(hex) and tonumber(g) and tonumber(b) then
+		hex = rgb2hex(hex, g, b)
+		if not hex then return false, invalidColorErr end
 
-		local color = hex2num(hex)
-		if not color then return false, "Invalid color! Hex format only." end
+		color = hex2num(hex)
+		if not color then return false, invalidColorErr end
+	else
+		hex = hex2string(hex)
+		if not hex then return false, invalidColorErr end
+
+		color = hex2num(hex)
+		if not color then return false, invalidColorErr end
+	end
+
+	return color
+end
+commands.seecolor = {
+	callback = function(msg, line, hex, g, b)
+		local color, err = figureOutColor(hex, g, b)
+		if not color then return false, err end
 
 		local guild = msg.guild
 		local botMember, authorMember
@@ -79,11 +95,12 @@ local function cleanColorRoles(member)
 	end
 end
 commands.color = {
-	callback = function(msg, line, hex)
+	callback = function(msg, line, hex, g, b)
 		local guild = msg.guild
 		if not guild then
 			return false, "You can only use this command in a guild."
 		end
+
 		local botMember = guild.members:get(client.user.id)
 		local authorMember = guild.members:get(msg.author.id)
 
@@ -91,11 +108,8 @@ commands.color = {
 
 		-- Do we have permissions to fuck with roles?
 		if botMember:hasPermission(enums.permission.manageRoles) then
-			hex = hex2string(hex)
-			if not hex then return false, "Invalid color! Hex format only." end
-
-			local color = hex2num(hex)
-			if not color then return false, "Invalid color! Hex format only." end
+			local color, err = figureOutColor(hex, g, b)
+			if not color then return false, err end
 
 			-- Remove other color roles you had...
 			cleanColorRoles(authorMember)
@@ -150,6 +164,7 @@ commands.resetcolor = {
 		if not guild then
 			return false, "You can only use this command in a guild."
 		end
+
 		local botMember = guild.members:get(client.user.id)
 		local authorMember = guild.members:get(msg.author.id)
 
