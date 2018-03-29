@@ -87,6 +87,9 @@ client:on("ready", function()
 		fs.writeFileSync("errorlog", "")
 	end
 end)
+process:on("exit", function()
+	fs.writeFileSync("errorlog", "") -- if we quit cleanly then don't care about errors
+end)
 
 client:run("Bot " .. config.token)
 
