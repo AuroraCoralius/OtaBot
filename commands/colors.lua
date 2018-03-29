@@ -3,31 +3,25 @@ local commands = bot.commands
 
 local invalidColorErr = "Invalid color! Hex/RGB format only."
 local function figureOutColor(r, g, b)
-	local hex, color
+	local color, str
 	if r and g and b then
-		hex = rgb2hex(r, g, b)
-		if not hex then return false, invalidColorErr end
-
-		color = hex2num(hex)
+		color = Color.fromRGB(r, g, b)
 		if not color then return false, invalidColorErr end
 
-		hex = ("%s, %s, %s"):format(tonumber(r:trim()), tonumber(g:trim()), tonumber(b:trim()))
+		str = ("%s, %s, %s"):format(tonumber(r:trim()), tonumber(g:trim()), tonumber(b:trim()))
 	elseif r and not g and not b then
-		hex = hex2string(r)
-		if not hex then return false, invalidColorErr end
-
-		color = hex2num(hex)
+		color = Color.fromHex(r)
 		if not color then return false, invalidColorErr end
 	else
 		return false, invalidColorErr
 	end
 
-	return color, hex
+	return color, str
 end
 commands.seecolor = {
-	callback = function(msg, line, hex, g, b)
-		local color, hex = figureOutColor(hex, g, b)
-		if not color then return false, hex end
+	callback = function(msg, line, r, g, b)
+		local color, str = figureOutColor(r, g, b)
+		if not color then return false, str end
 
 		local guild = msg.guild
 		local botMember, authorMember
@@ -40,12 +34,12 @@ commands.seecolor = {
 			local name = authorMember and authorMember.name or msg.author.username
 			name = name:gsub("\\%w", "")
 			fs.writeFile("last_user", name, function()
-				os.execute(("convert -background transparent -fill '%s' -font 'Whitney-Medium' -gravity west -size 256x64 caption:@last_user seecolor.png"):format("#" .. num2hex(color)))
+				os.execute(("convert -background transparent -fill '%s' -font 'Whitney-Medium' -gravity west -size 256x64 caption:@last_user seecolor.png"):format(color:toHex()))
 				coroutine.wrap(function()
 					msg.channel:send({
 						embed = {
-							description = "This is what `" .. hex .. "` looks like.",
-							color = color,
+							description = "This is what `" .. color:toHex() .. "` looks like.",
+							color = color.value,
 						},
 						file = magick and "seecolor.png" or nil
 					})
@@ -55,8 +49,8 @@ commands.seecolor = {
 			coroutine.wrap(function()
 				msg.channel:send({
 					embed = {
-						description = ":arrow_left: This is what `" .. hex .. "` looks like.",
-						color = color,
+						description = ":arrow_left: This is what `" .. color:toHex() .. "` looks like.",
+						color = color.value,
 					},
 				})
 			end)()
@@ -71,7 +65,6 @@ commands.seecolor = {
 }
 
 local function cleanColorRoles(member)
-
 	if member then
 		local botMember = member.guild.members:get(client.user.id)
 		if botMember:hasPermission(enums.permission.manageRoles) then
@@ -104,7 +97,7 @@ local function cleanColorRoles(member)
 	end
 end
 commands.color = {
-	callback = function(msg, line, hex, g, b)
+	callback = function(msg, line, r, g, b)
 		local guild = msg.guild
 		if not guild then
 			return false, "You can only use this command in a guild."
@@ -117,8 +110,8 @@ commands.color = {
 
 		-- Do we have permissions to fuck with roles?
 		if botMember:hasPermission(enums.permission.manageRoles) then
-			local color, hex = figureOutColor(hex, g, b)
-			if not color then return false, hex end
+			local color, str = figureOutColor(r, g, b)
+			if not color then return false, str end
 
 			-- Remove other color roles you had...
 			cleanColorRoles(authorMember)
@@ -126,23 +119,22 @@ commands.color = {
 			-- Find role...
 			local role
 			for _role in guild.roles:iter() do
-				if _role.name:match("^#" .. num2hex(color)) then
+				if _role.name:match("^" .. color:toHex()) then
 					role = _role
 					break
 				end
 			end
 			-- If it doesn't exist, make it!
 			if not role then
-				role = guild:createRole("#" .. num2hex(color))
-				-- local roleColor = Color(color) -- unnecessary
+				role = guild:createRole(color:toHex())
 				role:setColor(color)
 				local lowestPos = math.huge
-				for role in botMember.roles:iter() do
-					if role.name:lower() ~= "@everyone" and role.position < lowestPos then
-						lowestPos = role.position
+				for _role in botMember.roles:iter() do
+					if _role.name:lower() ~= "@everyone" and _role.position < lowestPos then
+						lowestPos = _role.position
 					end
 				end
-				local pos = math.max(1, lowestPos - 2) -- 2 because it's position is 1 and we want to be BELOW its highest role
+				local pos = math.max(0, lowestPos - 3) -- because its position is 1 and we want to be BELOW its lowest role
 				role:moveUp(pos)
 			end
 
@@ -153,7 +145,7 @@ commands.color = {
 			msg.channel:send({
 				embed = {
 					description = "**" .. authorMember.fullname .. "**'s color is now <@&" .. role.id .. ">.",
-					color = color
+					color = color.value
 				}
 			})
 		else
