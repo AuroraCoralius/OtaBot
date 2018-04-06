@@ -309,10 +309,10 @@ commands[{"steam", "steamid", "sid"}] = {
 			return sendSteamIDResult(msg, url)
 		elseif line:match("^https?://steamcommunity.com/id/%w*/?") or line:match("^https?://steamcommunity.com/profiles/%d*/?") then
 			local ret = {}
-			local url = line:gsub("/*$", ""):gsub("^https", "http") .. "/?xml=1"
+			local url = line:gsub("/*$", ""):gsub("^http://", "https://") .. "/?xml=1"
 			local options = http.parseUrl(url)
 			local body = ""
-			local req = http.get(options, function(res)
+			local req = https.get(options, function(res)
 				res:on("data", function(chunk)
 					body = body .. chunk
 				end)
@@ -327,10 +327,10 @@ commands[{"steam", "steamid", "sid"}] = {
 		else
 			local ret = {}
 			local get = querystring.urlencode(line)
-			local url = "http://steamcommunity.com/id/" .. get .. "/?xml=1"
+			local url = "https://steamcommunity.com/id/" .. get .. "/?xml=1"
 			local options = http.parseUrl(url)
 			local body = ""
-			local req = http.get(options, function(res)
+			local req = https.get(options, function(res)
 				res:on("data", function(chunk)
 					body = body .. chunk
 				end)
